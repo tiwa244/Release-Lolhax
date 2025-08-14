@@ -40,8 +40,8 @@
     \  /\  /\__ \   _| |_| |\  |     | |  | |  | | |____   | |____| |  | |/ ____ \| |
      \/  \/ |___/  |_____|_| \_|     |_|  |_|  |_|______|   \_____|_|  |_/_/    \_\_|
 ]]
+-- credit2 thanks Damian :content: for the funni for entity disabler
 -- credit to RegularVynixu aka vynixu for the letting me use the plr detection method!
-print("\"make it print \'fuck skolus\' on execute\" - skolus")
 local Loadtime = tick()
 local Repository = "https://raw.githubusercontent.com/RectangularObject/LinoriaLib/main/"
 
@@ -290,7 +290,7 @@ VisualsRemovals:AddToggle("VR_NoSeekEffects", { Text = "Remove Seek Room Effects
 
 local MiscMovement = Tabs.Misc:AddLeftGroupbox("Movement")
 MiscMovement:AddToggle("MM_Walkspeed", { Text = "Enable Speed Modifier", Default = false, Tooltip = "Sets player speed according to value set." })
-MiscMovement:AddSlider("MM_Walkspeed_S", { Text = "Walkspeed Amount", Default = 20, Min = 10, Max = 100, Rounding = 0, Compact = true, Tooltip = "Controls the player walkspeed amount." })
+MiscMovement:AddSlider("MM_Walkspeed_S", { Text = "Walkspeed Amount", Default = 20, Min = 10, Max = 50, Rounding = 0, Compact = true, Tooltip = "Controls the player walkspeed amount." })
 MiscMovement:AddSlider("MM_Walkspeed_Boost", { Text = "Ladder Speed Boost", Default = 0, Min = 0, Max = 50, Rounding = 0, Compact = true, Tooltip = "Speed boost for climbing up ladders. High values may become unstable." })
 MiscMovement:AddDivider()
 MiscMovement:AddToggle("MM_NoAcceleration", { Text = "No Acceleration", Default = false, Tooltip = "Removes acceleration while moving or switching direction." })
@@ -345,11 +345,10 @@ local OldFogEnd = game.Lighting.FogEnd
 -- Require Variables vvv
 
 local Main_Game = require(LocalPlayer.PlayerGui.MainUI.Initiator.Main_Game)
-
-local ShadeModule = require(game.ReplicatedStorage.ClientModules.EntityModules.Shade)
-local GlitchModule = require(game.ReplicatedStorage.ClientModules.EntityModules.Glitch)
-local VoidModule = require(game.ReplicatedStorage.ClientModules.EntityModules.Void)
-local SeekModule = require(game.ReplicatedStorage.ClientModules.EntityModules.Seek)
+local ShadeModule = require(game.ReplicatedStorage.ModulesClient.EntityModules.Shade)
+local GlitchModule = require(game.ReplicatedStorage.ModulesClient.EntityModules.Glitch)
+local VoidModule = require(game.ReplicatedStorage.ModulesClient.EntityModules.Void)
+local SeekModule = require(game.ReplicatedStorage.ModulesClient.EntityModules.Seek)
 
 local ShadeFunction = ShadeModule.stuff
 local GlitchFunction = GlitchModule.stuff
@@ -372,16 +371,14 @@ local NotificationHolder = Instance.new("Frame", LXNotifications)
 NotificationHolder.Size = UDim2.fromScale(1, 1)
 NotificationHolder.Transparency = 1
 
-local ClonedCollision = LocalPlayer.Character.Collision:Clone()
+local ClonedCollision = LocalPlayer.Character.CollisionPart:Clone()
 ClonedCollision.Name = "_CollisionClone"
 ClonedCollision.Massless = true
 ClonedCollision.Parent = LocalPlayer.Character
 ClonedCollision.CanCollide = false
 ClonedCollision.CanQuery = false
 ClonedCollision.CustomPhysicalProperties = PhysicalProperties.new(0.01, 0.7, 0, 1, 1)
-if ClonedCollision:FindFirstChild("CollisionCrouch") then
-    ClonedCollision.CollisionCrouch:Destroy()
-end
+
 
 -- Table Variables vvv
 
@@ -2236,7 +2233,7 @@ TimothyHook = hookfunction(require(LocalPlayer.PlayerGui.MainUI.Initiator.Main_G
     return TimothyHook(...)
 end)
 
-local ReviveHook; ReviveHook = hookfunction(require(game.ReplicatedStorage.ClientModules.ReviveCutscene), function(...)
+local ReviveHook; ReviveHook = hookfunction(require(game.ReplicatedStorage.ModulesClient.ReviveCutscene), function(...)
     if Toggles.VR_NoReviveCutscene.Value then
         return
     end
