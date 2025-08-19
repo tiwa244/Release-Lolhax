@@ -134,9 +134,23 @@ ExploitSelf:AddToggle("ES_AntiEyes", { Text = "Anti-Eyes", Default = false, Tool
 ExploitSelf:AddToggle("ES_AntiLookman", { Text = "Anti-Lookman", Default = false, Tooltip = "Forces character to look down from the entity 'Lookman'." })
 ExploitSelf:AddToggle("ES_AntiChanedlier", { Text = "Anti-Chandelier", Default = false, Tooltip = "Disallows touching on any fallen chandeliers during the seek chase." })
 ExploitSelf:AddToggle("ES_AntiSeekArms", { Text = "Anti-Seek Arms", Default = false, Tooltip = "Disallows touching on any seek arms during the seek chase." })
-
-
 local ExploitTroll = Tabs.Exploit:AddLeftGroupbox("Trolling")
+if game.ReplicatedStorage.GameData.Floor.Value == "Mines" then 
+    ExploitTroll:AddButton({
+        Text = "AntiRush/AntiAmbush",
+        Func = function()
+            task.spawn(function()
+                for i = 1, 11 do
+                    task.spawn(function()
+                        game.ReplicatedStorage.RemotesFolder.RequestAsset:InvokeServer("Remote")
+                    end)
+                end
+            end)
+        end,
+        DoubleClick = false,
+        Tooltip = "Disables uhh rush/ambush on floor2",
+    })
+end
 ExploitTroll:AddToggle("Spamtoolz", { Text = "Spam others Tools", Default = false, Tooltip = "Will basically use up the other person tools by spamming!" }):AddKeyPicker("Spamtoolz_X", { Default = "G", SyncToggleState = false, Mode = "Hold", Text = "Spam others Tools", NoUI = false, })
 ExploitTroll:AddInput("WhitelistKoolpeople",{Default = "", Numeric = false, Finished = true, ClearTextOnFocus = true, Text = "Whitelist for spamtools", Callback = function() 
 task.spawn(function()   
