@@ -2763,7 +2763,7 @@ task.spawn(function()
         elseif game.ReplicatedStorage.GameData.Floor.Value == "Mines" then
             State = `[ Door {game.ReplicatedStorage.GameData.LatestRoom.Value + 100} ] In The Mines`
             LargeImage = { assetId = 138779629462354, hoverText = "In The Mines" }
-        elseif game.ReplicatedStorage.GameData.Floor.Value == "Fools"
+        elseif game.ReplicatedStorage.GameData.Floor.Value == "Fools" then 
             State = `[ Door {game.ReplicatedStorage.GameData.LatestRoom.Value} ] In The Hotel (SUPER HARD MODE)`
             LargeImage = { assetId = 16875079348, hoverText = "In The Hotel (SUPER HARD MODE)" }
         end
