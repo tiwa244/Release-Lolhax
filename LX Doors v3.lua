@@ -141,7 +141,6 @@ local GeneralSession = Tabs.General:AddRightGroupbox("Session Info")
 local TimeLabel = GeneralSession:AddLabel("Local Time: " .. os.date("%X"))
 GeneralSession:AddLabel("Player Name: " .. LocalPlayer.Name)
 local FloorLabel = GeneralSession:AddLabel("Floor: " .. game.ReplicatedStorage.GameData.Floor.Value)
-
 -- This loop makes them "Alive"
 task.spawn(function()
     while task.wait(1) do
@@ -238,6 +237,66 @@ ESPInteractables_Main:AddToggle("ESPI_M_Name", { Text = "Name", Default = false 
 ESPInteractables_Main:AddToggle("ESPI_M_Distance", { Text = "Distance", Default = false })
 ESPInteractables_Main:AddToggle("ESPI_M_Fill", { Text = "Highlight Fill", Default = false })
 ESPInteractables_Main:AddToggle("ESPI_M_Enabled", { Text = "Highlight Outline", Default = false })
+local RainbowToggle = ESPInteractables_Main:AddToggle("ESPI_RAINBOW_HIGHLIGHT", { 
+    Text = "Rainbow ESP", 
+    Default = false 
+})
+
+local CurrentRainbowColor = Color3.new(1, 1, 1)
+
+task.spawn(function()
+    -- Wait for UI to load
+    repeat task.wait(0.5) until Toggles and Toggles.ESPI_RAINBOW_HIGHLIGHT and Options.ESPI_RAINBOW_SPEED
+    
+    while task.wait() do
+        if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
+            -- Use the slider value for speed
+            -- Higher number = Slower cycle
+            local Speed = Options.ESPI_RAINBOW_SPEED.Value
+            local Hue = (tick() % Speed / Speed)
+            CurrentRainbowColor = Color3.fromHSV(Hue, 0.8, 1)
+
+            for _, v in pairs(game.Workspace:GetDescendants()) do
+                if v.Name == "_LOLHAXHL" and v:IsA("Highlight") then
+                    v.OutlineColor = CurrentRainbowColor
+                    v.FillColor = CurrentRainbowColor
+                end
+                
+                if v.Name == "_LOLHAXBG" and v:IsA("BillboardGui") then
+                    local lbl = v:FindFirstChildOfClass("TextLabel")
+                    if lbl then lbl.TextColor3 = CurrentRainbowColor end
+                end
+            end
+        end
+    end
+end)
+
+-- fix
+Toggles.ESPI_RAINBOW_HIGHLIGHT:OnChanged(function()
+    if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value == false then
+        -- This part is the 'Janitor' - it cleans the rainbow colors away
+        for _, v in pairs(game.Workspace:GetDescendants()) do
+            -- Reset Highlights to White
+            if v.Name == "_LOLHAXHL" and v:IsA("Highlight") then
+                v.OutlineColor = Color3.new(1, 1, 1) 
+                v.FillColor = Color3.new(1, 1, 1)
+            end
+            
+            -- rseet
+            if v.Name == "_LOLHAXBG" and v:IsA("BillboardGui") then
+                local lbl = v:FindFirstChildOfClass("TextLabel")
+                if lbl then lbl.TextColor3 = Color3.new(1, 1, 1) end
+            end
+        end
+    end
+end)
+ESPInteractables_Main:AddSlider("ESPI_RAINBOW_SPEED", {
+    Text = "Rainbow Speed",
+    Default = 5,
+    Min = 1,
+    Max = 20,
+    Rounding = 1
+})
 
 -- BRO IM SO SORRY LINORIA MADE ME DO IT THIS WAY PLEASE LORD FORGIVE ME
 local ESPInteractables_Configurate = ESPInteractables:AddTab("Configurate")
@@ -950,6 +1009,14 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor)
 
     Highlight.FillColor = Color
     Highlight.OutlineColor = OutlineColor or Color
+    
+    if Toggles.ESPI_RAINBOW_HIGHLIGHT and Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
+        
+        Highlight.OutlineColor = CurrentRainbowColor
+    else
+       
+        Highlight.OutlineColor = Color
+    end
 
     TextLabel.TextTransparency = 1
     Highlight.FillTransparency = 1
@@ -2588,7 +2655,6 @@ Toggles.VV_NoLookBob:OnChanged(function()
         Main_Game.spring.Speed = (Toggles.VV_NoLookBob.Value and 9e9 or 8)
     end
 end)
-
 Toggles.VW_Ambience:OnChanged(function()
     game.Lighting.GlobalShadows = not Toggles.VW_Ambience.Value
     game.Lighting.OutdoorAmbient = (Toggles.VW_Ambience.Value and Options.VW_Ambience_C.Value or Color3.new(0, 0, 0))
@@ -2637,6 +2703,7 @@ end)
 Toggles.VR_NoVoidEffect:OnChanged(function()
     VoidModule.stuff = (Toggles.VR_NoVoidEffect.Value and (function() end) or VoidFunction)
 end)
+
 
 Toggles.VR_NoSeekEffects:OnChanged(function()
     SeekModule.tease = (Toggles.VR_NoSeekEffects.Value and (function() end) or SeekFunction)
