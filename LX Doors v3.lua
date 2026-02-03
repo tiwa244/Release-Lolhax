@@ -243,26 +243,43 @@ local RainbowToggle = ESPInteractables_Main:AddToggle("ESPI_RAINBOW_HIGHLIGHT", 
 })
 
 local CurrentRainbowColor = Color3.new(1, 1, 1)
+local OriginalColors = {}
 
 task.spawn(function()
-    -- Wait for UI to load
-    repeat task.wait(0.5) until Toggles and Toggles.ESPI_RAINBOW_HIGHLIGHT and Options.ESPI_RAINBOW_SPEED
-    
+    -- 1. Just wait 3 seconds for the whole script to finish loading line 1800+
+    task.wait(3) 
+
+    -- 2. Direct check - if it still fails here, we need to check the spelling of 'EspTable'
+    if EspTable and EspTable.Entities then
+        -- Save the colors once
+        for i, v in pairs(EspTable.Entities) do
+            OriginalColors[i] = v.Color
+        end
+    end
+
+    -- 3. Standard UI Wait
+    repeat task.wait(0.5) until Toggles and Toggles.ESPI_RAINBOW_HIGHLIGHT
+
+    -- 4. The Loop
     while task.wait() do
         if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
-            -- Use the slider value for speed
-            -- Higher number = Slower cycle
-            local Speed = Options.ESPI_RAINBOW_SPEED.Value
+            local Speed = Options.ESPI_RAINBOW_SPEED.Value or 5
             local Hue = (tick() % Speed / Speed)
             CurrentRainbowColor = Color3.fromHSV(Hue, 0.8, 1)
+            
+            -- Force Table
+            if EspTable and EspTable.Entities then
+                for i, v in pairs(EspTable.Entities) do
+                    v.Color = CurrentRainbowColor
+                end
+            end
 
+            -- Force Workspace
             for _, v in pairs(game.Workspace:GetDescendants()) do
                 if v.Name == "_LOLHAXHL" and v:IsA("Highlight") then
                     v.OutlineColor = CurrentRainbowColor
                     v.FillColor = CurrentRainbowColor
-                end
-                
-                if v.Name == "_LOLHAXBG" and v:IsA("BillboardGui") then
+                elseif v.Name == "_LOLHAXBG" and v:IsA("BillboardGui") then
                     local lbl = v:FindFirstChildOfClass("TextLabel")
                     if lbl then lbl.TextColor3 = CurrentRainbowColor end
                 end
@@ -271,19 +288,25 @@ task.spawn(function()
     end
 end)
 
--- fix
+-- [[ THE JANITOR ]] --
+-- Put this near your other toggle listeners (OnChanged section)
 Toggles.ESPI_RAINBOW_HIGHLIGHT:OnChanged(function()
     if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value == false then
-        -- This part is the 'Janitor' - it cleans the rainbow colors away
+        local TargetTable = getfenv().EspTable or _G.EspTable or EspTable
+        
+        -- Restore Master Table to original colors from memory
+        if TargetTable and TargetTable.Entities then
+            for i, v in pairs(TargetTable.Entities) do
+                v.Color = OriginalColors[i] or Color3.new(1, 1, 1)
+            end
+        end
+
+        -- Wipe Rainbow from Workspace and reset to neutral white
         for _, v in pairs(game.Workspace:GetDescendants()) do
-            -- Reset Highlights to White
             if v.Name == "_LOLHAXHL" and v:IsA("Highlight") then
                 v.OutlineColor = Color3.new(1, 1, 1) 
                 v.FillColor = Color3.new(1, 1, 1)
-            end
-            
-            -- rseet
-            if v.Name == "_LOLHAXBG" and v:IsA("BillboardGui") then
+            elseif v.Name == "_LOLHAXBG" and v:IsA("BillboardGui") then
                 local lbl = v:FindFirstChildOfClass("TextLabel")
                 if lbl then lbl.TextColor3 = Color3.new(1, 1, 1) end
             end
