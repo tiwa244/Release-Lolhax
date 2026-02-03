@@ -42,19 +42,25 @@
 ]]
 -- credit2 thanks Damian :content: for the funni for entity disabler
 -- credit to RegularVynixu aka vynixu for the letting me use the plr detection method!
--- credit to deividcomsno for the ui library btw
--- THIS IS A FORK OF LOLHAX V3, ALL CREDITS GOES TO THE ORIGINAL DEVELOPERS OF LOLHAX V3, I SWAPPED THE UI LIBRARY TO OBSIDIAN AND REMOVED SOME FEATURES.
--- I DO NOT OWN LOLHAX V3 OR ANY OF ITS CONTENT, THIS IS JUST A MODIFIED FORK. 
--- IF YOU WANT TO SEE THE ORIGINAL LOLHAX V3, JOIN THE LX DISCORD SERVER WHICH IS https://discord.gg/3xqFjM4R (or whatever their discord is)
--- BUG REPORTS is not supported dont complain in the lx server 
--- whoever skids this script is gay
-
+-- credits2 to the original lolhax developers
+-- i do not own its assets and original lolhax
+-- this is a fork
+-- whoever skids is gay and credit2 deividcomsono for obisidian libary
+-- i DO NOT own anything from this script this a fork for the secondth time, all credits go to original developers of lolhax and obisidian library
+-- i am just making a public version of lolhax v3 se because why not
+-- i added my shi for the uhh repo and icons so,, BUG reports goes to no one btw FORK THIS AND fix the error urself  because i dont have time, to fix them
+-- icon credits to lucid.dev
+-- ts so faghhhh
+-- print("if ur reading this ur prob the creator of this script or an forker")
 local Loadtime = tick()
 local Repository = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/"
 
 local Library = loadstring(game:HttpGet(Repository .. "Library.lua"))()
 local ThemeManager = loadstring(game:HttpGet(Repository .. "addons/ThemeManager.lua"))()
 local SaveManager = loadstring(game:HttpGet(Repository .. "addons/SaveManager.lua"))()
+local Icons = loadstring(game:HttpGet("https://raw.githubusercontent.com/deividcomsono/lucide-roblox-direct/refs/heads/main/source.lua"))()
+local Toggles = Library.Toggles
+local Options = Library.Options
 
 local ErrorMessageOut
 ErrorMessageOut = game:GetService("LogService").MessageOut:Connect(function(Message, Type)
@@ -63,7 +69,7 @@ ErrorMessageOut = game:GetService("LogService").MessageOut:Connect(function(Mess
         ErrorMessageOut:Disconnect()
 
         setclipboard("Executor: " .. identifyexecutor() .. "\n\n" .. tostring(Message))
-        Library:Notify(" Lolhax has errored while loading and will now unload. The error has been copied to your clipboard, Fix it yourself by forking, the tiwa244/Release-Lolhax repo in github. ", 4.5)
+        Library:Notify(" Lolhax has errored while loading and will now unload. The error has been copied to your clipboard, please report this on the LX discord server! ", 4.5)
 
         task.delay(5, function()
             Library:Unload()
@@ -91,24 +97,9 @@ local Detection = game:GetService("TextChatService").MessageReceived:Connect(fun
     end
 end)
 -- UI vvv
-
-local Window = Library:CreateWindow({
-	-- Set Center to true if you want the menu to appear in the center
-	-- Set AutoShow to true if you want the menu to appear when it is created
-	-- Set Resizable to true if you want to have in-game resizable Window
-	-- Set MobileButtonsSide to "Left" or "Right" if you want the ui toggle & lock buttons to be on the left or right side of the window
-	-- Set ShowCustomCursor to false if you don't want to use the Linoria cursor
-	-- NotifySide = Changes the side of the notifications (Left, Right) (Default value = Left)
-	-- Position and Size are also valid options here
-	-- but you do not need to define them unless you are changing them :)
-
-	Title = "LOLHAX | " .. LocalPlayer.Name,
-	Footer = "idk what to put here, idk if it loads????",
-	Center = true,
-	NotifySide = "Right",
-	ShowCustomCursor = true,
-})
-local Tabs = { General = Window:AddTab("General"), Exploit = Window:AddTab("Exploits"), ESP = Window:AddTab("ESP"), Visuals = Window:AddTab("Visuals"), Misc = Window:AddTab("Miscellaneous"), Config = Window:AddTab("Config") }
+Library:SetIconModule(Icons)
+local Window = Library:CreateWindow({ Title = "lolhax v3",Icon = 90305907167101, Center = true, AutoShow = true, TabPadding = 3, MenuFadeTime = 0.15 })
+local Tabs = { General = Window:AddTab("General", "house"), Exploit = Window:AddTab("Exploits", "bug"), ESP = Window:AddTab("ESP", "scan-eye"), Visuals = Window:AddTab("Visuals", "sparkles"), Misc = Window:AddTab("Miscellaneous", "triangle-alert"), Config = Window:AddTab("Config", "settings") }
 
 local GeneralAutomation = Tabs.General:AddLeftGroupbox("Automation")
 GeneralAutomation:AddToggle("GA_AutoInteract", { Text = "Automatic Interact", Default = false, }):AddKeyPicker("GA_AutoInteract_K", { Default = "R", SyncToggleState = false, Mode = "Hold", Text = "Auto Interact", NoUI = false, Tooltip = "Will activate any nearby interactables when key is active." })
@@ -173,6 +164,7 @@ if game.ReplicatedStorage.GameData.Floor.Value == "Mines" then
         Tooltip = "Disables uhh rush/ambush on floor2",
     })
 end
+ExploitTroll:AddToggle("Spamtoolz", { Text = "Spam others Tools", Default = false, Tooltip = "Will basically use up the other person tools by spamming!" }):AddKeyPicker("Spamtoolz_X", { Default = "G", SyncToggleState = false, Mode = "Hold", Text = "Spam others Tools", NoUI = false, })
 ExploitTroll:AddInput("WhitelistKoolpeople",{Default = "", Numeric = false, Finished = true, ClearTextOnFocus = true, Text = "Whitelist for spamtools", Callback = function() 
 task.spawn(function()   
     for _,Player in pairs(game.Players:GetPlayers()) do
@@ -1061,12 +1053,23 @@ end)
 
 local Connections = {
     game:GetService("RunService").RenderStepped:Connect(function()
-        if not (LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and LocalPlayer.Character:FindFirstChild("Collision")) then 
-            return 
+        if not (LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and LocalPlayer.Character:FindFirstChild("Collision")) then return end
+        if Toggles.Spamtoolz.Value and Options.Spamtoolz_X:GetState() then
+            task.wait()
+            for _,Player in pairs(game.Players:GetPlayers()) do
+                if Player ~= LocalPlayer and Player and not table.find(friendz, Player.Name) then
+                    for _,v in pairs(Player.Backpack:GetChildren()) do
+                        if v.Name ~= "Candle" and v:FindFirstChildWhichIsA("RemoteEvent") then
+                            v:FindFirstChildWhichIsA("RemoteEvent"):FireServer()
+                        end
+                    end
+                    local Tool = Player.Character:FindFirstChildWhichIsA("Tool")
+                    if Tool and Tool.Name ~= "Candle" and Tool:FindFirstChild("Remote") then
+                        Tool.Remote:FireServer()
+                    end
+                end
+            end
         end
-        -- Spamtoolz logic was here; it's now removed.
-    end)
-}
         -- slightly modified v2 code yea!
         if Toggles.EB_ACManipulate.Value and Options.EB_ACManipulate_K:GetState() then
             LocalPlayer.Character:PivotTo(LocalPlayer.Character:GetPivot() + workspace.CurrentCamera.CFrame.LookVector * Vector3.new(1, 0, 1) * -100)
@@ -2773,9 +2776,6 @@ task.spawn(function()
         elseif game.ReplicatedStorage.GameData.Floor.Value == "Mines" then
             State = `[ Door {game.ReplicatedStorage.GameData.LatestRoom.Value + 100} ] In The Mines`
             LargeImage = { assetId = 138779629462354, hoverText = "In The Mines" }
-        elseif game.ReplicatedStorage.GameData.Floor.Value == "Fools" then 
-            State = `[ Door {game.ReplicatedStorage.GameData.LatestRoom.Value} ] In The Hotel (SUPER HARD MODE)`
-            LargeImage = { assetId = 16875079348, hoverText = "In The Hotel (SUPER HARD MODE)" }
         end
 
         print("[BloxstrapRPC] {\"command\": \"SetRichPresence\", \"data\": " .. game:GetService("HttpService"):JSONEncode({
