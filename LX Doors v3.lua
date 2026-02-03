@@ -112,6 +112,7 @@ GeneralAutomation:AddToggle("GA_AutoHide_VisCheck", { Text = "Prediction Visible
 GeneralAutomation:AddSlider("GA_AutoHide_PredictionTime", { Text = "Prediction Time", Default = 0.5, Min = 0.1, Max = 1.5, Rounding = 2, Compact = true, Suffix = "s" })
 GeneralAutomation:AddSlider("GA_AutoHide_PredictionDistanceMultiplier", { Text = "Distance Multiplier", Default = 1, Min = 0.8, Max = 1.5, Rounding = 1, Compact = true, Suffix = "x" })
 GeneralAutomation:AddDivider()
+GeneralAutomation:AddToggle("GA_INSTAINTERACT", { Text = "Instant Interact", Default = false, })
 GeneralAutomation:AddToggle("GA_MinecartInteract", { Text = "Minecart Interact Spam", Default = false, Tooltip = "Automatically spam interact with nearby minecarts when key is active." }):AddKeyPicker("GA_MinecartInteract_K", { Default = "H", SyncToggleState = false, Mode = "Hold", Text = "Minecart Interact Spam", NoUI = false, })
 GeneralAutomation:AddToggle("GA_AnchorAutoSolve", { Text = "Anchor Automatic Solve", Default = false, Tooltip = "Automatically solves any anchor when close enough, if it's the designated one." })
 GeneralAutomation:AddDivider()
@@ -243,43 +244,26 @@ local RainbowToggle = ESPInteractables_Main:AddToggle("ESPI_RAINBOW_HIGHLIGHT", 
 })
 
 local CurrentRainbowColor = Color3.new(1, 1, 1)
-local OriginalColors = {}
 
 task.spawn(function()
-    -- 1. Just wait 3 seconds for the whole script to finish loading line 1800+
-    task.wait(3) 
-
-    -- 2. Direct check - if it still fails here, we need to check the spelling of 'EspTable'
-    if EspTable and EspTable.Entities then
-        -- Save the colors once
-        for i, v in pairs(EspTable.Entities) do
-            OriginalColors[i] = v.Color
-        end
-    end
-
-    -- 3. Standard UI Wait
-    repeat task.wait(0.5) until Toggles and Toggles.ESPI_RAINBOW_HIGHLIGHT
-
-    -- 4. The Loop
+    -- Wait for UI to load
+    repeat task.wait(0.5) until Toggles and Toggles.ESPI_RAINBOW_HIGHLIGHT and Options.ESPI_RAINBOW_SPEED
+    
     while task.wait() do
         if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
-            local Speed = Options.ESPI_RAINBOW_SPEED.Value or 5
+            -- Use the slider value for speed
+            -- Higher number = Slower cycle
+            local Speed = Options.ESPI_RAINBOW_SPEED.Value
             local Hue = (tick() % Speed / Speed)
             CurrentRainbowColor = Color3.fromHSV(Hue, 0.8, 1)
-            
-            -- Force Table
-            if EspTable and EspTable.Entities then
-                for i, v in pairs(EspTable.Entities) do
-                    v.Color = CurrentRainbowColor
-                end
-            end
 
-            -- Force Workspace
             for _, v in pairs(game.Workspace:GetDescendants()) do
                 if v.Name == "_LOLHAXHL" and v:IsA("Highlight") then
                     v.OutlineColor = CurrentRainbowColor
                     v.FillColor = CurrentRainbowColor
-                elseif v.Name == "_LOLHAXBG" and v:IsA("BillboardGui") then
+                end
+                
+                if v.Name == "_LOLHAXBG" and v:IsA("BillboardGui") then
                     local lbl = v:FindFirstChildOfClass("TextLabel")
                     if lbl then lbl.TextColor3 = CurrentRainbowColor end
                 end
@@ -288,25 +272,19 @@ task.spawn(function()
     end
 end)
 
--- [[ THE JANITOR ]] --
--- Put this near your other toggle listeners (OnChanged section)
+-- fix
 Toggles.ESPI_RAINBOW_HIGHLIGHT:OnChanged(function()
     if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value == false then
-        local TargetTable = getfenv().EspTable or _G.EspTable or EspTable
-        
-        -- Restore Master Table to original colors from memory
-        if TargetTable and TargetTable.Entities then
-            for i, v in pairs(TargetTable.Entities) do
-                v.Color = OriginalColors[i] or Color3.new(1, 1, 1)
-            end
-        end
-
-        -- Wipe Rainbow from Workspace and reset to neutral white
+        -- This part is the 'Janitor' - it cleans the rainbow colors away
         for _, v in pairs(game.Workspace:GetDescendants()) do
+            -- Reset Highlights to White
             if v.Name == "_LOLHAXHL" and v:IsA("Highlight") then
                 v.OutlineColor = Color3.new(1, 1, 1) 
                 v.FillColor = Color3.new(1, 1, 1)
-            elseif v.Name == "_LOLHAXBG" and v:IsA("BillboardGui") then
+            end
+            
+            -- rseet
+            if v.Name == "_LOLHAXBG" and v:IsA("BillboardGui") then
                 local lbl = v:FindFirstChildOfClass("TextLabel")
                 if lbl then lbl.TextColor3 = Color3.new(1, 1, 1) end
             end
@@ -2593,6 +2571,38 @@ Options.VV_FieldOfView:OnChanged(function()
         task.wait()
 
         Main_Game.fovtarget = 70
+    end
+end)
+
+-- Handle existing and future prompts
+task.spawn(function()
+    while task.wait(0.5) do -- Runs every half second
+        if Toggles.GA_INSTAINTERACT and Toggles.GA_INSTAINTERACT.Value then
+            -- Look through the ENTIRE workspace for any ProximityPrompt
+            for _, prompt in pairs(workspace:GetDescendants()) do
+                if prompt:IsA("ProximityPrompt") then
+                    -- If it's not already 0, make it 0
+                    if prompt.HoldDuration > 0 then
+                        -- Save original duration if we haven't yet
+                        if not prompt:GetAttribute("Hold") then
+                            prompt:SetAttribute("Hold", prompt.HoldDuration)
+                        end
+                        prompt.HoldDuration = 0
+                    end
+                end
+            end
+        end
+    end
+end)
+
+-- The Janitor (To turn it off properly)
+Toggles.GA_INSTAINTERACT:OnChanged(function(value)
+    if not value then
+        for _, prompt in pairs(workspace:GetDescendants()) do
+            if prompt:IsA("ProximityPrompt") then
+                prompt.HoldDuration = prompt:GetAttribute("Hold") or 0.2
+            end
+        end
     end
 end)
 
