@@ -54,7 +54,7 @@
 -- print("if ur reading this ur prob the creator of this script or an forker")
 local Loadtime = tick()
 local Repository = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/"
-
+local IdCheck = "lolhax v3 | ID: " .. game.Players.LocalPlayer.Name
 local Library = loadstring(game:HttpGet(Repository .. "Library.lua"))()
 local ThemeManager = loadstring(game:HttpGet(Repository .. "addons/ThemeManager.lua"))()
 local SaveManager = loadstring(game:HttpGet(Repository .. "addons/SaveManager.lua"))()
@@ -112,7 +112,8 @@ GeneralAutomation:AddToggle("GA_AutoHide_VisCheck", { Text = "Prediction Visible
 GeneralAutomation:AddSlider("GA_AutoHide_PredictionTime", { Text = "Prediction Time", Default = 0.5, Min = 0.1, Max = 1.5, Rounding = 2, Compact = true, Suffix = "s" })
 GeneralAutomation:AddSlider("GA_AutoHide_PredictionDistanceMultiplier", { Text = "Distance Multiplier", Default = 1, Min = 0.8, Max = 1.5, Rounding = 1, Compact = true, Suffix = "x" })
 GeneralAutomation:AddDivider()
-GeneralAutomation:AddToggle("GA_INSTAINTERACT", { Text = "Instant Interact", Default = false, })
+GeneralAutomation:AddSlider("GA_PROMPTREACH_MULTIPLIER", { Text = "Prompt Reach Mutiplier", Default = 1, Min = 1, Max = 2, Rounding = 1 })
+GeneralAutomation:AddToggle("GA_INSTAINTERACT", { Text = "Instant Interact", Default = false, Tooltip = "Instantly unlock prompts." })
 GeneralAutomation:AddToggle("GA_MinecartInteract", { Text = "Minecart Interact Spam", Default = false, Tooltip = "Automatically spam interact with nearby minecarts when key is active." }):AddKeyPicker("GA_MinecartInteract_K", { Default = "H", SyncToggleState = false, Mode = "Hold", Text = "Minecart Interact Spam", NoUI = false, })
 GeneralAutomation:AddToggle("GA_AnchorAutoSolve", { Text = "Anchor Automatic Solve", Default = false, Tooltip = "Automatically solves any anchor when close enough, if it's the designated one." })
 GeneralAutomation:AddDivider()
@@ -240,7 +241,8 @@ ESPInteractables_Main:AddToggle("ESPI_M_Fill", { Text = "Highlight Fill", Defaul
 ESPInteractables_Main:AddToggle("ESPI_M_Enabled", { Text = "Highlight Outline", Default = false })
 local RainbowToggle = ESPInteractables_Main:AddToggle("ESPI_RAINBOW_HIGHLIGHT", { 
     Text = "Rainbow ESP", 
-    Default = false 
+    Default = false,
+    Tooltip = "Rainbow ESP Colors."
 })
 
 local CurrentRainbowColor = Color3.new(1, 1, 1)
@@ -2606,6 +2608,58 @@ Toggles.GA_INSTAINTERACT:OnChanged(function(value)
     end
 end)
 
+-- [[ 2. THE NEW ROOM WATCHDOG ]]
+-- This is what fixes the "Secondth time don't work" bug
+-- [[ 1. THE UNIFIED FUNCTION ]]
+local function ApplyReach(target, mult)
+    for _, prompt in pairs(target:GetDescendants()) do
+        if prompt:IsA("ProximityPrompt") then
+            -- Bypass the custom condition for a second to test
+            -- if Script.Functions.PromptCondition(prompt) then 
+
+            -- 1. HARD RESET / ATTRIBUTE CHECK
+            local saved = prompt:GetAttribute("Distance")
+            if not saved or saved == 0 then
+                -- If the game distance is 0, use Doors default 6
+                local current = prompt.MaxActivationDistance
+                saved = (current > 0) and current or 6
+                prompt:SetAttribute("Distance", saved)
+            end
+            
+            -- 2. APPLY LOGIC
+            if mult > 1 then
+                prompt.MaxActivationDistance = saved * mult
+                prompt.RequiresLineOfSight = false
+                prompt.Exclusivity = Enum.ProximityPromptExclusivity.AlwaysShow
+                prompt.Enabled = true
+            else
+                -- 3. TOTAL RESET TO NORMAL
+                prompt.MaxActivationDistance = saved
+                prompt.RequiresLineOfSight = true
+                prompt.Exclusivity = Enum.ProximityPromptExclusivity.OneAtATime
+            end
+            -- end
+        end
+    end
+end
+
+-- [[ TRIGGER ON CHANGE ]]
+Options.GA_PROMPTREACH_MULTIPLIER:OnChanged(function(value)
+    -- Search whole workspace once to force-update everything
+    ApplyReach(workspace, value)
+end)
+
+-- [[ TRIGGER ON NEW ROOM ]]
+workspace.CurrentRooms.ChildAdded:Connect(function(room)
+    task.wait(0.5) 
+    ApplyReach(room, Options.GA_PROMPTREACH_MULTIPLIER.Value)
+end)
+
+-- [[ RE-SYNC THE UI ]]
+-- [[ 2. THE SLIDER LOGIC ]]
+
+-- [[ 3. THE NEW ROOM WATCHDOG ]]
+
 Toggles.MM_Walkspeed:OnChanged(function()
     task.wait()
 
@@ -2898,7 +2952,7 @@ task.spawn(function()
         }) .. "}")
     end
 
-    local MenuProperties = Tabs.Config:AddLeftGroupbox("Menu")
+    local MenuProperties = Tabs.Config:AddLeftGroupbox("Menu", "settings")
     MenuProperties:AddButton("Unload", function()
         Library:Unload()
         Library.Unloaded = true
@@ -2964,6 +3018,16 @@ task.spawn(function()
     local DebugStuff = Tabs.Config:AddRightGroupbox("Other")
     DebugStuff:AddToggle("DS_Debug", { Text = "Enable Debug Mode", Default = false, })
     DebugStuff:AddToggle("DS_BSRPC", { Text = "Bloxstrap RPC", Default = true })
+    DebugStuff:AddLabel("Floor: " .. game.ReplicatedStorage.GameData.Floor.Value)
+    DebugStuff:AddButton("IdCheck1", function()
+     Notify("lolhax v3 | ID: " .. LocalPlayer.Name, "ID Request")
+     end)
+    DebugStuff:AddButton("IdCheck2", function() 
+     Notify(IdCheck, "Id Requested Given.")
+    end)
+    DebugStuff:AddButton("IdCheck3", function()
+    Notify(IdCheck, game.ReplicatedStorage.GameData.Floor.value)
+    end)
 
     local RPCRoomChange = game.ReplicatedStorage.GameData.LatestRoom:GetPropertyChangedSignal("Value"):Connect(function() updateRPC(Toggles.DS_BSRPC.Value) end)
     table.insert(Connections, RPCRoomChange)
