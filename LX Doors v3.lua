@@ -43,7 +43,7 @@
 -- credit2 thanks Damian :content: for the funni for entity disabler
 -- credit to RegularVynixu aka vynixu for the letting me use the plr detection method!
 local Loadtime = tick()
-local Repository = "https://raw.githubusercontent.com/RectangularObject/LinoriaLib/main/"
+local Repository = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/"
 
 local Library = loadstring(game:HttpGet(Repository .. "Library.lua"))()
 local ThemeManager = loadstring(game:HttpGet(Repository .. "addons/ThemeManager.lua"))()
