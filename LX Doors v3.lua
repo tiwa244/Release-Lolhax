@@ -42,6 +42,12 @@
 ]]
 -- credit2 thanks Damian :content: for the funni for entity disabler
 -- credit to RegularVynixu aka vynixu for the letting me use the plr detection method!
+-- credit to deividcomsno for the ui library btw
+-- THIS IS A FORK OF LOLHAX V3, ALL CREDITS GOES TO THE ORIGINAL DEVELOPERS OF LOLHAX V3, I SWAPPED THE UI LIBRARY TO OBSIDIAN AND REMOVED SOME FEATURES.
+-- I DO NOT OWN LOLHAX V3 OR ANY OF ITS CONTENT, THIS IS JUST A MODIFIED FORK. 
+-- IF YOU WANT TO SEE THE ORIGINAL LOLHAX V3, JOIN THE LX DISCORD SERVER WHICH IS https://discord.gg/3xqFjM4R (or whatever their discord is)
+-- BUG REPORTS is not supported dont complain in the lx server 
+
 local Loadtime = tick()
 local Repository = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/"
 
@@ -56,7 +62,7 @@ ErrorMessageOut = game:GetService("LogService").MessageOut:Connect(function(Mess
         ErrorMessageOut:Disconnect()
 
         setclipboard("Executor: " .. identifyexecutor() .. "\n\n" .. tostring(Message))
-        Library:Notify(" Lolhax has errored while loading and will now unload. The error has been copied to your clipboard, please report this on the LX discord server! ", 4.5)
+        Library:Notify(" Lolhax has errored while loading and will now unload. The error has been copied to your clipboard, Fix it yourself by forking, the tiwa244/Release-Lolhax repo in github. ", 4.5)
 
         task.delay(5, function()
             Library:Unload()
@@ -97,7 +103,6 @@ local Window = Library:CreateWindow({
 
 	Title = "LOLHAX | " .. LocalPlayer.Name,
 	Footer = "idk what to put here, idk if it loads????",
-	Icon = 95816097006870,
 	Center = true,
 	NotifySide = "Right",
 	ShowCustomCursor = true,
@@ -167,7 +172,6 @@ if game.ReplicatedStorage.GameData.Floor.Value == "Mines" then
         Tooltip = "Disables uhh rush/ambush on floor2",
     })
 end
-ExploitTroll:AddToggle("Spamtoolz", { Text = "Spam others Tools", Default = false, Tooltip = "Will basically use up the other person tools by spamming!" }):AddKeyPicker("Spamtoolz_X", { Default = "G", SyncToggleState = false, Mode = "Hold", Text = "Spam others Tools", NoUI = false, })
 ExploitTroll:AddInput("WhitelistKoolpeople",{Default = "", Numeric = false, Finished = true, ClearTextOnFocus = true, Text = "Whitelist for spamtools", Callback = function() 
 task.spawn(function()   
     for _,Player in pairs(game.Players:GetPlayers()) do
@@ -212,7 +216,7 @@ ESPLXUSER:AddToggle("LXPP_Enabled", { Text = "ESP LXUSER", Default = false })
 :AddColorPicker("LXPLAYERFILLCOLOR", { Default = Color3.new(0.141176, 0.792156, 0.282352), Title = "Fill Color" })
 :AddColorPicker("LXPPLAYEROUTLINECOLOR", { Default = Color3.new(0.141176, 0.792156, 0.282352), Title = "Outline Color" })
 ESPLXUSER:AddDivider()
-
+E
 
 local ESPPlayers = Tabs.ESP:AddLeftGroupbox("Players")
 ESPPlayers:AddToggle("ESPP_Enabled", { Text = "Enabled", Default = false })
@@ -2860,3 +2864,4 @@ task.spawn(function()
     ErrorMessageOut:Disconnect()
     Notify("Load successful.", "Loading finished in ".. string.format("%.2f", tick() - Loadtime) .." seconds.", 10 / 3, true)
 end)
+print("W LOADED | " .. LocalPlayer.Name)
