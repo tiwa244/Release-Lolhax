@@ -69,7 +69,7 @@ ErrorMessageOut = game:GetService("LogService").MessageOut:Connect(function(Mess
         ErrorMessageOut:Disconnect()
 
         setclipboard("Executor: " .. identifyexecutor() .. "\n\n" .. tostring(Message))
-        Library:Notify(" Lolhax has errored while loading and will now unload. The error has been copied to your clipboard, please report this on the LX discord server! ", 4.5)
+        Library:Notify(" Lolhax has errored while loading and will now unload. The error has been copied to your clipboard, please report this on the bug report server! the bug report server link is in the Config tab by the way! ", 4.5)
 
         task.delay(5, function()
             Library:Unload()
@@ -98,7 +98,7 @@ local Detection = game:GetService("TextChatService").MessageReceived:Connect(fun
 end)
 -- UI vvv
 Library:SetIconModule(Icons)
-local Window = Library:CreateWindow({ Title = "lolhax v3", Icon = 90305907167101, Center = true, AutoShow = true, TabPadding = 3, MenuFadeTime = 0.15 })
+local Window = Library:CreateWindow({ Title = "lolhax v3", Icon = 90305907167101, Footer = "lolhax v3 | ID: "  .. LocalPlayer.Name , Center = true, AutoShow = true, TabPadding = 3, MenuFadeTime = 0.15 })
 local Tabs = { General = Window:AddTab("General", "house"), Exploit = Window:AddTab("Exploits", "bug"), ESP = Window:AddTab("ESP", "scan-eye"), Visuals = Window:AddTab("Visuals", "sparkles"), Misc = Window:AddTab("Miscellaneous", "triangle-alert"), Config = Window:AddTab("Config", "settings") }
 
 local GeneralAutomation = Tabs.General:AddLeftGroupbox("Automation")
@@ -135,7 +135,19 @@ GeneralNotifying:AddSlider("GN_NotificationDPISize", { Text = "Size Multiplier",
 GeneralNotifying:AddButton("Test Notify", function()
     Notify("This is a test notification.", "Lorem ipsum dolor sit amet, consectetur adipiscing elit.", 2.5, true)
 end)
+local GeneralSession = Tabs.General:AddRightGroupbox("Session Info")
 
+-- just it
+local TimeLabel = GeneralSession:AddLabel("Local Time: " .. os.date("%X"))
+GeneralSession:AddLabel("Player Name: " .. LocalPlayer.Name)
+local FloorLabel = GeneralSession:AddLabel("Floor: " .. game.ReplicatedStorage.GameData.Floor.Value)
+
+-- This loop makes them "Alive"
+task.spawn(function()
+    while task.wait(1) do
+        TimeLabel:SetText("Local Time: " .. os.date("%X"))
+    end
+end)
 local ExploitSelf = Tabs.Exploit:AddLeftGroupbox("Self")
 ExploitSelf:AddToggle("ES_AlwaysJump", { Text = "Always Enable Jumping", Default = false, Tooltip = "Enables jumping at all times." })
 ExploitSelf:AddDivider()
@@ -582,7 +594,7 @@ function Notify(TitleText, SubText, Duration, Force)
     Main.Size = UDim2.fromScale(0.19 * DPISize, 0.045 * DPISize)
     Main.Position = UDim2.fromScale(0.5, 0.5)
     Main.Transparency = 1
-
+    
     local Line = Instance.new("Frame", Main)
     Line.AnchorPoint = Vector2.new(0, 1)
     Line.BorderSizePixel = 0
@@ -1665,7 +1677,7 @@ local Connections = {
             game.Lighting.OutdoorAmbient = Options.VW_Ambience_C.Value
         end
     end),
-
+    
     Rooms.DescendantAdded:Connect(function(v)
 
         if v:IsA("Model") then
@@ -2822,7 +2834,16 @@ task.spawn(function()
 
     MenuProperties:AddLabel("Menu bind"):AddKeyPicker("MenuKeybind", { Default = "RightShift", NoUI = true, Text = "Menu keybind" })
     MenuProperties:AddDivider()
+    MenuProperties:AddButton("LX Discord Server", function()
+     setclipboard("https://discord.gg/3xqFjM4R")
+     Notify("Copied to clipboard!", "El Pasco!")
+     end)
     MenuProperties:AddToggle("keybindmenu", { Text = "Show Keybinds", Default = false })
+    MenuProperties:AddLabel("if you find a bug, please report them to the bug report server, the link is below.")
+    MenuProperties:AddButton("Bug Report Server", function()
+     setclipboard("https://discord.gg/9YgVsGBK")
+     Notify("Copied to clipboard!", "I have no idea!" )
+     end)
 
     Toggles.keybindmenu:OnChanged(function()
         Library.KeybindFrame.Visible = Toggles.keybindmenu.Value
