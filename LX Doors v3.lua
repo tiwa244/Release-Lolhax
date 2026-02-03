@@ -98,7 +98,7 @@ local Detection = game:GetService("TextChatService").MessageReceived:Connect(fun
 end)
 -- UI vvv
 Library:SetIconModule(Icons)
-local Window = Library:CreateWindow({ Title = "lolhax v3",Icon = 90305907167101, Center = true, AutoShow = true, TabPadding = 3, MenuFadeTime = 0.15 })
+local Window = Library:CreateWindow({ Title = "lolhax v3", Icon = 90305907167101, Center = true, AutoShow = true, TabPadding = 3, MenuFadeTime = 0.15 })
 local Tabs = { General = Window:AddTab("General", "house"), Exploit = Window:AddTab("Exploits", "bug"), ESP = Window:AddTab("ESP", "scan-eye"), Visuals = Window:AddTab("Visuals", "sparkles"), Misc = Window:AddTab("Miscellaneous", "triangle-alert"), Config = Window:AddTab("Config", "settings") }
 
 local GeneralAutomation = Tabs.General:AddLeftGroupbox("Automation")
