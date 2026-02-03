@@ -47,6 +47,7 @@
 -- I DO NOT OWN LOLHAX V3 OR ANY OF ITS CONTENT, THIS IS JUST A MODIFIED FORK. 
 -- IF YOU WANT TO SEE THE ORIGINAL LOLHAX V3, JOIN THE LX DISCORD SERVER WHICH IS https://discord.gg/3xqFjM4R (or whatever their discord is)
 -- BUG REPORTS is not supported dont complain in the lx server 
+-- whoever skids this script is gay
 
 local Loadtime = tick()
 local Repository = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/"
@@ -216,7 +217,7 @@ ESPLXUSER:AddToggle("LXPP_Enabled", { Text = "ESP LXUSER", Default = false })
 :AddColorPicker("LXPLAYERFILLCOLOR", { Default = Color3.new(0.141176, 0.792156, 0.282352), Title = "Fill Color" })
 :AddColorPicker("LXPPLAYEROUTLINECOLOR", { Default = Color3.new(0.141176, 0.792156, 0.282352), Title = "Outline Color" })
 ESPLXUSER:AddDivider()
-E
+
 
 local ESPPlayers = Tabs.ESP:AddLeftGroupbox("Players")
 ESPPlayers:AddToggle("ESPP_Enabled", { Text = "Enabled", Default = false })
@@ -1060,23 +1061,12 @@ end)
 
 local Connections = {
     game:GetService("RunService").RenderStepped:Connect(function()
-        if not (LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and LocalPlayer.Character:FindFirstChild("Collision")) then return end
-        if Toggles.Spamtoolz.Value and Options.Spamtoolz_X:GetState() then
-            task.wait()
-            for _,Player in pairs(game.Players:GetPlayers()) do
-                if Player ~= LocalPlayer and Player and not table.find(friendz, Player.Name) then
-                    for _,v in pairs(Player.Backpack:GetChildren()) do
-                        if v.Name ~= "Candle" and v:FindFirstChildWhichIsA("RemoteEvent") then
-                            v:FindFirstChildWhichIsA("RemoteEvent"):FireServer()
-                        end
-                    end
-                    local Tool = Player.Character:FindFirstChildWhichIsA("Tool")
-                    if Tool and Tool.Name ~= "Candle" and Tool:FindFirstChild("Remote") then
-                        Tool.Remote:FireServer()
-                    end
-                end
-            end
+        if not (LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and LocalPlayer.Character:FindFirstChild("Collision")) then 
+            return 
         end
+        -- Spamtoolz logic was here; it's now removed.
+    end)
+}
         -- slightly modified v2 code yea!
         if Toggles.EB_ACManipulate.Value and Options.EB_ACManipulate_K:GetState() then
             LocalPlayer.Character:PivotTo(LocalPlayer.Character:GetPivot() + workspace.CurrentCamera.CFrame.LookVector * Vector3.new(1, 0, 1) * -100)
@@ -2864,4 +2854,3 @@ task.spawn(function()
     ErrorMessageOut:Disconnect()
     Notify("Load successful.", "Loading finished in ".. string.format("%.2f", tick() - Loadtime) .." seconds.", 10 / 3, true)
 end)
-print("W LOADED | " .. LocalPlayer.Name)
