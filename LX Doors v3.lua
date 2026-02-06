@@ -81,10 +81,9 @@ Script.Functions = {}
 local lhxnxt_custom_captions = Instance.new("ScreenGui")
 do
     local Frame = Instance.new("Frame", lhxnxt_custom_captions)
-    local    TextLabel = Instance.new("TextLabel", Frame)
+    local TextLabel = Instance.new("TextLabel", Frame)
     local UITextSizeConstraint = Instance.new("UITextSizeConstraint", TextLabel)
 
-    
     local CoreGui = game:GetService("CoreGui")
     local ReplicatedStorage = game:GetService("ReplicatedStorage")
     
@@ -97,6 +96,7 @@ do
     Frame.BorderSizePixel = 2
     Frame.Position = UDim2.new(0.5, 0, 0.8, 0)
     Frame.Size = UDim2.new(0, 200, 0, 75)
+    
     Library:AddToRegistry(Frame, {
         BackgroundColor3 = "MainColor",
         BorderColor3 = "AccentColor"
@@ -118,44 +118,7 @@ do
     local CaptionsLastUsed = os.time()
     
     function Script.Functions.HideCaptions()
-        IsCaptionHiddeprint("1. ESP Script Started")
-task.spawn(function()
-    while task.wait(2) do
-        -- Use a pcall here so the whole script doesn't die
-        local success, err = pcall(function()
-            if Toggles.VV_ClosetESP and Toggles.VV_ClosetESP.Value then
-                for _, room in pairs(workspace.CurrentRooms:GetChildren()) do
-                    for _, v in pairs(room:GetDescendants()) do
-                        
-                        -- Check name safely
-                        if v:IsA("Model") and (v.Name == "Wardrobe" or v:GetAttribute("LoadModule") == "Wardrobe") then
-                            if not v:FindFirstChild("ESP_Mark") then
-                                print("2. Found Wardrobe: " .. v.Name)
-                                
-                                local Target = v.PrimaryPart or v:FindFirstChild("Main") or v:FindFirstChildWhichIsA("BasePart", true)
-                                
-                                if Target then
-                                    -- Add marker
-                                    local marker = Instance.new("BoolValue")
-                                    marker.Name = "ESP_Mark"
-                                    marker.Parent = v
-                                    
-                                    print("3. Attempting Esp Function for: " .. v.Name)
-                                    Esp(v, Target, "Closet", Color3.fromRGB(255, 255, 255))
-                                    print("4. Esp Function Completed")
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end)
-        
-        if not success then
-            warn("CRITICAL ERROR: " .. tostring(err))
-        end
-    end
-end)n = true
+        IsCaptionHidden = true
         lhxnxt_custom_captions.Parent = ReplicatedStorage
     end
 
@@ -163,7 +126,6 @@ end)n = true
         CaptionsLastUsed = os.time()
 
         if IsCaptionHidden then
-            
             local parentObj = (gethui and gethui()) or CoreGui
             local success, err = pcall(function()
                 lhxnxt_custom_captions.Parent = parentObj
@@ -180,11 +142,11 @@ end)n = true
 
         -- Anti-flicker for the Haste Clock
         task.spawn(function()
-            task.wait(2) -- Shortened for a timer
+            task.wait(2) 
             if os.time() - CaptionsLastUsed >= 2 then
                 Script.Functions.HideCaptions()
             end
-        end)
+        end) 
     end
 end
 
@@ -2705,7 +2667,8 @@ local ValdVHiddenSpots = {
     ["Wardrobe"] = "Closet",
     ["RetroWardrobe"] = "Closet",
     ["Bed"] = "Bed",
-    ["ToolShed"] = "ToolShed"
+    ["ToolShed"] = "ToolShed",
+    ["Backdoor_Wardrobe"] = "Closet"
 }
 
 local RunService = game:GetService("RunService")
