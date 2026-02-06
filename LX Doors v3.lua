@@ -51,6 +51,11 @@
 -- i added my shi for the uhh repo and icons so,, BUG reports goes to no one btw FORK THIS AND fix the error urself  because i dont have time, to fix them
 -- icon credits to lucid.dev
 -- ts so faghhhh
+-- credits2 mspaint for some features and things i got from thir src code lmao 
+-- credits2 mspaint developer: upio for ig creating the dpi feature inside example.lua in obisidnan library 
+-- this script was MADE by: te original lolhax developers, and not_xcode in discord
+-- r\\\\///\\||/\/\/\ also dont contact not_xcode if u wanna do a fork just do it cuz i cant accetp mesagwes
+-- FAH
 -- print("if ur reading this ur prob the creator of this script or an forker")
 local Loadtime = tick()
 local Repository = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/"
@@ -61,6 +66,128 @@ local SaveManager = loadstring(game:HttpGet(Repository .. "addons/SaveManager.lu
 local Icons = loadstring(game:HttpGet("https://raw.githubusercontent.com/deividcomsono/lucide-roblox-direct/refs/heads/main/source.lua"))()
 local Toggles = Library.Toggles
 local Options = Library.Options
+if not shared.Script then
+    shared.Script = {
+        Functions = {},
+        Temp = {},
+        FloorReplicated = game:GetService("ReplicatedStorage"):WaitForChild("FloorReplicated")
+    }
+  end
+
+
+local Script = shared.Script
+Script.Functions = {}
+
+local lhxnxt_custom_captions = Instance.new("ScreenGui")
+do
+    local Frame = Instance.new("Frame", lhxnxt_custom_captions)
+    local    TextLabel = Instance.new("TextLabel", Frame)
+    local UITextSizeConstraint = Instance.new("UITextSizeConstraint", TextLabel)
+
+    
+    local CoreGui = game:GetService("CoreGui")
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+    
+    lhxnxt_custom_captions.Parent = ReplicatedStorage
+    lhxnxt_custom_captions.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+    Frame.AnchorPoint = Vector2.new(0.5, 0.5)
+    Frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255) 
+    Frame.BorderColor3 = Color3.new(1, 1, 1) 
+    Frame.BorderSizePixel = 2
+    Frame.Position = UDim2.new(0.5, 0, 0.8, 0)
+    Frame.Size = UDim2.new(0, 200, 0, 75)
+    Library:AddToRegistry(Frame, {
+        BackgroundColor3 = "MainColor",
+        BorderColor3 = "AccentColor"
+    })
+    
+    TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    TextLabel.BackgroundTransparency = 1.000
+    TextLabel.Size = UDim2.new(1, 0, 1, 0)
+    TextLabel.Font = Enum.Font.Code
+    TextLabel.Text = ""
+    TextLabel.TextColor3 = Color3.new(1, 1, 1)
+    TextLabel.TextScaled = false
+    TextLabel.TextSize = 24
+    TextLabel.TextWrapped = true
+
+    UITextSizeConstraint.MaxTextSize = 35
+
+    local IsCaptionHidden = true
+    local CaptionsLastUsed = os.time()
+    
+    function Script.Functions.HideCaptions()
+        IsCaptionHiddeprint("1. ESP Script Started")
+task.spawn(function()
+    while task.wait(2) do
+        -- Use a pcall here so the whole script doesn't die
+        local success, err = pcall(function()
+            if Toggles.VV_ClosetESP and Toggles.VV_ClosetESP.Value then
+                for _, room in pairs(workspace.CurrentRooms:GetChildren()) do
+                    for _, v in pairs(room:GetDescendants()) do
+                        
+                        -- Check name safely
+                        if v:IsA("Model") and (v.Name == "Wardrobe" or v:GetAttribute("LoadModule") == "Wardrobe") then
+                            if not v:FindFirstChild("ESP_Mark") then
+                                print("2. Found Wardrobe: " .. v.Name)
+                                
+                                local Target = v.PrimaryPart or v:FindFirstChild("Main") or v:FindFirstChildWhichIsA("BasePart", true)
+                                
+                                if Target then
+                                    -- Add marker
+                                    local marker = Instance.new("BoolValue")
+                                    marker.Name = "ESP_Mark"
+                                    marker.Parent = v
+                                    
+                                    print("3. Attempting Esp Function for: " .. v.Name)
+                                    Esp(v, Target, "Closet", Color3.fromRGB(255, 255, 255))
+                                    print("4. Esp Function Completed")
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end)
+        
+        if not success then
+            warn("CRITICAL ERROR: " .. tostring(err))
+        end
+    end
+end)n = true
+        lhxnxt_custom_captions.Parent = ReplicatedStorage
+    end
+
+    function Script.Functions.Captions(caption)
+        CaptionsLastUsed = os.time()
+
+        if IsCaptionHidden then
+            
+            local parentObj = (gethui and gethui()) or CoreGui
+            local success, err = pcall(function()
+                lhxnxt_custom_captions.Parent = parentObj
+            end)
+
+            if not success then
+               lhxnxt_custom_captions.Parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
+            end 
+
+            IsCaptionHidden = false
+        end
+        
+        TextLabel.Text = caption
+
+        -- Anti-flicker for the Haste Clock
+        task.spawn(function()
+            task.wait(2) -- Shortened for a timer
+            if os.time() - CaptionsLastUsed >= 2 then
+                Script.Functions.HideCaptions()
+            end
+        end)
+    end
+end
+
 
 local ErrorMessageOut
 ErrorMessageOut = game:GetService("LogService").MessageOut:Connect(function(Message, Type)
@@ -99,7 +226,7 @@ end)
 -- UI vvv
 Library:SetIconModule(Icons)
 local Window = Library:CreateWindow({ Title = "lolhax v3", Icon = 90305907167101, Footer = "lolhax v3 | ID: "  .. LocalPlayer.Name , Center = true, AutoShow = true, TabPadding = 3, MenuFadeTime = 0.15 })
-local Tabs = { General = Window:AddTab("General", "house"), Exploit = Window:AddTab("Exploits", "bug"), ESP = Window:AddTab("ESP", "scan-eye"), Visuals = Window:AddTab("Visuals", "sparkles"), Misc = Window:AddTab("Miscellaneous", "triangle-alert"), Config = Window:AddTab("Config", "settings") }
+local Tabs = { General = Window:AddTab("General", "house", "General Features"), Exploit = Window:AddTab("Exploits", "bug", "In-Game Exploits"), ESP = Window:AddTab("ESP", "scan-eye", "ESP Settings."), Visuals = Window:AddTab("Visuals", "sparkles", "Visuals Features."), Misc = Window:AddTab("Miscellaneous", "triangle-alert", "Miscellaneous features."), Config = Window:AddTab("Config", "settings", "UI Config And Settings.") }
 
 local GeneralAutomation = Tabs.General:AddLeftGroupbox("Automation")
 GeneralAutomation:AddToggle("GA_AutoInteract", { Text = "Automatic Interact", Default = false, }):AddKeyPicker("GA_AutoInteract_K", { Default = "R", SyncToggleState = false, Mode = "Hold", Text = "Auto Interact", NoUI = false, Tooltip = "Will activate any nearby interactables when key is active." })
@@ -113,6 +240,8 @@ GeneralAutomation:AddSlider("GA_AutoHide_PredictionTime", { Text = "Prediction T
 GeneralAutomation:AddSlider("GA_AutoHide_PredictionDistanceMultiplier", { Text = "Distance Multiplier", Default = 1, Min = 0.8, Max = 1.5, Rounding = 1, Compact = true, Suffix = "x" })
 GeneralAutomation:AddDivider()
 GeneralAutomation:AddSlider("GA_PROMPTREACH_MULTIPLIER", { Text = "Prompt Reach Mutiplier", Default = 1, Min = 1, Max = 2, Rounding = 1 })
+GeneralAutomation:AddToggle("GA_BREAKER_SOLVERTOGGL", { Text = "Auto Breaker Solver", Default = false, Tooltip = "Automatically Solves the Breaker Puzzle in Door 100." })
+GeneralAutomation:AddDropdown("GA_BREAKER_SOLVERLEGITANDEXPLOIT", { Values  = { "Legit", "Exploit", }, Default = 0, Multi = false, Text = "Auto Breaker Solver Methods"})
 GeneralAutomation:AddToggle("GA_INSTAINTERACT", { Text = "Instant Interact", Default = false, Tooltip = "Instantly unlock prompts." })
 GeneralAutomation:AddToggle("GA_MinecartInteract", { Text = "Minecart Interact Spam", Default = false, Tooltip = "Automatically spam interact with nearby minecarts when key is active." }):AddKeyPicker("GA_MinecartInteract_K", { Default = "H", SyncToggleState = false, Mode = "Hold", Text = "Minecart Interact Spam", NoUI = false, })
 GeneralAutomation:AddToggle("GA_AnchorAutoSolve", { Text = "Anchor Automatic Solve", Default = false, Tooltip = "Automatically solves any anchor when close enough, if it's the designated one." })
@@ -152,6 +281,7 @@ end)
 local ExploitSelf = Tabs.Exploit:AddLeftGroupbox("Self")
 ExploitSelf:AddToggle("ES_AlwaysJump", { Text = "Always Enable Jumping", Default = false, Tooltip = "Enables jumping at all times." })
 ExploitSelf:AddDivider()
+ExploitSelf:AddToggle("ES_HASTECLOCK", { Text = "Haste Clock", Default = false, ToolTip = "Shows The Backdoor timer." })
 ExploitSelf:AddToggle("ES_AntiGloombat", { Text = "Anti-Gloombat Egg", Default = false, Tooltip = "Disallows touching on any Gloombat egg hitbox." })
 ExploitSelf:AddToggle("ES_AntiGiggle", { Text = "Anti-Giggle", Default = false, Tooltip = "Disallows touching on the entity 'Giggle' hitbox." })
 ExploitSelf:AddToggle("ES_AntiSnare", { Text = "Anti-Snare", Default = false, Tooltip = "Disallows touching on the entity 'Snare'." })
@@ -285,6 +415,7 @@ Toggles.ESPI_RAINBOW_HIGHLIGHT:OnChanged(function()
                 v.FillColor = Color3.new(1, 1, 1)
             end
             
+            Notify("If you use this feature please disable it before unloading the script", "Details About the Feature.")
             -- rseet
             if v.Name == "_LOLHAXBG" and v:IsA("BillboardGui") then
                 local lbl = v:FindFirstChildOfClass("TextLabel")
@@ -347,6 +478,11 @@ ESPInteractables_Configurate:AddToggle("ESPI_C_MiscPickups", { Text = "Misc Item
 :AddColorPicker("ESPI_C_MiscPickups_F", { Default = Color3.new(1, 1, 1), Title = "Fill Color" })
 :AddColorPicker("ESPI_C_MiscPickups_O", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
 
+
+ESPInteractables_Configurate:AddToggle("ESPI_C_Closet", { Text = "Closet", Default = false })
+:AddColorPicker("ESPI_C_Closet_F", { Default = Color3.new(1, 1, 1), Title = "Fill Color" })
+:AddColorPicker("ESPI_C_Closet_O", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
+
 local ESPSettings = Tabs.ESP:AddRightGroupbox("ESP Settings")
 ESPSettings:AddDropdown("ESPS_Font", { Values = { "Arial", "SourceSans", "Highway", "Fantasy", "Gotham", "DenkOne", "JosefinSans", "Nunito", "Oswald", "RobotoMono", "Sarpanch", "Ubuntu" }, Default = 9, Multi = false, Text = "Text Font" })
 ESPSettings:AddSlider("ESPS_FontSize", { Text = "Font Size", Default = 20, Min = 10, Max = 32, Rounding = 0, Compact = true })
@@ -367,6 +503,8 @@ VisualsView:AddSlider("VV_ThirdpersonDistance", { Text = "Distance", Default = 1
 VisualsView:AddSlider("VV_ThirdpersonOffset", { Text = "Offset", Default = 0, Min = -5, Max = 5, Rounding = 1, Compact = true, Tooltip = "Camera left/right offset for thirdperson." })
 VisualsView:AddSlider("VV_ThirdpersonOffsetUp", { Text = "Vertical Offset", Default = 0, Min = -5, Max = 5, Rounding = 1, Compact = true, Tooltip = "Camera up/down offset for thirdperson." })
 VisualsView:AddDivider()
+VisualsView:AddToggle("VV_TranslucentHidingSpot", { Text = "Translucent Hiding Spots", Default = true })
+VisualsView:AddSlider("VV_HidingTransparency", { Text = "Hiding Transparency", Default = 0.5, Min = 0, Max = 1, Rounding = 1, Compact = true })
 VisualsView:AddToggle("VV_ViewmodelOffset", { Text = "Viewmodel Offset", Default = false, Tooltip = "Modifier for character viewmodel when holding tools." })
 VisualsView:AddSlider("VV_ViewmodelOffset_X", { Text = "X", Default = 0, Min = -5, Max = 5, Rounding = 1, Compact = true, })
 VisualsView:AddSlider("VV_ViewmodelOffset_Y", { Text = "Y", Default = 0, Min = -5, Max = 5, Rounding = 1, Compact = true, })
@@ -528,7 +666,9 @@ local MiscPickups = {
     ["LaserPointer"] = "Laser Pointer",
     ["Bulklight"] = "Bulk Light",
     ["Battery"] = "Battery",
-    ["Candy"] = "Candy"
+    ["Candy"] = "Candy",
+    ["AlarmClock"] = "Alarm Clock",
+    ["Smoothie"] = "Smoothie"
 }
 local EspTable = {
     Interactables = {
@@ -547,6 +687,10 @@ local EspTable = {
     },
 
     Entities = {},
+    HidingSpots = {
+        "Locker",
+        "Wardrobe"
+    }, 
     Players = {}
 }
 
@@ -1351,6 +1495,117 @@ local Connections = {
                 end
             end
 
+       --// Linoria \\--
+
+--// Variables \\--
+shared.Script = {
+    Functions = {},
+    Temp = {
+        UsedBreakers = {}
+    },
+    RemotesFolder = game:GetService("ReplicatedStorage"):WaitForChild("EntityInfo") -- Adjust path if needed
+}
+local Script = shared.Script
+shared.Connections = {}
+
+
+-- Add this inside SolveBreakerBox before the for loop
+
+--// Functions \\--
+function Script.Functions.EnableBreaker(breaker, value)
+    breaker:SetAttribute("Enabled", value)
+
+    if value then
+        breaker:FindFirstChild("PrismaticConstraint", true).TargetPosition = -0.2
+        breaker.Light.Material = Enum.Material.Neon
+        breaker.Light.Attachment.Spark:Emit(1)
+        breaker.Sound.Pitch = 1.3
+    else
+        breaker:FindFirstChild("PrismaticConstraint", true).TargetPosition = 0.2
+        breaker.Light.Material = Enum.Material.Glass
+        breaker.Sound.Pitch = 1.2
+    end
+
+    breaker.Sound:Play()
+end
+
+function Script.Functions.SolveBreakerBox(breakerBox)
+    if not Toggles.GA_BREAKER_SOLVERTOGGL.Value then return end
+    if not Options.GA_BREAKER_SOLVERLEGITANDEXPLOIT then return end
+    if not breakerBox then return end
+    repeat task.wait(0.5) until breakerBox:FindFirstChild("BreakerSwitch", true):GetAttribute("ID") ~= nil
+
+    local code = breakerBox:FindFirstChild("Code", true)
+    local correct = breakerBox:FindFirstChild("Correct", true)
+
+    repeat task.wait() until code.Text ~= "..." or not breakerBox:IsDescendantOf(workspace)
+    if not breakerBox:IsDescendantOf(workspace) then return end
+
+    Library.Notify({
+        Title = "Auto Breaker Solver",
+        Description = "Solving the breaker box...",
+        Reason = ""
+    })
+
+    if Options.GA_BREAKER_SOLVERLEGITANDEXPLOIT.Value == "Legit" then
+        Script.Temp.UsedBreakers = {}
+        if shared.Connections["Reset"] then shared.Connections["Reset"]:Disconnect() end
+        if shared.Connections["Code"] then shared.Connections["Code"]:Disconnect() end
+
+        local breakers = {}
+        for _, breaker in pairs(breakerBox:GetChildren()) do
+            if breaker.Name == "BreakerSwitch" then
+                local id = string.format("%02d", breaker:GetAttribute("ID"))
+                breakers[id] = breaker
+            end
+        end
+
+        if code:FindFirstChild("Frame") then
+            Script.Functions.AutoBreaker(code, breakers)
+
+            shared.Connections["Reset"] = correct:GetPropertyChangedSignal("Playing"):Connect(function()
+                if correct.Playing then table.clear(Script.Temp.UsedBreakers) end
+            end)
+
+            shared.Connections["Code"] = code:GetPropertyChangedSignal("Text"):Connect(function()
+                task.delay(0.1, Script.Functions.AutoBreaker, code, breakers)
+            end)
+        end
+    else
+        repeat task.wait(0.1)
+            Script.RemotesFolder.EBF:FireServer()
+        until not workspace.CurrentRooms["100"]:FindFirstChild("DoorToBreakDown")
+
+        Library.Notify("Auto Breaker Solver", "the breaker box has been sucessfully solved.")
+    end
+end
+
+function Script.Functions.AutoBreaker(code, breakers)
+    local newCode = code.Text
+    if not tonumber(newCode) and newCode ~= "??" then return end
+
+    local isEnabled = code.Frame.BackgroundTransparency == 0
+    local breaker = breakers[newCode]
+
+    if newCode == "??" and #Script.Temp.UsedBreakers == 9 then
+        for i = 1, 10 do
+            local id = string.format("%02d", i)
+
+            if not table.find(Script.Temp.UsedBreakers, id) then
+                breaker = breakers[id]
+            end
+        end
+    end
+
+    if breaker then
+        table.insert(Script.Temp.UsedBreakers, newCode)
+        if breaker:GetAttribute("Enabled") ~= isEnabled then
+            Script.Functions.EnableBreaker(breaker, isEnabled)
+        end
+    end
+end
+
+
             for _, Assets in Targets do
                 for _, Root in Assets:GetChildren() do
                     if Root.Name == "Locker_Small" then
@@ -1756,7 +2011,7 @@ local Connections = {
                 v:WaitForChild("Door", 9e9)
 
                 local RoomID = v:GetAttribute("RoomID")
-
+                
                 if RoomID then
                     local Adornee = v.Door
 
@@ -1766,8 +2021,9 @@ local Connections = {
                         end
                     end
 
-                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door", Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value)
+                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door " .. RoomID, Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value)
                     table.insert(EspTable.Interactables.Doors, {Highlight, TextLabel})
+                    
 
                     task.delay(1, function()
                         if v:GetAttribute("Opened") then
@@ -1806,7 +2062,7 @@ local Connections = {
                 v:WaitForChild("Hitbox", 9e9)
 
                 task.delay(1, function()
-                    local Highlight, TextLabel = Esp(v, v, "Door Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value)
+                    local Highlight, TextLabel = Esp(v, v, "Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value)
                     table.insert(EspTable.Interactables.DoorKeys, {Highlight, TextLabel})
                 end)
 
@@ -2050,7 +2306,7 @@ local Connections = {
             elseif v.Name == "Dread" then
 
                 v:WaitForChild("Main", 9e9)
-
+              
                 Instance.new("Humanoid", v)
                 v.Main.Transparency = 0.999
 
@@ -2089,6 +2345,7 @@ local Connections = {
                 if Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["Ambush"] then
                     Notify("Entity 'Ambush' has spawned!", "Ambush can rebound 2 - 4 times, find a hiding spot quickly!")
                 end
+           
 
             elseif v.Name == "A60" then
 
@@ -2262,6 +2519,7 @@ local Connections = {
 }
 table.insert(Connections, CameraAdded)
 
+
 if game.ReplicatedStorage.FloorReplicated.ClientRemote:FindFirstChild("Haste") then
     local HasteChanged = game.ReplicatedStorage.FloorReplicated.ClientRemote.Haste.Ambience:GetPropertyChangedSignal("Playing"):Connect(function()
         if Toggles.MA_NoHasteSound.Value then
@@ -2342,6 +2600,194 @@ TimothyHook = hookfunction(require(LocalPlayer.PlayerGui.MainUI.Initiator.Main_G
     return TimothyHook(...)
 end)
 
+
+local HasteLoopActive = false -- Simple boolean flag
+local HasteTimerConnection
+
+Toggles.ES_HASTECLOCK:OnChanged(function(value)
+    HasteLoopActive = value
+    print("Toggle changed: " .. tostring(value)) -- DEBUG 1
+    
+    if value then
+        task.spawn(function()
+            local ReplicatedStorage = game:GetService("ReplicatedStorage")
+            
+            -- Use FindFirstChild so we don't hang the script if it's missing
+            local FloorRep = ReplicatedStorage:FindFirstChild("FloorReplicated")
+            print("FloorReplicated found: " .. tostring(FloorRep ~= nil)) -- DEBUG 2
+            
+            while HasteLoopActive do
+                local TimerObj = FloorRep and FloorRep:FindFirstChild("DigitalTimer")
+                
+                if TimerObj then
+                    local val = TimerObj.Value
+                    if val and typeof(val) == "number" then
+                        local minutes = math.floor(val / 60)
+                        local seconds = math.floor(val % 60)
+                        
+                        local minStr = (minutes < 10 and "0" or "") .. tostring(minutes)
+                        local secStr = (seconds < 10 and "0" or "") .. tostring(seconds)
+                        local text = minStr .. ":" .. secStr
+                        
+                        pcall(function()
+                            Script.Functions.Captions("HASTE: " .. text)
+                        end)
+                    end
+                else
+                    -- If we can't find the timer, tell the console why
+                    print("Waiting for DigitalTimer...") 
+                end
+                task.wait(1) 
+            end
+            
+            pcall(function()
+                Script.Functions.HideCaptions()
+            end)
+        end)
+    end
+end)
+
+
+local function DoTrans(Value)
+    local Char = LocalPlayer.Character
+    if not Char then return end
+    
+    local isHiding = Char:GetAttribute("Hiding")
+    
+    if Value and isHiding then
+        -- Instead of searching all rooms, we look for the HiddenPlayer value 
+        -- near the character or within the current room
+        task.spawn(function()
+            local TargetCloset = nil
+            
+            -- Look for the ObjectValue 'HiddenPlayer' that points to you
+            for _, v in ipairs(workspace.CurrentRooms:GetDescendants()) do
+                if v.Name == "HiddenPlayer" and v.Value == Char then
+                    TargetCloset = v.Parent
+                    break
+                end
+            end
+
+            if TargetCloset then
+                local parts = {}
+                for _, p in ipairs(TargetCloset:GetChildren()) do
+                    if p:IsA("BasePart") then
+                        table.insert(parts, p)
+                    end
+                end
+
+                while Toggles.VV_TranslucentHidingSpot.Value and Char:GetAttribute("Hiding") do
+                    for _, p in ipairs(parts) do
+                        p.Transparency = Options.VV_HidingTransparency.Value
+                    end
+                    task.wait(0.1) -- Slow wait to prevent lag
+                end
+
+                -- Reset
+                for _, p in ipairs(parts) do
+                    p.Transparency = 0
+                end
+            end
+        end)
+    end
+end
+
+task.spawn(function()
+    while task.wait(0.5) do
+        if Toggles.VV_TranslucentHidingSpot and Toggles.VV_TranslucentHidingSpot.Value then
+            DoTrans(true)
+        end
+    end
+end)
+
+local ValdVHiddenSpots = {
+    ["Locker_Large"] = "Locker",
+    ["Wardrobe"] = "Closet",
+    ["RetroWardrobe"] = "Closet",
+    ["Bed"] = "Bed",
+    ["ToolShed"] = "ToolShed"
+}
+
+local RunService = game:GetService("RunService")
+
+task.spawn(function()
+    local function MonitorCloset(v)
+        -- 1. Identity & Marker
+
+        local isLocker = v.Name == "Locker_Large"
+        local isWardrobe = v.Name == "Wardrobe" or v:GetAttribute("LoadModule") == "Wardrobe"
+        local isRetroWardrobe = v.Name == "RetroWardrobe" or v:GetAttribute("LoadModule") == "RetroWardrobe"
+        local isBed = v.Name == "Bed"
+        if not (isLocker or isWardrobe or isRetroWardrobe or isBed) or v:FindFirstChild("VV_MARKER") then return end
+
+        local displayName = ValdVHiddenSpots[v.Name]
+     
+        local TargetPart = v:FindFirstChild("Main") or v:FindFirstChildWhichIsA("BasePart", true)
+        if not TargetPart then return end
+
+        local room = v:FindFirstAncestorOfClass("Model")
+        local roomNum = room and tonumber(room.Name)
+        if not roomNum then return end
+
+        Instance.new("BoolValue", v).Name = "VV_MARKER"
+
+        -- Variables to hold your ESP objects
+        local Highlight, TextLabel
+        local connection
+
+        -- 2. FRAME-BY-FRAME MONITOR (Heartbeat)
+        connection = RunService.Heartbeat:Connect(function()
+            -- Safety: If closet is gone, disconnect the monitor
+            if not v or not v.Parent then
+                connection:Disconnect()
+                return
+            end
+
+            local latest = game:GetService("ReplicatedStorage").GameData.LatestRoom.Value
+            
+            -- LOGIC: Current room or next room?
+            local shouldBeActive = (roomNum == latest)
+            -- LOGIC: 2+ rooms behind?
+            local shouldDelete = (roomNum < latest - 1)
+
+            -- 3. Instant Activation
+            if shouldBeActive and not Highlight then
+            Highlight, TextLabel = Esp(v, TargetPart, displayName, Options.ESPI_C_Closet_F.Value, Options.ESPI_C_Closet_O.Value)
+            end
+
+            -- 4. Instant Toggle
+            if Highlight then Highlight.Enabled = shouldBeActive end
+            if TextLabel then TextLabel.Visible = shouldBeActive end
+
+            -- 5. Instant Cleanup
+            if shouldDelete then
+                pcall(function()
+                    RemoveEspSmooth(v)
+                end)
+                if v:FindFirstChild("VV_MARKER") then v.VV_MARKER:Destroy() end
+                connection:Disconnect() -- Kill the monitor for this closet
+            end
+        end)
+    end
+
+    -- Initial Global Scan
+    for _, x in ipairs(workspace.CurrentRooms:GetDescendants()) do 
+        MonitorCloset(x) 
+    end
+
+    -- Fast Listener
+    workspace.CurrentRooms.DescendantAdded:Connect(function(v)
+        -- Tiny delay to let the 'Main' part load so Esp() doesn't fail
+        task.delay(0.05, function()
+            MonitorCloset(v)
+        end)
+    end)
+end)
+
+Toggles.VV_TranslucentHidingSpot:OnChanged(function()
+    DoTrans(Toggles.VV_TranslucentHidingSpot.Value)
+end)
+
 local ReviveHook; ReviveHook = hookfunction(require(game.ReplicatedStorage.ModulesClient.ReviveCutscene), function(...)
     if Toggles.VR_NoReviveCutscene.Value then
         return
@@ -2367,7 +2813,7 @@ for _, v in Rooms:GetDescendants() do
                         end
                     end
 
-                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door", Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value)
+                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door " .. RoomID, Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value)
                     table.insert(EspTable.Interactables.Doors, {Highlight, TextLabel})
 
                     v.AttributeChanged:Once(function()
@@ -2394,7 +2840,7 @@ for _, v in Rooms:GetDescendants() do
                 end)
             elseif v.Name == "KeyObtain" then
 
-                local Highlight, TextLabel = Esp(v, v, "Door Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value)
+                local Highlight, TextLabel = Esp(v, v, "Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value)
                 table.insert(EspTable.Interactables.DoorKeys, {Highlight, TextLabel})
 
             elseif v.Name == "GoldPile" then
@@ -2714,6 +3160,7 @@ Toggles.ES_AntiSeekArms:OnChanged(function()
 
     end
 end)
+
 Toggles.ES_AntiChanedlier:OnChanged(function()
     for _, v in Rooms:GetDescendants() do
 
@@ -2945,7 +3392,7 @@ task.spawn(function()
         end
 
         print("[BloxstrapRPC] {\"command\": \"SetRichPresence\", \"data\": " .. game:GetService("HttpService"):JSONEncode({
-            details = Bool and "[ Playing DOORS 👁️ ] Lolhax.xyz" or "<reset>",
+            details = Bool and "[ Playing DOORS 👁️ ]" or "<reset>",
             state = Bool and State or "<reset>",
             largeImage = Bool and LargeImage or { reset = true },
             smallImage = Bool and { assetId = 16874068594, hoverText = "LOLHAX" } or { reset = true }
@@ -2964,6 +3411,7 @@ task.spawn(function()
         ThirdpersonParts:Destroy()
         LXNotifications:Destroy()
         ClonedCollision:Destroy()
+        lhxnxt_custom_captions:Destroy()
 
         game.Lighting.GlobalShadows = true
         game.Lighting.OutdoorAmbient = Color3.new(0,0,0)
@@ -2987,6 +3435,19 @@ task.spawn(function()
     end)
 
     MenuProperties:AddLabel("Menu bind"):AddKeyPicker("MenuKeybind", { Default = "RightShift", NoUI = true, Text = "Menu keybind" })
+    MenuProperties:AddDropdown("DPIDropdown", {
+	Values = { "50%", "75%", "100%", "125%", "150%", "175%", "200%" },
+	Default = "100%",
+
+	Text = "DPI Scale",
+
+	Callback = function(Value)
+		Value = Value:gsub("%%", "")
+		local DPI = tonumber(Value)
+
+		Library:SetDPIScale(DPI)
+	end,
+})
     MenuProperties:AddDivider()
     MenuProperties:AddButton("LX Discord Server", function()
      setclipboard("https://discord.gg/3xqFjM4R")
@@ -2994,6 +3455,7 @@ task.spawn(function()
      end)
     MenuProperties:AddToggle("keybindmenu", { Text = "Show Keybinds", Default = false })
     MenuProperties:AddLabel("if you find a bug, please report them to the bug report server, the link is below.")
+
     MenuProperties:AddButton("Bug Report Server", function()
      setclipboard("https://discord.gg/9YgVsGBK")
      Notify("Copied to clipboard!", "I have no idea!" )
