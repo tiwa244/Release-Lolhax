@@ -2668,7 +2668,8 @@ local ValdVHiddenSpots = {
     ["RetroWardrobe"] = "Closet",
     ["Bed"] = "Bed",
     ["ToolShed"] = "ToolShed",
-    ["Backdoor_Wardrobe"] = "Closet"
+    ["Backdoor_Wardrobe"] = "Closet",
+    ["Double_Bed"] = "Bed"
 }
 
 local RunService = game:GetService("RunService")
