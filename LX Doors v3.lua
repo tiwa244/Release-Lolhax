@@ -54,9 +54,14 @@
 -- credits2 mspaint for some features and things i got from thir src code lmao 
 -- credits2 mspaint developer: upio for ig creating the dpi feature inside example.lua in obisidnan library 
 -- this script was MADE by: te original lolhax developers, and not_xcode in discord
--- r\\\\///\\||/\/\/\ also dont contact not_xcode if u wanna do a fork just do it cuz i cant accetp mesagwes
+-- r\\\\///\\||/\/\/\ also dont contact not_xcode if u wanna do a fork just do it cuz i cant accetp mesagwes 
+-- credits2 () 
 -- FAH
--- print("if ur reading this ur prob the creator of this script or an forker")
+-- credits2 upio for creating mspaint (yes hes the goddamn owner) and credits to mspaint devs for making mspaint its awesome 
+-- mspaint is awesome btw
+-- vynixius is an awesome doors script
+-- credits to lolhax developers for creating and developing lolhax still 
+-- lolhax v2 used to be number 1 doors script on the market it fell off
 local Loadtime = tick()
 local Repository = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/"
 local IdCheck = "lolhax v3 | ID: " .. game.Players.LocalPlayer.Name
@@ -75,8 +80,60 @@ if not shared.Script then
   end
 
 
+task.spawn(function()
+    -- 1. Heavy-duty wait for the player
+    repeat task.wait(0.5) until game:IsLoaded() and game.Players.LocalPlayer
+    
+    local player = game.Players.LocalPlayer
+
+    while task.wait(0.5) do
+        if Library.Unloaded then break end
+        
+        -- 2. Check if Script and Player exist before indexing
+        if player and shared.Script then
+            pcall(function()
+                local attr = player:GetAttribute("CurrentRoom") or 0
+                shared.Script.CurrentRoom = attr
+
+                -- 3. Fallback logic
+                if not workspace.CurrentRooms:FindFirstChild(tostring(attr)) then
+                    local latestObj = game:GetService("ReplicatedStorage"):FindFirstChild("GameData") 
+                                      and game.ReplicatedStorage.GameData:FindFirstChild("LatestRoom")
+                    
+                    if latestObj then
+                        shared.Script.CurrentRoom = latestObj.Value
+                        player:SetAttribute("CurrentRoom", latestObj.Value)
+                    end
+                end
+            end)
+        end
+    end
+end)
+
+
 local Script = shared.Script
 Script.Functions = {}
+function Script.Functions.CalculateHideTime(room: number)
+    for _, range in ipairs(Script.HideTimeValues) do
+        if room >= range.min and room <= range.max then
+            return math.round(range.a * (room - range.b) + range.c)
+        end
+    end    
+
+    return nil
+end
+
+Script.HideTimeValues = {
+    {min = 1, max = 5, a = -1/6, b = 1, c = 20},
+    {min = 6, max = 19, a = -1/13, b = 6, c = 19},
+    {min = 19, max = 22, a = -1/4, b = 19, c = 18},
+    {min = 23, max = 26, a = 1/3, b = 23, c = 18},
+    {min = 26, max = 30, a = -1/4, b = 26, c = 19},
+    {min = 30, max = 35, a = -1/3, b = 30, c = 18},
+    {min = 36, max = 60, a = -1/12, b = 36, c = 18},
+    {min = 60, max = 90, a = -1/30, b = 60, c = 16},
+    {min = 90, max = 99, a = -1/6, b = 90, c = 15}
+}
 
 local lhxnxt_custom_captions = Instance.new("ScreenGui")
 do
@@ -201,10 +258,11 @@ GeneralAutomation:AddToggle("GA_AutoHide_VisCheck", { Text = "Prediction Visible
 GeneralAutomation:AddSlider("GA_AutoHide_PredictionTime", { Text = "Prediction Time", Default = 0.5, Min = 0.1, Max = 1.5, Rounding = 2, Compact = true, Suffix = "s" })
 GeneralAutomation:AddSlider("GA_AutoHide_PredictionDistanceMultiplier", { Text = "Distance Multiplier", Default = 1, Min = 0.8, Max = 1.5, Rounding = 1, Compact = true, Suffix = "x" })
 GeneralAutomation:AddDivider()
+GeneralAutomation:AddToggle("GA_HideTimeShow", { Text = "Closet Hiding Timer", Default = false, Tooltip = "Shows the Hiding Timer Before Hide Kicks you out."})
 GeneralAutomation:AddSlider("GA_PROMPTREACH_MULTIPLIER", { Text = "Prompt Reach Mutiplier", Default = 1, Min = 1, Max = 2, Rounding = 1 })
 GeneralAutomation:AddToggle("GA_BREAKER_SOLVERTOGGL", { Text = "Auto Breaker Solver", Default = false, Tooltip = "Automatically Solves the Breaker Puzzle in Door 100." })
 GeneralAutomation:AddDropdown("GA_BREAKER_SOLVERLEGITANDEXPLOIT", { Values  = { "Legit", "Exploit", }, Default = 0, Multi = false, Text = "Auto Breaker Solver Methods"})
-GeneralAutomation:AddToggle("GA_INSTAINTERACT", { Text = "Instant Interact", Default = false, Tooltip = "Instantly unlock prompts." })
+GeneralAutomation:AddToggle("GA_INSTAINTERACT", { Text = "Instant Interact", Default = false, Tooltip = "Instantly unlock prompts." }):AddKeyPicker("GA_InstaInteract_K", { Default = "I", SyncToggleState = true, Mode = "Toggle", Text = "Instant Interact", NoUI = false, Tooltip = "No Prompt Hold."})
 GeneralAutomation:AddToggle("GA_MinecartInteract", { Text = "Minecart Interact Spam", Default = false, Tooltip = "Automatically spam interact with nearby minecarts when key is active." }):AddKeyPicker("GA_MinecartInteract_K", { Default = "H", SyncToggleState = false, Mode = "Hold", Text = "Minecart Interact Spam", NoUI = false, })
 GeneralAutomation:AddToggle("GA_AnchorAutoSolve", { Text = "Anchor Automatic Solve", Default = false, Tooltip = "Automatically solves any anchor when close enough, if it's the designated one." })
 GeneralAutomation:AddDivider()
@@ -234,7 +292,6 @@ local GeneralSession = Tabs.General:AddRightGroupbox("Session Info")
 local TimeLabel = GeneralSession:AddLabel("Local Time: " .. os.date("%X"))
 GeneralSession:AddLabel("Player Name: " .. LocalPlayer.Name)
 local FloorLabel = GeneralSession:AddLabel("Floor: " .. game.ReplicatedStorage.GameData.Floor.Value)
--- This loop makes them "Alive"
 task.spawn(function()
     while task.wait(1) do
         TimeLabel:SetText("Local Time: " .. os.date("%X"))
@@ -377,7 +434,7 @@ Toggles.ESPI_RAINBOW_HIGHLIGHT:OnChanged(function()
                 v.FillColor = Color3.new(1, 1, 1)
             end
             
-            Notify("If you use this feature please disable it before unloading the script", "Details About the Feature.")
+            Notify("If you use this feature please disable it before unloading the script", 2.5)
             -- rseet
             if v.Name == "_LOLHAXBG" and v:IsA("BillboardGui") then
                 local lbl = v:FindFirstChildOfClass("TextLabel")
@@ -2027,6 +2084,7 @@ end
                     local Highlight, TextLabel = Esp(v, v, "Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value)
                     table.insert(EspTable.Interactables.DoorKeys, {Highlight, TextLabel})
                 end)
+                    
 
             elseif v.Name == "GoldPile" then
                 v:WaitForChild("Hitbox", 9e9)
@@ -2036,12 +2094,12 @@ end
 
             elseif v.Name == "LeverForGate" then
 
-                v:WaitForChild("Main", 9e9)
+                v:WaitForChild("Main", 1.5)
 
                 local Highlight, TextLabel = Esp(v, v.Main, "Gate Lever", Options.ESPI_C_GateLevers_F.Value, Options.ESPI_C_GateLevers_O.Value)
                 table.insert(EspTable.Interactables.GateLevers, {Highlight, TextLabel})
 
-                v:WaitForChild("ActivateEventPrompt", 9e9)
+                v:WaitForChild("ActivateEventPrompt", 1.5)
 
                 v.ActivateEventPrompt.AttributeChanged:Once(function()
                     RemoveEspSmooth(v)
@@ -2675,77 +2733,115 @@ local ValdVHiddenSpots = {
 local RunService = game:GetService("RunService")
 
 task.spawn(function()
+    local ActiveClosets = {} -- Centralized table
+
     local function MonitorCloset(v)
-        -- 1. Identity & Marker
+        -- 1. Optimized Name Check
+        local isHidingSpot = v:GetAttribute("LoadModule") == "Wardrobe" or 
+                             v:GetAttribute("LoadModule") == "RetroWardrobe" or 
+                             v.Name == "Locker_Large" or 
+                             v.Name == "Bed" or 
+                             v.Name == "Wardrobe" or 
+                             v.Name == "RetroWardrobe"
 
-        local isLocker = v.Name == "Locker_Large"
-        local isWardrobe = v.Name == "Wardrobe" or v:GetAttribute("LoadModule") == "Wardrobe"
-        local isRetroWardrobe = v.Name == "RetroWardrobe" or v:GetAttribute("LoadModule") == "RetroWardrobe"
-        local isBed = v.Name == "Bed"
-        if not (isLocker or isWardrobe or isRetroWardrobe or isBed) or v:FindFirstChild("VV_MARKER") then return end
-
-        local displayName = ValdVHiddenSpots[v.Name]
-     
-        local TargetPart = v:FindFirstChild("Main") or v:FindFirstChildWhichIsA("BasePart", true)
-        if not TargetPart then return end
+        if not isHidingSpot or v:FindFirstChild("VV_MARKER") then return end
 
         local room = v:FindFirstAncestorOfClass("Model")
         local roomNum = room and tonumber(room.Name)
-        if not roomNum then return end
+        local TargetPart = v:FindFirstChild("Main") or v:FindFirstChildWhichIsA("BasePart", true)
 
+        if not roomNum or not TargetPart then return end
+
+        -- 2. Setup Closet Data
         Instance.new("BoolValue", v).Name = "VV_MARKER"
-
-        -- Variables to hold your ESP objects
-        local Highlight, TextLabel
-        local connection
-
-        -- 2. FRAME-BY-FRAME MONITOR (Heartbeat)
-        connection = RunService.Heartbeat:Connect(function()
-            -- Safety: If closet is gone, disconnect the monitor
-            if not v or not v.Parent then
-                connection:Disconnect()
-                return
-            end
-
-            local latest = game:GetService("ReplicatedStorage").GameData.LatestRoom.Value
-            
-            -- LOGIC: Current room or next room?
-            local shouldBeActive = (roomNum == latest)
-            -- LOGIC: 2+ rooms behind?
-            local shouldDelete = (roomNum < latest - 1)
-
-            -- 3. Instant Activation
-            if shouldBeActive and not Highlight then
-            Highlight, TextLabel = Esp(v, TargetPart, displayName, Options.ESPI_C_Closet_F.Value, Options.ESPI_C_Closet_O.Value)
-            end
-
-            -- 4. Instant Toggle
-            if Highlight then Highlight.Enabled = shouldBeActive end
-            if TextLabel then TextLabel.Visible = shouldBeActive end
-
-            -- 5. Instant Cleanup
-            if shouldDelete then
-                pcall(function()
-                    RemoveEspSmooth(v)
-                end)
-                if v:FindFirstChild("VV_MARKER") then v.VV_MARKER:Destroy() end
-                connection:Disconnect() -- Kill the monitor for this closet
-            end
-        end)
+        
+        ActiveClosets[v] = {
+            roomNum = roomNum,
+            TargetPart = TargetPart,
+            displayName = ValdVHiddenSpots[v.Name] or v.Name,
+            Highlight = nil,
+            TextLabel = nil
+        }
     end
+
+    -- 3. The "Single Source of Truth" Heartbeat
+    RunService.Heartbeat:Connect(function()
+        local current = Script.CurrentRoom or 0
+        
+        for v, data in pairs(ActiveClosets) do
+            -- Cleanup if object deleted
+            if not v or not v.Parent then
+                ActiveClosets[v] = nil
+                continue
+            end
+
+            local isCurrent = (data.roomNum == current)
+            local isOld = (data.roomNum < current - 1)
+
+            -- Neuron Activation
+            if isCurrent and not data.Highlight then
+                data.Highlight, data.TextLabel = Esp(v, data.TargetPart, data.displayName, Options.ESPI_C_Closet_F.Value, Options.ESPI_C_Closet_O.Value)
+            end
+
+            -- Toggle Visibility (Cleaned up logic)
+            if data.Highlight then data.Highlight.Enabled = isCurrent end
+            if data.TextLabel then data.TextLabel.Visible = isCurrent end
+
+            -- Efficient Deletion
+            if isOld then
+                pcall(RemoveEspSmooth, v)
+                if v:FindFirstChild("VV_MARKER") then v.VV_MARKER:Destroy() end
+                ActiveClosets[v] = nil
+            end
+        end
+    end)
 
     -- Initial Global Scan
     for _, x in ipairs(workspace.CurrentRooms:GetDescendants()) do 
         MonitorCloset(x) 
     end
 
-    -- Fast Listener
+    -- Listener
     workspace.CurrentRooms.DescendantAdded:Connect(function(v)
-        -- Tiny delay to let the 'Main' part load so Esp() doesn't fail
-        task.delay(0.05, function()
-            MonitorCloset(v)
-        end)
+        task.delay(0.1, function() MonitorCloset(v) end)
     end)
+end)
+
+-- Using standard Roblox connection since shared.Connect doesn't exist
+local HideTimerConnection
+
+HideTimerConnection = game:GetService("ReplicatedStorage").RemotesFolder.HideMonster.OnClientEvent:Connect(function()
+    -- Floor safety checks
+    if Script.IsBackdoor or Script.IsRooms or Script.IsRetro then return end
+
+    -- Verify the calculation function exists before calling it
+    if not Script.Functions.CalculateHideTime then return end
+    
+    local hideTime = Script.Functions.CalculateHideTime(Script.CurrentRoom) or math.huge
+    local finalTime = tick() + math.round(hideTime)
+
+    -- Basic Toggle check from your Linoria Toggles
+    if Toggles.GA_HideTimeShow and Toggles.GA_HideTimeShow.Value and hideTime ~= math.huge then
+        
+        -- task.spawn is vital so the rest of the script (ESP, etc.) doesn't freeze
+        task.spawn(function()
+            local player = game.Players.LocalPlayer
+            
+            while player.Character and player.Character:GetAttribute("Hiding") and not Library.Unloaded do
+                local remainingTime = math.max(0, finalTime - tick())
+                
+                -- Format to 1 decimal place (e.g., 12.4)
+                local formattedTime = string.format("%.1f", remainingTime)
+
+                -- Use your verified Caption function
+                Script.Functions.Captions(formattedTime)
+
+                -- Kill loop if time hits zero or player leaves closet
+                if remainingTime <= 0 then break end
+                task.wait(0.1) 
+            end
+        end)
+    end
 end)
 
 Toggles.VV_TranslucentHidingSpot:OnChanged(function()
