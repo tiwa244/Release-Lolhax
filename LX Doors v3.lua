@@ -51,6 +51,9 @@
 -- i added my shi for the uhh repo and icons so,, BUG reports goes to no one btw FORK THIS AND fix the error urself  because i dont have time, to fix them
 -- icon credits to lucid.dev
 -- ts so faghhhh
+-- lolhax v2 fell out hard
+-- credits2 lolcat or lolca in youtube 
+-- credits2 geodude
 -- credits2 mspaint for some features and things i got from thir src code lmao 
 -- credits2 mspaint developer: upio for ig creating the dpi feature inside example.lua in obisidnan library 
 -- this script was MADE by: te original lolhax developers, and not_xcode in discord
@@ -71,6 +74,7 @@ local SaveManager = loadstring(game:HttpGet(Repository .. "addons/SaveManager.lu
 local Icons = loadstring(game:HttpGet("https://raw.githubusercontent.com/deividcomsono/lucide-roblox-direct/refs/heads/main/source.lua"))()
 local Toggles = Library.Toggles
 local Options = Library.Options
+
 if not shared.Script then
     shared.Script = {
         Functions = {},
@@ -396,47 +400,62 @@ local RainbowToggle = ESPInteractables_Main:AddToggle("ESPI_RAINBOW_HIGHLIGHT", 
 
 local CurrentRainbowColor = Color3.new(1, 1, 1)
 
+local CollectionService = game:GetService("CollectionService")
+local TAG_NAME = "RAINBOW_ESP_TAG"
+
+
+_G.StopRainbow = true 
+task.wait(0.1) 
+_G.StopRainbow = false
+
+
+local function TagObject(v)
+    if v.Name == "_LOLHAXHL" or v.Name == "_LOLHAXBG" then
+        if not CollectionService:HasTag(v, TAG_NAME) then
+            CollectionService:AddTag(v, TAG_NAME)
+        end
+    end
+end
+
+
+for _, v in ipairs(game.Workspace:GetDescendants()) do TagObject(v) end
+
+game.Workspace.DescendantAdded:Connect(TagObject)
+
 task.spawn(function()
-    -- Wait for UI to load
+    
     repeat task.wait(0.5) until Toggles and Toggles.ESPI_RAINBOW_HIGHLIGHT and Options.ESPI_RAINBOW_SPEED
     
     while task.wait() do
-        if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
-            -- Use the slider value for speed
-            -- Higher number = Slower cycle
-            local Speed = Options.ESPI_RAINBOW_SPEED.Value
-            local Hue = (tick() % Speed / Speed)
-            CurrentRainbowColor = Color3.fromHSV(Hue, 0.8, 1)
 
-            for _, v in pairs(game.Workspace:GetDescendants()) do
-                if v.Name == "_LOLHAXHL" and v:IsA("Highlight") then
-                    v.OutlineColor = CurrentRainbowColor
-                    v.FillColor = CurrentRainbowColor
-                end
-                
-                if v.Name == "_LOLHAXBG" and v:IsA("BillboardGui") then
+        if _G.StopRainbow then return end 
+
+        if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
+            local Speed = Options.ESPI_RAINBOW_SPEED.Value or 5
+            local Hue = (tick() % Speed / Speed)
+            local CurrentColor = Color3.fromHSV(Hue, 0.8, 1)
+
+            for _, v in ipairs(CollectionService:GetTagged(TAG_NAME)) do
+                if v:IsA("Highlight") then
+                    v.OutlineColor = CurrentColor
+                    v.FillColor = CurrentColor
+                elseif v:IsA("BillboardGui") then
                     local lbl = v:FindFirstChildOfClass("TextLabel")
-                    if lbl then lbl.TextColor3 = CurrentRainbowColor end
+                    if lbl then lbl.TextColor3 = CurrentColor end
                 end
             end
         end
     end
 end)
 
--- fix
+
 Toggles.ESPI_RAINBOW_HIGHLIGHT:OnChanged(function()
     if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value == false then
-        -- This part is the 'Janitor' - it cleans the rainbow colors away
-        for _, v in pairs(game.Workspace:GetDescendants()) do
-            -- Reset Highlights to White
-            if v.Name == "_LOLHAXHL" and v:IsA("Highlight") then
-                v.OutlineColor = Color3.new(1, 1, 1) 
+        for _, v in ipairs(CollectionService:GetTagged(TAG_NAME)) do
+            if v:IsA("Highlight") then
+                v.OutlineColor = Color3.new(1, 1, 1)
                 v.FillColor = Color3.new(1, 1, 1)
-            end
-            
-            Notify("If you use this feature please disable it before unloading the script", 2.5)
-            -- rseet
-            if v.Name == "_LOLHAXBG" and v:IsA("BillboardGui") then
+            elseif v:IsA("BillboardGui") then
                 local lbl = v:FindFirstChildOfClass("TextLabel")
                 if lbl then lbl.TextColor3 = Color3.new(1, 1, 1) end
             end
@@ -1560,10 +1579,10 @@ function Script.Functions.SolveBreakerBox(breakerBox)
     repeat task.wait() until code.Text ~= "..." or not breakerBox:IsDescendantOf(workspace)
     if not breakerBox:IsDescendantOf(workspace) then return end
 
-    Library.Notify({
+    Library:Notify({
         Title = "Auto Breaker Solver",
         Description = "Solving the breaker box...",
-        Reason = ""
+        Duration = 2
     })
 
     if Options.GA_BREAKER_SOLVERLEGITANDEXPLOIT.Value == "Legit" then
@@ -1595,7 +1614,11 @@ function Script.Functions.SolveBreakerBox(breakerBox)
             Script.RemotesFolder.EBF:FireServer()
         until not workspace.CurrentRooms["100"]:FindFirstChild("DoorToBreakDown")
 
-        Library.Notify("Auto Breaker Solver", "the breaker box has been sucessfully solved.")
+        Library:Notify({
+        Title = "Auto Breaker Solver",
+        Description = "The Breaker Box Has Sucessfully been Solved!",
+        Duration = 2
+    })
     end
 end
 
@@ -2099,11 +2122,6 @@ end
                 local Highlight, TextLabel = Esp(v, v.Main, "Gate Lever", Options.ESPI_C_GateLevers_F.Value, Options.ESPI_C_GateLevers_O.Value)
                 table.insert(EspTable.Interactables.GateLevers, {Highlight, TextLabel})
 
-                v:WaitForChild("ActivateEventPrompt", 1.5)
-
-                v.ActivateEventPrompt.AttributeChanged:Once(function()
-                    RemoveEspSmooth(v)
-                end)
 
             elseif v.Name == "TimerLever" then
 
@@ -2725,7 +2743,7 @@ local ValdVHiddenSpots = {
     ["Wardrobe"] = "Closet",
     ["RetroWardrobe"] = "Closet",
     ["Bed"] = "Bed",
-    ["ToolShed"] = "ToolShed",
+    ["Toolshed"] = "Toolshed",
     ["Backdoor_Wardrobe"] = "Closet",
     ["Double_Bed"] = "Bed"
 }
@@ -2733,43 +2751,59 @@ local ValdVHiddenSpots = {
 local RunService = game:GetService("RunService")
 
 task.spawn(function()
-    local ActiveClosets = {} -- Centralized table
+    local ActiveClosets = {}
+    -- 
+    local CurrentRooms = workspace:WaitForChild("CurrentRooms")
+    local tonumber = tonumber
+
+    -- 
 
     local function MonitorCloset(v)
-        -- 1. Optimized Name Check
-        local isHidingSpot = v:GetAttribute("LoadModule") == "Wardrobe" or 
-                             v:GetAttribute("LoadModule") == "RetroWardrobe" or 
-                             v.Name == "Locker_Large" or 
-                             v.Name == "Bed" or 
-                             v.Name == "Wardrobe" or 
-                             v.Name == "RetroWardrobe"
+        local vName = v.Name -- ngl this vab kind suck but i have to use it
+        
+        
+        if vName:find("Sideroom") then
+            local children = v:GetChildren()
+            for i = 1, #children do
+                MonitorCloset(children[i])
+            end
+            return
+        end
+
+        -- LOOK INTO MY EYES NOW TELL Me (its going down now)
+        local isHidingSpot = ValdVHiddenSpots[vName] or v:GetAttribute("LoadModule") == "Wardrobe"
 
         if not isHidingSpot or v:FindFirstChild("VV_MARKER") then return end
 
-        local room = v:FindFirstAncestorOfClass("Model")
-        local roomNum = room and tonumber(room.Name)
-        local TargetPart = v:FindFirstChild("Main") or v:FindFirstChildWhichIsA("BasePart", true)
+        -- 3. CLIMB: Parent Traversal
+        local rootRoom = v
+        while rootRoom and rootRoom.Parent ~= CurrentRooms do
+            rootRoom = rootRoom.Parent
+        end
+
+        local roomNum = rootRoom and tonumber(rootRoom.Name)
+        
+        local TargetPart = v:FindFirstChild("Main") or v:FindFirstChildWhichIsA("BasePart")
 
         if not roomNum or not TargetPart then return end
 
-        -- 2. Setup Closet Data
+        -- 4. MARK & STORE
         Instance.new("BoolValue", v).Name = "VV_MARKER"
         
         ActiveClosets[v] = {
             roomNum = roomNum,
             TargetPart = TargetPart,
-            displayName = ValdVHiddenSpots[v.Name] or v.Name,
             Highlight = nil,
             TextLabel = nil
         }
     end
 
-    -- 3. The "Single Source of Truth" Heartbeat
+    -- t
     RunService.Heartbeat:Connect(function()
         local current = Script.CurrentRoom or 0
         
         for v, data in pairs(ActiveClosets) do
-            -- Cleanup if object deleted
+            
             if not v or not v.Parent then
                 ActiveClosets[v] = nil
                 continue
@@ -2778,16 +2812,16 @@ task.spawn(function()
             local isCurrent = (data.roomNum == current)
             local isOld = (data.roomNum < current - 1)
 
-            -- Neuron Activation
+            -- ()
             if isCurrent and not data.Highlight then
-                data.Highlight, data.TextLabel = Esp(v, data.TargetPart, data.displayName, Options.ESPI_C_Closet_F.Value, Options.ESPI_C_Closet_O.Value)
+                data.Highlight, data.TextLabel = Esp(v, data.TargetPart, ValdVHiddenSpots[v.Name], Options.ESPI_C_Closet_F.Value, Options.ESPI_C_Closet_O.Value)
             end
 
-            -- Toggle Visibility (Cleaned up logic)
+            -- ()
             if data.Highlight then data.Highlight.Enabled = isCurrent end
             if data.TextLabel then data.TextLabel.Visible = isCurrent end
 
-            -- Efficient Deletion
+            -- empty tags? u can see
             if isOld then
                 pcall(RemoveEspSmooth, v)
                 if v:FindFirstChild("VV_MARKER") then v.VV_MARKER:Destroy() end
@@ -2796,47 +2830,47 @@ task.spawn(function()
         end
     end)
 
-    -- Initial Global Scan
+    --bal Scan
     for _, x in ipairs(workspace.CurrentRooms:GetDescendants()) do 
         MonitorCloset(x) 
     end
 
-    -- Listener
+    -- r
     workspace.CurrentRooms.DescendantAdded:Connect(function(v)
         task.delay(0.1, function() MonitorCloset(v) end)
     end)
 end)
 
--- Using standard Roblox connection since shared.Connect doesn't exist
+-- aizo aizo garage
 local HideTimerConnection
 
 HideTimerConnection = game:GetService("ReplicatedStorage").RemotesFolder.HideMonster.OnClientEvent:Connect(function()
-    -- Floor safety checks
+    -- 
     if Script.IsBackdoor or Script.IsRooms or Script.IsRetro then return end
 
-    -- Verify the calculation function exists before calling it
+    -- 
     if not Script.Functions.CalculateHideTime then return end
     
     local hideTime = Script.Functions.CalculateHideTime(Script.CurrentRoom) or math.huge
-    local finalTime = tick() + math.round(hideTime)
+    local finalTime = tick() + math.round(hideTime) - 10.01
 
-    -- Basic Toggle check from your Linoria Toggles
+    -- gez
     if Toggles.GA_HideTimeShow and Toggles.GA_HideTimeShow.Value and hideTime ~= math.huge then
         
-        -- task.spawn is vital so the rest of the script (ESP, etc.) doesn't freeze
+        -- 
         task.spawn(function()
             local player = game.Players.LocalPlayer
             
             while player.Character and player.Character:GetAttribute("Hiding") and not Library.Unloaded do
                 local remainingTime = math.max(0, finalTime - tick())
                 
-                -- Format to 1 decimal place (e.g., 12.4)
+                --
                 local formattedTime = string.format("%.1f", remainingTime)
 
-                -- Use your verified Caption function
+                -- 
                 Script.Functions.Captions(formattedTime)
 
-                -- Kill loop if time hits zero or player leaves closet
+                -- 
                 if remainingTime <= 0 then break end
                 task.wait(0.1) 
             end
@@ -3493,7 +3527,7 @@ task.spawn(function()
         VoidModule.stuff = VoidFunction
         SeekModule.tease = SeekFunction
     end)
-
+ 
     MenuProperties:AddLabel("Menu bind"):AddKeyPicker("MenuKeybind", { Default = "RightShift", NoUI = true, Text = "Menu keybind" })
     MenuProperties:AddDropdown("DPIDropdown", {
 	Values = { "50%", "75%", "100%", "125%", "150%", "175%", "200%" },
@@ -3506,6 +3540,14 @@ task.spawn(function()
 		local DPI = tonumber(Value)
 
 		Library:SetDPIScale(DPI)
+	end,
+})
+    Library.ShowCustomCursor = false
+    MenuProperties:AddToggle("ShowCustomCursor", {
+	Text = "Custom Cursor",
+	Default = false,
+	Callback = function(Value)
+		Library.ShowCustomCursor = Value
 	end,
 })
     MenuProperties:AddDivider()
