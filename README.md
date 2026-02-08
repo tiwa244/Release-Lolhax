@@ -10,3 +10,11 @@ they're changes like, the ui, the new icons, the new things, and buttons..
 in the script bro, **also if i dont respond to bug reports dm me**
 # Paid or free
 Free, yeah FREE.
+## Changelogs ##
+VER: 3.00b1 
+-- Fixeds 🛠️
++ Fixed Rainbow Highlight Lag
++ Fixed Rainbow Unload Forever rainbow Highlight problem
+- Removed Gate Lever ESP (AttributeChange:Once)
+- Fixed False HideTimer
+**No Changes Were Made After.**
