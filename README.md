@@ -11,7 +11,8 @@ in the script bro, **also if i dont respond to bug reports dm me**
 # Paid or free
 Free, yeah FREE.
 ## Changelogs ##
-VER: 3.00b1 
+VER: 3.00b1
+
 -- Fixeds 🛠️
 + Fixed Rainbow Highlight Lag
 + Fixed Rainbow Unload Forever rainbow Highlight problem
