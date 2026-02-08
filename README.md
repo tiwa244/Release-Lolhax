@@ -18,4 +18,5 @@ VER: 3.00b1
 + Fixed Rainbow Unload Forever rainbow Highlight problem
 - Removed Gate Lever ESP (AttributeChange:Once)
 - Fixed False HideTimer
+
 **No Changes Were Made After.**
