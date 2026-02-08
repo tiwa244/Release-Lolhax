@@ -79,7 +79,9 @@ if not shared.Script then
     shared.Script = {
         Functions = {},
         Temp = {},
-        FloorReplicated = game:GetService("ReplicatedStorage"):WaitForChild("FloorReplicated")
+        Humanoid = {},
+        FloorReplicated = game:GetService("ReplicatedStorage"):WaitForChild("FloorReplicated"),
+        ReplicatedStorage = game:GetService("ReplicatedStorage")
     }
   end
 
@@ -137,6 +139,23 @@ Script.HideTimeValues = {
     {min = 36, max = 60, a = -1/12, b = 36, c = 18},
     {min = 60, max = 90, a = -1/30, b = 60, c = 16},
     {min = 90, max = 99, a = -1/6, b = 90, c = 15}
+}
+
+Script.FeatureConnections = {
+    Character = {},
+    Humanoid = {},
+    Player = {},
+    RootPart = {},
+}
+
+Script.MainUI = game.Players.LocalPlayer.PlayerGui:WaitForChild("MainUI")
+Script.MainGame = Script.MainUI:WaitForChild("Initiator"):WaitForChild("Main_Game")
+Script.FloorReplicated = game.ReplicatedStorage.FloorReplicated
+
+Script.CutsceneExclude = {
+    "FigureHotelChase",
+    "Elevator1",
+    "MinesFinale"
 }
 
 local lhxnxt_custom_captions = Instance.new("ScreenGui")
@@ -201,7 +220,7 @@ do
         
         TextLabel.Text = caption
 
-        -- Anti-flicker for the Haste Clock
+        -- 
         task.spawn(function()
             task.wait(2) 
             if os.time() - CaptionsLastUsed >= 2 then
@@ -210,6 +229,7 @@ do
         end) 
     end
 end
+
 
 
 local ErrorMessageOut
@@ -256,6 +276,7 @@ GeneralAutomation:AddToggle("GA_AutoInteract", { Text = "Automatic Interact", De
 GeneralAutomation:AddDropdown("GA_AutoInteract_Options", { Values = { "Use Lockpick ( Doors )", "Use Lockpick ( Other )", "Ignore Light Sources", "Ignore Can-Die" }, Default = 0, Multi = true, Text = "Automatic Interact Options" })
 GeneralAutomation:AddSlider("GA_AutoInteract_Range", { Text = "Range Multiplier", Default = 1, Min = 1, Max = 2, Rounding = 1, Compact = false })
 GeneralAutomation:AddDivider()
+GeneralAutomation:AddToggle("GA_FastClosetExt", { Text = "Fast Closet Exit", Default = true })
 GeneralAutomation:AddToggle("GA_EatCandies", { Text = "Automatic Candy Use", Default = false, }):AddKeyPicker("GA_EatCandies_K", { Default = "V", SyncToggleState = false, Mode = "Hold", Text = "Auto Use Candy", NoUI = false, Tooltip = "Will eat all candy in the player inventory when key is active." })
 GeneralAutomation:AddToggle("GA_AutoHide", { Text = "Automatic Hide", Default = false, Tooltip = "Will automatically predict entities and hide in the nearest available spot when enabled." })
 GeneralAutomation:AddToggle("GA_AutoHide_VisCheck", { Text = "Prediction Visible Check", Default = false, })
@@ -264,8 +285,6 @@ GeneralAutomation:AddSlider("GA_AutoHide_PredictionDistanceMultiplier", { Text =
 GeneralAutomation:AddDivider()
 GeneralAutomation:AddToggle("GA_HideTimeShow", { Text = "Closet Hiding Timer", Default = false, Tooltip = "Shows the Hiding Timer Before Hide Kicks you out."})
 GeneralAutomation:AddSlider("GA_PROMPTREACH_MULTIPLIER", { Text = "Prompt Reach Mutiplier", Default = 1, Min = 1, Max = 2, Rounding = 1 })
-GeneralAutomation:AddToggle("GA_BREAKER_SOLVERTOGGL", { Text = "Auto Breaker Solver", Default = false, Tooltip = "Automatically Solves the Breaker Puzzle in Door 100." })
-GeneralAutomation:AddDropdown("GA_BREAKER_SOLVERLEGITANDEXPLOIT", { Values  = { "Legit", "Exploit", }, Default = 0, Multi = false, Text = "Auto Breaker Solver Methods"})
 GeneralAutomation:AddToggle("GA_INSTAINTERACT", { Text = "Instant Interact", Default = false, Tooltip = "Instantly unlock prompts." }):AddKeyPicker("GA_InstaInteract_K", { Default = "I", SyncToggleState = true, Mode = "Toggle", Text = "Instant Interact", NoUI = false, Tooltip = "No Prompt Hold."})
 GeneralAutomation:AddToggle("GA_MinecartInteract", { Text = "Minecart Interact Spam", Default = false, Tooltip = "Automatically spam interact with nearby minecarts when key is active." }):AddKeyPicker("GA_MinecartInteract_K", { Default = "H", SyncToggleState = false, Mode = "Hold", Text = "Minecart Interact Spam", NoUI = false, })
 GeneralAutomation:AddToggle("GA_AnchorAutoSolve", { Text = "Anchor Automatic Solve", Default = false, Tooltip = "Automatically solves any anchor when close enough, if it's the designated one." })
@@ -470,6 +489,7 @@ ESPInteractables_Main:AddSlider("ESPI_RAINBOW_SPEED", {
     Rounding = 1
 })
 
+
 -- BRO IM SO SORRY LINORIA MADE ME DO IT THIS WAY PLEASE LORD FORGIVE ME
 local ESPInteractables_Configurate = ESPInteractables:AddTab("Configurate")
 ESPInteractables_Configurate:AddToggle("ESPI_C_Doors", { Text = "Door", Default = false })
@@ -535,9 +555,9 @@ VisualsView:AddSlider("VV_FieldOfView", { Text = "Field of View", Default = 0, M
 VisualsView:AddToggle("VV_NoCamShake", { Text = "No Camera Shake", Default = false, Tooltip = "Removes any camera shaking that will occur from entities or other things." })
 VisualsView:AddToggle("VV_NoLookBob", { Text = "No Look Bobbing", Default = false, Tooltip = "Removes any look bobbing that will occur when walking." })
 VisualsView:AddDivider()
-VisualsView:AddToggle("VV_Thirdperson", { Text = "Thirdperson", Default = false, Tooltip = "Changes camera visibility to view local character from the third person." }):AddKeyPicker("VV_Thirdperson_K", { Default = "V", SyncToggleState = false, Mode = "Toggle", Text = "Thirdperson", NoUI = false })
+VisualsView:AddToggle("VV_Thirdperson", { Text = "Thirdperson", Default = false, Tooltip = "Changes camera visibility to view local character from the third person." }):AddKeyPicker("VV_Thirdperson_K", { Default = "V", SyncToggleState = true, Mode = "Toggle", Text = "Thirdperson", NoUI = false })
 VisualsView:AddToggle("VV_ThirdpersonCamCollision", { Text = "Wall Detect", Default = false, Tooltip = "Makes the camera position on a detected wall if there are any, for the sake of visibility." })
-VisualsView:AddSlider("VV_ThirdpersonDistance", { Text = "Distance", Default = 10, Min = 5, Max = 30, Rounding = 0, Compact = true, Tooltip = "Camera distance for thirdperson." })
+VisualsView:AddSlider("VV_ThirdpersonDistance", { Text = "Distance", Default = 15, Min = 5, Max = 30, Rounding = 0, Compact = true, Tooltip = "Camera distance for thirdperson." })
 VisualsView:AddSlider("VV_ThirdpersonOffset", { Text = "Offset", Default = 0, Min = -5, Max = 5, Rounding = 1, Compact = true, Tooltip = "Camera left/right offset for thirdperson." })
 VisualsView:AddSlider("VV_ThirdpersonOffsetUp", { Text = "Vertical Offset", Default = 0, Min = -5, Max = 5, Rounding = 1, Compact = true, Tooltip = "Camera up/down offset for thirdperson." })
 VisualsView:AddDivider()
@@ -559,6 +579,7 @@ VisualsRemovals:AddToggle("VR_NoHasteEffect", { Text = "No Haste Effects", Defau
 VisualsRemovals:AddToggle("VR_NoHidingVignette", { Text = "No Hiding Vignette", Default = false, Tooltip = "Removes screen vignette when hiding." })
 VisualsRemovals:AddToggle("VR_NoHaltEffect", { Text = "No Halt Effects", Default = false, Tooltip = "Removes flashing effects during halt room." })
 VisualsRemovals:AddToggle("VR_NoReviveCutscene", { Text = "No Revive Cutscene", Default = false, Tooltip = "Removes the heart cutscene when reviving." })
+VisualsRemovals:AddToggle("VR_NoCutscenes", { Text = "No Cutscenes", Default = false, Tooltip = "Disables Cutscene."})
 VisualsRemovals:AddDivider()
 VisualsRemovals:AddToggle("VR_TimothyJumpscare", { Text = "Remove Timothy Jumpscare", Default = false, Tooltip = "Removes the jumpscare upon timothy spawning." })
 VisualsRemovals:AddToggle("VR_NoGlitchJumpscare", { Text = "Remove Glitch Jumpscare", Default = false, Tooltip = "Removes the client sided glitch jumpscare." })
@@ -584,15 +605,27 @@ MiscAudio:AddToggle("MA_SilentGloombat", { Text = "Silent Gloombats", Default = 
 local MiscellaneousOther = Tabs.Misc:AddLeftGroupbox("Other")
 MiscellaneousOther:AddToggle("MO_antirobloxvoid", { Text = "No Roblox Void", Default = false, Tooltip = "Removes the ROBLOX fallen parts destroy height." })
 MiscellaneousOther:AddDivider()
-MiscellaneousOther:AddButton("Play Again", function()
-    game.ReplicatedStorage.RemotesFolder.PlayAgain:FireServer()
-end)
-MiscellaneousOther:AddButton("Lobby", function()
-    game.ReplicatedStorage.RemotesFolder.Lobby:FireServer()
-end)
-MiscellaneousOther:AddButton("Revive", function()
-    game.ReplicatedStorage.RemotesFolder.Revive:FireServer()
-end)
+MiscellaneousOther:AddButton({
+    Text = "Play Again",
+    Func = function()
+        game.ReplicatedStorage.RemotesFolder.PlayAgain:FireServer()
+    end,
+    DoubleClick = true, 
+})
+MiscellaneousOther:AddButton({
+    Text = "Lobby",
+    Func = function()
+        game.ReplicatedStorage.RemotesFolder.Lobby:FireServer()
+    end,
+    DoubleClick = true, 
+})
+MiscellaneousOther:AddButton({
+    Text = "Revive",
+    Func = function()
+        game.ReplicatedStorage.RemotesFolder.Revive:FireServer()
+    end,
+    DoubleClick = true, 
+})
 
 -- Variables vvv
 
@@ -1546,108 +1579,6 @@ shared.Script = {
 local Script = shared.Script
 shared.Connections = {}
 
-
--- Add this inside SolveBreakerBox before the for loop
-
---// Functions \\--
-function Script.Functions.EnableBreaker(breaker, value)
-    breaker:SetAttribute("Enabled", value)
-
-    if value then
-        breaker:FindFirstChild("PrismaticConstraint", true).TargetPosition = -0.2
-        breaker.Light.Material = Enum.Material.Neon
-        breaker.Light.Attachment.Spark:Emit(1)
-        breaker.Sound.Pitch = 1.3
-    else
-        breaker:FindFirstChild("PrismaticConstraint", true).TargetPosition = 0.2
-        breaker.Light.Material = Enum.Material.Glass
-        breaker.Sound.Pitch = 1.2
-    end
-
-    breaker.Sound:Play()
-end
-
-function Script.Functions.SolveBreakerBox(breakerBox)
-    if not Toggles.GA_BREAKER_SOLVERTOGGL.Value then return end
-    if not Options.GA_BREAKER_SOLVERLEGITANDEXPLOIT then return end
-    if not breakerBox then return end
-    repeat task.wait(0.5) until breakerBox:FindFirstChild("BreakerSwitch", true):GetAttribute("ID") ~= nil
-
-    local code = breakerBox:FindFirstChild("Code", true)
-    local correct = breakerBox:FindFirstChild("Correct", true)
-
-    repeat task.wait() until code.Text ~= "..." or not breakerBox:IsDescendantOf(workspace)
-    if not breakerBox:IsDescendantOf(workspace) then return end
-
-    Library:Notify({
-        Title = "Auto Breaker Solver",
-        Description = "Solving the breaker box...",
-        Duration = 2
-    })
-
-    if Options.GA_BREAKER_SOLVERLEGITANDEXPLOIT.Value == "Legit" then
-        Script.Temp.UsedBreakers = {}
-        if shared.Connections["Reset"] then shared.Connections["Reset"]:Disconnect() end
-        if shared.Connections["Code"] then shared.Connections["Code"]:Disconnect() end
-
-        local breakers = {}
-        for _, breaker in pairs(breakerBox:GetChildren()) do
-            if breaker.Name == "BreakerSwitch" then
-                local id = string.format("%02d", breaker:GetAttribute("ID"))
-                breakers[id] = breaker
-            end
-        end
-
-        if code:FindFirstChild("Frame") then
-            Script.Functions.AutoBreaker(code, breakers)
-
-            shared.Connections["Reset"] = correct:GetPropertyChangedSignal("Playing"):Connect(function()
-                if correct.Playing then table.clear(Script.Temp.UsedBreakers) end
-            end)
-
-            shared.Connections["Code"] = code:GetPropertyChangedSignal("Text"):Connect(function()
-                task.delay(0.1, Script.Functions.AutoBreaker, code, breakers)
-            end)
-        end
-    else
-        repeat task.wait(0.1)
-            Script.RemotesFolder.EBF:FireServer()
-        until not workspace.CurrentRooms["100"]:FindFirstChild("DoorToBreakDown")
-
-        Library:Notify({
-        Title = "Auto Breaker Solver",
-        Description = "The Breaker Box Has Sucessfully been Solved!",
-        Duration = 2
-    })
-    end
-end
-
-function Script.Functions.AutoBreaker(code, breakers)
-    local newCode = code.Text
-    if not tonumber(newCode) and newCode ~= "??" then return end
-
-    local isEnabled = code.Frame.BackgroundTransparency == 0
-    local breaker = breakers[newCode]
-
-    if newCode == "??" and #Script.Temp.UsedBreakers == 9 then
-        for i = 1, 10 do
-            local id = string.format("%02d", i)
-
-            if not table.find(Script.Temp.UsedBreakers, id) then
-                breaker = breakers[id]
-            end
-        end
-    end
-
-    if breaker then
-        table.insert(Script.Temp.UsedBreakers, newCode)
-        if breaker:GetAttribute("Enabled") ~= isEnabled then
-            Script.Functions.EnableBreaker(breaker, isEnabled)
-        end
-    end
-end
-
-
             for _, Assets in Targets do
                 for _, Root in Assets:GetChildren() do
                     if Root.Name == "Locker_Small" then
@@ -2038,7 +1969,7 @@ end
         end
     end),
 
-    -- heh.. 😼
+    -- heh.. 
     game.Lighting:GetPropertyChangedSignal("OutdoorAmbient"):Connect(function()
         if Toggles.VW_Ambience.Value then
             game.Lighting.OutdoorAmbient = Options.VW_Ambience_C.Value
@@ -2150,6 +2081,13 @@ end
 
                 local Highlight, TextLabel = Esp(v, v, "Book", Options.ESPI_C_LibraryBooks_F.Value, Options.ESPI_C_LibraryBooks_O.Value)
                 table.insert(EspTable.Interactables.LibraryBooks, {Highlight, TextLabel})
+
+           elseif v.Name == "LibraryHintPaper" then
+            
+              v:WaitForChild("Handle", 9e9)
+
+              local Highlight, TextLabel = Esp(v, v, "Hint Paper", Options.ESPI_C_LibraryBooks_F.Value, Options.ESPI_C_LibraryBooks_O.Value)
+              table.insert(EspTable.Interactables, {Highlight, TextLabel})
 
             elseif v.Name == "LiveBreakerPolePickup" then
 
@@ -2743,7 +2681,7 @@ local ValdVHiddenSpots = {
     ["Wardrobe"] = "Closet",
     ["RetroWardrobe"] = "Closet",
     ["Bed"] = "Bed",
-    ["Toolshed"] = "Toolshed",
+    ["Toolshed"] = "Closet",
     ["Backdoor_Wardrobe"] = "Closet",
     ["Double_Bed"] = "Bed"
 }
@@ -2775,7 +2713,7 @@ task.spawn(function()
 
         if not isHidingSpot or v:FindFirstChild("VV_MARKER") then return end
 
-        -- 3. CLIMB: Parent Traversal
+        -- 3 climb to whatever room model i sifiasduadg qwyeqwe qwueuqwue yqwye daysd uahhu gshugashgsghdytsdytas tuiatui stu
         local rootRoom = v
         while rootRoom and rootRoom.Parent ~= CurrentRooms do
             rootRoom = rootRoom.Parent
@@ -2787,7 +2725,7 @@ task.spawn(function()
 
         if not roomNum or not TargetPart then return end
 
-        -- 4. MARK & STORE
+        -- ??
         Instance.new("BoolValue", v).Name = "VV_MARKER"
         
         ActiveClosets[v] = {
@@ -2852,7 +2790,7 @@ HideTimerConnection = game:GetService("ReplicatedStorage").RemotesFolder.HideMon
     if not Script.Functions.CalculateHideTime then return end
     
     local hideTime = Script.Functions.CalculateHideTime(Script.CurrentRoom) or math.huge
-    local finalTime = tick() + math.round(hideTime) - 10.01
+    local finalTime = tick() + math.round(hideTime) - 10.002
 
     -- gez
     if Toggles.GA_HideTimeShow and Toggles.GA_HideTimeShow.Value and hideTime ~= math.huge then
@@ -2880,6 +2818,37 @@ end)
 
 Toggles.VV_TranslucentHidingSpot:OnChanged(function()
     DoTrans(Toggles.VV_TranslucentHidingSpot.Value)
+end)
+
+Script.FeatureConnections.Humanoid["Move"] = LocalPlayer.Character.Humanoid:GetPropertyChangedSignal("MoveDirection"):Connect(function()
+ if not Toggles.GA_FastClosetExt then return end
+
+    if Toggles.GA_FastClosetExt.Value and LocalPlayer.Character.Humanoid.MoveDirection.Magnitude > 0 and LocalPlayer.Character:GetAttribute("Hiding") then
+            game.ReplicatedStorage.RemotesFolder.CamLock:FireServer()
+        end
+  end)
+
+Toggles.VR_NoCutscenes:OnChanged(function(value)
+    if Script.MainGame then
+        local cutscenes = Script.MainGame:FindFirstChild("Cutscenes", true)
+        if cutscenes then
+            for _, cutscene in pairs(cutscenes:GetChildren()) do
+                if table.find(Script.CutsceneExclude, cutscene.Name) then continue end
+    
+                local defaultName = cutscene.Name:gsub("_", "")
+                cutscene.Name = value and "_" .. defaultName or defaultName
+            end
+        end
+    end
+
+    if Script.FloorReplicated then
+        for _, cutscene in pairs(Script.FloorReplicated:GetChildren()) do
+            if not cutscene:IsA("ModuleScript") or table.find(Script.CutsceneExclude, cutscene.Name) then continue end
+
+            local defaultName = cutscene.Name:gsub("_", "")
+            cutscene.Name = value and "_" .. defaultName or defaultName
+        end
+    end
 end)
 
 local ReviveHook; ReviveHook = hookfunction(require(game.ReplicatedStorage.ModulesClient.ReviveCutscene), function(...)
@@ -2935,6 +2904,11 @@ for _, v in Rooms:GetDescendants() do
             elseif v.Name == "KeyObtain" then
 
                 local Highlight, TextLabel = Esp(v, v, "Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value)
+                table.insert(EspTable.Interactables.DoorKeys, {Highlight, TextLabel})
+         
+            elseif v.Name == "ElectricalKeyObtain" then
+                
+                local Highlight, TextLabel = Esp(v, v, "Electric Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value)
                 table.insert(EspTable.Interactables.DoorKeys, {Highlight, TextLabel})
 
             elseif v.Name == "GoldPile" then
@@ -3587,7 +3561,7 @@ task.spawn(function()
      Notify("lolhax v3 | ID: " .. LocalPlayer.Name, "ID Request")
      end)
     DebugStuff:AddButton("IdCheck2", function() 
-     Notify(IdCheck, "Id Requested Given.")
+     Notify(IdCheck, "Id Requested Given.", 2.5)
     end)
     DebugStuff:AddButton("IdCheck3", function()
     Notify(IdCheck, game.ReplicatedStorage.GameData.Floor.value)
