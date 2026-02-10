@@ -60,11 +60,15 @@ function Fly:Set(val)
     self.Enabled = val
     local char = LocalPlayer.Character
     local hum = char and char:FindFirstChildOfClass("Humanoid")
+    local root = char and char:FindFirstChild("HumanoidRootPart")
 
     if not val then
         -- DISABLING FLY
         self.FlyBody.Parent = nil
         self.FlyGyro.Parent = nil
+        if root then
+           root.Anchored = false
+        end
         
         if hum then
             hum.PlatformStand = false
