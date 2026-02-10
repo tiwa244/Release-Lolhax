@@ -148,9 +148,12 @@ Script.FeatureConnections = {
     RootPart = {},
 }
 
+Script.FloorVal = game.ReplicatedStorage:FindFirstChild("GameData"):WaitForChild("Floor")
 Script.MainUI = game.Players.LocalPlayer.PlayerGui:WaitForChild("MainUI")
 Script.MainGame = Script.MainUI:WaitForChild("Initiator"):WaitForChild("Main_Game")
 Script.FloorReplicated = game.ReplicatedStorage.FloorReplicated
+Script.IsMines = Script.FloorVal.Value == "Mines"
+Script.Bypassed = false
 
 Script.CutsceneExclude = {
     "FigureHotelChase",
@@ -273,6 +276,8 @@ local Tabs = { General = Window:AddTab("General", "house", "General Features"), 
 
 local GeneralAutomation = Tabs.General:AddLeftGroupbox("Automation")
 GeneralAutomation:AddToggle("GA_AutoInteract", { Text = "Automatic Interact", Default = false, }):AddKeyPicker("GA_AutoInteract_K", { Default = "R", SyncToggleState = false, Mode = "Hold", Text = "Auto Interact", NoUI = false, Tooltip = "Will activate any nearby interactables when key is active." })
+GeneralAutomation:AddToggle("GA_Fly", { Text = "Enable Fly", Default = false, Tooltip = "Enables flying in-game."}):AddKeyPicker("GA_FlyingF", { Default = "F", SyncToggleState = true, Mode = "Toggle", Text = "Enable Flying", NoUI = false, Tooltip = "Enables Flying" })
+GeneralAutomation:AddSlider("GA_FlySpeed", { Text = "Fly Speed", Default = 15, Min = 0, Max = 50, Tooltip = "Flying Speed."})
 GeneralAutomation:AddDropdown("GA_AutoInteract_Options", { Values = { "Use Lockpick ( Doors )", "Use Lockpick ( Other )", "Ignore Light Sources", "Ignore Can-Die" }, Default = 0, Multi = true, Text = "Automatic Interact Options" })
 GeneralAutomation:AddSlider("GA_AutoInteract_Range", { Text = "Range Multiplier", Default = 1, Min = 1, Max = 2, Rounding = 1, Compact = false })
 GeneralAutomation:AddDivider()
@@ -323,11 +328,13 @@ end)
 local ExploitSelf = Tabs.Exploit:AddLeftGroupbox("Self")
 ExploitSelf:AddToggle("ES_AlwaysJump", { Text = "Always Enable Jumping", Default = false, Tooltip = "Enables jumping at all times." })
 ExploitSelf:AddDivider()
+ExploitSelf:AddToggle("ES_TheMinesAnticheatBypass", { Text = "Mines AntiCheat-Bypass", Default = false, Tooltip = "Disables AntiCheat in Mines"})
 ExploitSelf:AddToggle("ES_HASTECLOCK", { Text = "Haste Clock", Default = false, ToolTip = "Shows The Backdoor timer." })
 ExploitSelf:AddToggle("ES_AntiGloombat", { Text = "Anti-Gloombat Egg", Default = false, Tooltip = "Disallows touching on any Gloombat egg hitbox." })
 ExploitSelf:AddToggle("ES_AntiGiggle", { Text = "Anti-Giggle", Default = false, Tooltip = "Disallows touching on the entity 'Giggle' hitbox." })
 ExploitSelf:AddToggle("ES_AntiSnare", { Text = "Anti-Snare", Default = false, Tooltip = "Disallows touching on the entity 'Snare'." })
 ExploitSelf:AddToggle("ES_AntiDupe", { Text = "Anti-Dupe", Default = false, Tooltip = "Disallows touching on any entity 'Dupe' fake doors." })
+ExploitSelf:AddSlider("ES_MaxSlope", { Text = "Max Floor Angle", Default = 45, Min = 0, Max = 90, Rounding = 0 })
 ExploitSelf:AddToggle("ES_AntiEyes", { Text = "Anti-Eyes", Default = false, Tooltip = "Forces character to look down from the entity 'Eyes'." })
 ExploitSelf:AddToggle("ES_AntiLookman", { Text = "Anti-Lookman", Default = false, Tooltip = "Forces character to look down from the entity 'Lookman'." })
 ExploitSelf:AddToggle("ES_AntiChanedlier", { Text = "Anti-Chandelier", Default = false, Tooltip = "Disallows touching on any fallen chandeliers during the seek chase." })
@@ -341,6 +348,7 @@ if game.ReplicatedStorage.GameData.Floor.Value == "Mines" then
                 for i = 1, 11 do
                     task.spawn(function()
                         game.ReplicatedStorage.RemotesFolder.RequestAsset:InvokeServer("Remote")
+                        print("Disabled Rush and ambush on mines mf")
                     end)
                 end
             end)
@@ -417,6 +425,107 @@ local RainbowToggle = ESPInteractables_Main:AddToggle("ESPI_RAINBOW_HIGHLIGHT", 
     Tooltip = "Rainbow ESP Colors."
 })
 
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local LocalPlayer = Players.LocalPlayer
+
+local Fly = {
+    FlyBody = Instance.new("BodyVelocity"),
+    FlyGyro = Instance.new("BodyGyro"),
+    Enabled = false, 
+    Speed = 50
+}
+
+-- Setup Controls and Physics
+local Controls = require(LocalPlayer.PlayerScripts:WaitForChild("PlayerModule")):GetControls()
+
+Fly.FlyBody.Velocity = Vector3.zero
+Fly.FlyBody.MaxForce = Vector3.one * 9e9
+Fly.FlyGyro.P = 9e4
+Fly.FlyGyro.MaxTorque = Vector3.one * 9e9
+
+-- Main Loop
+RunService.RenderStepped:Connect(function()
+    if not Fly.Enabled then return end
+    
+    local char = LocalPlayer.Character
+    local root = char and char:FindFirstChild("HumanoidRootPart")
+    local hum = char and char:FindFirstChildOfClass("Humanoid")
+    
+    if not root or not hum then return end
+
+    local cam = workspace.CurrentCamera
+    local mv = Controls:GetMoveVector()
+    
+    -- Calculate Direction
+    local velocity = (cam.CFrame.LookVector * -mv.Z) + (cam.CFrame.RightVector * mv.X)
+    if UserInputService:IsKeyDown(Enum.KeyCode.Space) then velocity += cam.CFrame.UpVector end
+    if UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) then velocity -= cam.CFrame.UpVector end
+
+    if velocity.Magnitude > 0 then
+        -- MOVING: Use Physics
+        root.Anchored = false 
+        if Fly.FlyBody.Parent ~= root then
+            Fly.FlyBody.Parent = root
+            Fly.FlyGyro.Parent = root
+        end
+        
+        Fly.FlyBody.Velocity = velocity * Fly.Speed
+        Fly.FlyGyro.CFrame = cam.CFrame
+    else
+        -- STATIONARY: Anchor to kill Jitter
+        Fly.FlyBody.Velocity = Vector3.zero
+        root.Anchored = true
+    end
+    
+    -- Force the orientation even when anchored
+    root.CFrame = CFrame.new(root.CFrame.Position, root.CFrame.Position + cam.CFrame.LookVector)
+end)
+
+function Fly:Set(val)
+    self.Enabled = val
+    local char = LocalPlayer.Character
+    local hum = char and char:FindFirstChildOfClass("Humanoid")
+    local root = char and char:FindFirstChild("HumanoidRootPart")
+
+    if not val then
+        -- DISABLING FLY
+        self.FlyBody.Parent = nil
+        self.FlyGyro.Parent = nil
+        if root then
+           root.Anchored = false
+        end
+        
+        if hum then
+            hum.PlatformStand = false
+            hum:ChangeState(Enum.HumanoidStateType.GettingUp)
+        end
+        
+        -- The fake warning trigger
+        warn("Infinite yield possible on 'workspace." .. LocalPlayer.Name .. ".HumanoidRootPart'")
+    else
+        -- ENABLING FLY
+        if hum then
+            hum.PlatformStand = true
+            hum:ChangeState(Enum.HumanoidStateType.Physics)
+        end
+    end
+end 
+
+function Fly:SetSpeed(newSpeed)
+    self.Speed = tonumber(newSpeed) or 50
+end
+
+function Fly:Enable()
+    self:Set(true)
+end
+
+function Fly:Disable()
+    self:Set(false)
+end
+
+
 local CurrentRainbowColor = Color3.new(1, 1, 1)
 
 local CollectionService = game:GetService("CollectionService")
@@ -467,6 +576,10 @@ task.spawn(function()
     end
 end)
 
+Toggles.GA_Fly:OnChanged(function(value)
+    Fly:Set(value)
+    Fly:SetSpeed(Options.GA_FlySpeed.Value)
+end)
 
 Toggles.ESPI_RAINBOW_HIGHLIGHT:OnChanged(function()
     if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value == false then
@@ -753,6 +866,7 @@ local EspTable = {
         LibraryBooks = {},
         BreakerPoles = {},
         Anchors = {},
+        None = {}, 
 
         MiscPickups = {}
     },
@@ -1123,7 +1237,11 @@ function FindLoot(Origin)
             if (Loot.Hitbox.Position - LocalPlayer.Character.Collision.Position).Magnitude < Loot.LootPrompt.MaxActivationDistance * Options.GA_AutoInteract_Range.Value then
                 fireproximityprompt(Loot.LootPrompt)
             end
+        elseif Loot.Name == "LiveHintBook" then
 
+            if (Loot.Hitbox.Position - LocalPlayer.Character.Collision.Position).Magnitude < Loot.LootPrompt.MaxActivationDistance * Options.GA_AutoInteract_Range.Value then
+                fireproximityprompt(Loot.ModulePrompt)
+            end
         elseif Loot.Name == "Bandage" then
 
             if (LocalPlayer.Character.Humanoid.Health < 100 or (BandagePack and BandagePack:GetAttribute("Durability") < BandagePack:GetAttribute("DurabilityMax"))) then
@@ -1612,7 +1730,7 @@ shared.Connections = {}
                             FindLoot(Root)
 
                         end
-
+               
                     elseif Root.Name == "ChestBoxLocked" then
 
                         if Root.ActivateEventPrompt:GetAttribute("Interactions") then
@@ -1718,7 +1836,13 @@ shared.Connections = {}
                                 fireproximityprompt(Root.ModulePrompt)
                             end
                         end
-
+                    elseif Root.Name == "LiveHintBook" then
+                        
+                        if not (HasItem("Book")) then
+                            if (Root.Hitbox.Position - LocalPlayer.Character.Collision.Position).Magnitude < Root.ModulePrompt.MaxActivationDistance * Options.GA_AutoInteract_Range.Value then
+                                fireproximityprompt(Root.ModulePrompt)
+                            end
+                        end
                     elseif Root.Name == "MinesGenerator" then
                         local Fuse = HasItem("GeneratorFuse")
 
@@ -2851,6 +2975,80 @@ Toggles.VR_NoCutscenes:OnChanged(function(value)
     end
 end)
 
+    Toggles.ES_TheMinesAnticheatBypass:OnChanged(function(value)
+        if value and Script.IsMines then
+            local progressPart = Instance.new("Part", game.Workspace) do
+                progressPart.Anchored = true
+                progressPart.CanCollide = false
+                progressPart.Name = "_internal_lhx_acbypassprogress"
+                progressPart.Transparency = 1
+            end
+
+            if Library.IsMobile then
+                Library:Notify({
+                    Title = "Anticheat bypass",
+                    Description = "To bypass the ac, you must interact with a ladder.",
+                    Reason = "Ladder ESP has been enabled, do not move while on the ladder.",
+
+                    LinoriaMessage = "To bypass the anticheat, you must interact with a ladder. Ladder ESP has been enabled.\nDo not move while on the ladder.",
+                    Time = progressPart
+                })
+            else
+                Library:Notify({
+                    Title = "Anticheat bypass",
+                    Description = "To bypass the ac, you must interact with a ladder.",
+                    Reason = "Ladder ESP has been enabled, do not move while on the ladder.",
+
+                    LinoriaMessage = "To bypass the anticheat, you must interact with a ladder. Ladder ESP has been enabled.\nDo not move while on the ladder.",
+                    Time = progressPart
+                })
+            end
+            
+
+            Script.RemotesFolder.ClimbLadder:FireServer()
+            Script.Bypassed = false
+        
+        end
+    end)
+
+    if Script.IsMines then
+        if LocalPlayer.Character then
+            Script.FeatureConnections.Character["AnticheatBypassTheMines"] = LocalPlayer.Character:GetAttributeChangedSignal("Climbing"):Connect(function()
+                if not Toggles.ES_TheMinesAnticheatBypass then return end
+                if not Script.IsMines then return end
+                if not Toggles.ES_TheMinesAnticheatBypass.Value then return end
+                if not LocalPlayer.Character:GetAttribute("Climbing") then return end
+
+                task.wait(1)
+                LocalPlayer.Character:SetAttribute("Climbing", false)
+
+                Script.Bypassed = true
+
+                Library:Notify({
+                    Title = "Anticheat Bypass",
+                    Description = "Bypassed the anticheat successfully! This will only last until the next cutscene",
+                    Reason = "This will only last until the next cutscene!",
+
+                   LinoriaMessage = "Bypassed the anticheat successfully! This will only last until the next cutscene"
+                })
+                if workspace:FindFirstChild("_internal_lhx_acbypassprogress") then workspace:FindFirstChild("_internal_lhx_acbypassprogress"):Destroy() end
+            end)
+        end
+end
+
+local currentRoomModel = workspace.CurrentRooms:FindFirstChild(tostring(Script.CurrentRoom))
+if Script.IsMines and Script.Bypassed and currentRoomModel:GetAttribute("RawName") == "HaltHallway" then
+        Script.Bypassed = false
+        Library:Notify({
+            Title = "Anticheat Bypass",
+            Description = "Halt has broken anticheat bypass.",
+            Reason = "Please go on a ladder again to fix it.",
+
+            LinoriaMessage = "Halt has broken anticheat bypass, please go on a ladder again to fix it."
+        })
+
+    end
+
 local ReviveHook; ReviveHook = hookfunction(require(game.ReplicatedStorage.ModulesClient.ReviveCutscene), function(...)
     if Toggles.VR_NoReviveCutscene.Value then
         return
@@ -3524,6 +3722,14 @@ task.spawn(function()
 		Library.ShowCustomCursor = Value
 	end,
 })
+    Library.ForceCheckbox = false
+    MenuProperties:AddToggle("ForceCheckbox", {
+	Text = "Force Checkbox",
+	Default = false,
+	Callback = function(Value)
+		Library.ForceCheckbox = Value
+	end,
+})
     MenuProperties:AddDivider()
     MenuProperties:AddButton("LX Discord Server", function()
      setclipboard("https://discord.gg/3xqFjM4R")
@@ -3540,7 +3746,7 @@ task.spawn(function()
     Toggles.keybindmenu:OnChanged(function()
         Library.KeybindFrame.Visible = Toggles.keybindmenu.Value
     end)
-
+    
     Library.ToggleKeybind = Options.MenuKeybind
 
     ThemeManager:SetLibrary(Library)
