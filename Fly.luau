@@ -1,7 +1,13 @@
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
+
+-- Ensure LocalPlayer exists
 local LocalPlayer = Players.LocalPlayer
+if not LocalPlayer then
+    Players:GetPropertyChangedSignal("LocalPlayer"):Wait()
+    LocalPlayer = Players.LocalPlayer
+end
 
 local Fly = {
     FlyBody = nil,
@@ -11,19 +17,34 @@ local Fly = {
     Connection = nil
 }
 
--- Internal helper to safely get the player's controls
+-- Internal helper to safely get character components
+local function getCharacterData()
+    local char = LocalPlayer.Character
+    if not char then return nil, nil, nil end
+    
+    local root = char:FindFirstChild("HumanoidRootPart")
+    local humanoid = char:FindFirstChild("Humanoid")
+    
+    return char, root, humanoid
+end
+
+-- Internal helper to safely get movement input
 local function getMoveVector()
+    local playerScripts = LocalPlayer:FindFirstChild("PlayerScripts")
+    if not playerScripts then return Vector3.zero end
+    
+    local playerModule = playerScripts:FindFirstChild("PlayerModule")
+    if not playerModule then return Vector3.zero end
+    
     local success, result = pcall(function()
-        local PlayerModule = LocalPlayer.PlayerScripts:FindFirstChild("PlayerModule")
-        if PlayerModule then
-            return require(PlayerModule):GetControls():GetMoveVector()
-        end
+        return require(playerModule):GetControls():GetMoveVector()
     end)
+    
     return success and result or Vector3.zero
 end
 
 function Fly:Setup()
-    -- Only create physics objects if they don't exist
+    -- Create physics objects if they don't exist
     if not Fly.FlyBody then
         Fly.FlyBody = Instance.new("BodyVelocity")
         Fly.FlyBody.Velocity = Vector3.zero
@@ -34,25 +55,26 @@ function Fly:Setup()
         Fly.FlyGyro.MaxTorque = Vector3.one * 9e9
     end
 
-    -- Kill existing connection if Setup is called twice
-    if Fly.Connection then Fly.Connection:Disconnect() end
+    -- Disconnect old connection if Setup is re-called
+    if Fly.Connection then 
+        Fly.Connection:Disconnect() 
+    end
 
     Fly.Connection = RunService.RenderStepped:Connect(function()
         if not Fly.Enabled then return end
 
-        local character = LocalPlayer.Character
-        local root = character and character:FindFirstChild("HumanoidRootPart")
+        local _, root, _ = getCharacterData()
         if not root then return end
 
         local cam = workspace.CurrentCamera
         local moveVector = getMoveVector()
         
-        -- Calculate direction based on camera orientation
+        -- Directional logic
         local look = cam.CFrame.LookVector
         local right = cam.CFrame.RightVector
         local velocity = (look * -moveVector.Z) + (right * moveVector.X)
 
-        -- Vertical movement
+        -- Vertical logic
         if UserInputService:IsKeyDown(Enum.KeyCode.Space) then 
             velocity += cam.CFrame.UpVector 
         end
@@ -66,12 +88,11 @@ function Fly:Setup()
 end
 
 function Fly:Set(value: boolean)
-    local character = LocalPlayer.Character
-    local root = character and character:FindFirstChild("HumanoidRootPart")
-    local humanoid = character and character:FindFirstChild("Humanoid")
-
+    local _, root, humanoid = getCharacterData()
+    
+    -- Ensure we have a RootPart before parenting physics
     if not root then 
-        warn("Cannot toggle fly: HumanoidRootPart not found.")
+        warn("Fly: Waiting for HumanoidRootPart...")
         return 
     end
 
@@ -81,8 +102,14 @@ function Fly:Set(value: boolean)
         humanoid.PlatformStand = value 
     end
     
+    -- Parent physics to the character when enabled
     Fly.FlyBody.Parent = if value then root else nil
     Fly.FlyGyro.Parent = if value then root else nil
+    
+    -- Safety: reset velocity if disabling
+    if not value then
+        Fly.FlyBody.Velocity = Vector3.zero
+    end
 end
 
 function Fly:Stop()
@@ -92,9 +119,3 @@ function Fly:Stop()
         Fly.Connection = nil
     end
     if Fly.FlyBody then Fly.FlyBody:Destroy() Fly.FlyBody = nil end
-    if Fly.FlyGyro then Fly.FlyGyro:Destroy() Fly.FlyGyro = nil end
-end
-
-function Fly:Enable() Fly:Set(true) end
-function Fly:Disable() Fly:Set(false) end
-function Fly:SetSpeed(s: number) Fly.Speed = s end
