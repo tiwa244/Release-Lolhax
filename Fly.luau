@@ -94,3 +94,4 @@ function Fly:Disable()
     self:Set(false)
 end
 
+return Fly
