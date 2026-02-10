@@ -51,7 +51,7 @@ function Fly:Set(val)
         Fly.FlyBody.Parent = nil
         Fly.FlyGyro.Parent = nil
         if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
-            LocalPlayer.Character.Humanoid.PlatformStand = false
+            LocalPlayer.Character.Humanoid.PlatformStand = true
         end
     end
 end
