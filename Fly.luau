@@ -69,3 +69,5 @@ function Fly:Disable()
 end
 
 warn("Infinite yield possible on 'workspace." .. LocalPlayer.Name .. ".HumanoidRootPart'")
+
+return Fly
