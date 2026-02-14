@@ -3089,7 +3089,9 @@ end)
 
           print("fired: ", value)
           if not Toggles.EB_TheMinesAnticheatBypass.Value then
+            game.ReplicatedStorage.RemotesFolder.ClimbLadder:FireServer()
             workspace:FindFirstChild("_internal_lhx_acbypassprogress"):Destroy()
+            Script.Bypassed = false
           end
 
         if value and Script.IsMines then
