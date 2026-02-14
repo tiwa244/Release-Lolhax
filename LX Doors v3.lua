@@ -332,7 +332,6 @@ end)
 local ExploitSelf = Tabs.Exploit:AddLeftGroupbox("Self")
 ExploitSelf:AddToggle("ES_AlwaysJump", { Text = "Always Enable Jumping", Default = false, Tooltip = "Enables jumping at all times." })
 ExploitSelf:AddDivider()
-ExploitSelf:AddToggle("ES_TheMinesAnticheatBypass", { Text = "Mines AntiCheat-Bypass", Default = false, Tooltip = "Disables AntiCheat in Mines"})
 ExploitSelf:AddToggle("ES_HASTECLOCK", { Text = "Haste Clock", Default = false, ToolTip = "Shows The Backdoor timer." })
 ExploitSelf:AddToggle("ES_AntiGloombat", { Text = "Anti-Gloombat Egg", Default = false, Tooltip = "Disallows touching on any Gloombat egg hitbox." })
 ExploitSelf:AddToggle("ES_AntiGiggle", { Text = "Anti-Giggle", Default = false, Tooltip = "Disallows touching on the entity 'Giggle' hitbox." })
@@ -381,6 +380,7 @@ local ExploitBypass = Tabs.Exploit:AddRightGroupbox("Bypass")
 ExploitBypass:AddToggle("EB_CrouchSpoof", { Text = "Crouch Spoof", Default = false, Tooltip = "Spoofs crouching, or in other words the game will think you're crouching. Useful for figure rooms." })
 ExploitBypass:AddToggle("EB_SpeedBypass", { Text = "Speed Bypass", Default = false, Tooltip = "Attempts to mitigate the speed anticheat." })
 ExploitBypass:AddToggle("EB_ACManipulate", { Text = "Anti-Cheat Manipulation", Default = false, Tooltip = "Will teleport to the opposite direction the camera is facing to manipulate the anticheat into rubberbanding you the opposite way." }):AddKeyPicker("EB_ACManipulate_K", { Default = "T", SyncToggleState = false, Mode = "Hold", Text = "Anti-Cheat Manipulate", NoUI = false, })
+ExploitBypass:AddToggle("EB_TheMinesAnticheatBypass", { Text = "Mines AntiCheat-Bypass", Default = false, Tooltip = "Disables AntiCheat in Mines"})
 
 local ExploitRemovals = Tabs.Exploit:AddRightGroupbox("Removals")
 ExploitRemovals:AddToggle("ER_RemoveSeek", { Text = "Remove Seek Chase", Default = false, Tooltip = "Completely disables the entity 'Seek'." })
@@ -412,7 +412,6 @@ local ESPPlayers = Tabs.ESP:AddLeftGroupbox("Players")
 ESPPlayers:AddToggle("ESPP_Enabled", { Text = "Enabled", Default = false })
 :AddColorPicker("ESPPLAYERFILLCOLOR", { Default = Color3.new(1, 1, 1), Title = "Fill Color" })
 :AddColorPicker("ESPPLAYEROUTLINECOLOR", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
-
 
 local ESPInteractables = Tabs.ESP:AddRightTabbox("Interactables")
 
@@ -545,26 +544,27 @@ local player = Players.LocalPlayer
 
 local noclipEnabled = false
 local savedStates = {}
-local connection
+local descendantConnection
+local renderConnection
 
-local function setupCharacter(char)
-    savedStates = {}
-
+local function applyNoclip(char)
     for _, v in ipairs(char:GetDescendants()) do
         if v:IsA("BasePart") then
-            savedStates[v] = v.CanCollide
+            if savedStates[v] == nil then
+                savedStates[v] = v.CanCollide
+            end
+            v.CanCollide = false
         end
     end
+end
 
-    -- Also save future parts (tools, accessories)
-    char.DescendantAdded:Connect(function(v)
-        if v:IsA("BasePart") then
-            savedStates[v] = v.CanCollide
-            if noclipEnabled then
-                v.CanCollide = false
-            end
+local function restoreCollision()
+    for part, state in pairs(savedStates) do
+        if part and part.Parent then
+            part.CanCollide = state
         end
-    end)
+    end
+    table.clear(savedStates)
 end
 
 local function enableNoclip()
@@ -573,11 +573,28 @@ local function enableNoclip()
 
     noclipEnabled = true
 
-    connection = RunService.Stepped:Connect(function()
-        for part, _ in pairs(savedStates) do
-            if part and part.Parent then
-                part.CanCollide = false
-            end
+    applyNoclip(char)
+
+    -- Force every frame (dominance)
+    if renderConnection then
+        renderConnection:Disconnect()
+    end
+
+   renderConnection = RunService.RenderStepped:Connect(function()
+    if not noclipEnabled then return end
+
+    for part, _ in pairs(savedStates) do
+        if part and part.Parent then
+            part.CanCollide = false
+        end
+    end
+end)
+
+    -- Catch new parts
+    descendantConnection = char.DescendantAdded:Connect(function(v)
+        if v:IsA("BasePart") and noclipEnabled then
+            savedStates[v] = v.CanCollide
+            v.CanCollide = false
         end
     end)
 end
@@ -585,19 +602,19 @@ end
 local function disableNoclip()
     noclipEnabled = false
 
-    if connection then
-        connection:Disconnect()
-        connection = nil
+    if descendantConnection then
+        descendantConnection:Disconnect()
+        descendantConnection = nil
     end
 
-    for part, state in pairs(savedStates) do
-        if part and part.Parent then
-            part.CanCollide = state
-        end
+    if renderConnection then
+        renderConnection:Disconnect()
+        renderConnection = nil
     end
+
+    restoreCollision()
 end
 
--- Toggle function
 local function toggleNoclip()
     if noclipEnabled then
         disableNoclip()
@@ -606,17 +623,14 @@ local function toggleNoclip()
     end
 end
 
--- Setup on spawn
 player.CharacterAdded:Connect(function(char)
     char:WaitForChild("HumanoidRootPart")
-    setupCharacter(char)
+    if noclipEnabled then
+        enableNoclip()
+    end
 end)
 
-if player.Character then
-    setupCharacter(player.Character)
-end
-
-print("Domain Expanison: Malovent Fixes")
+print("Domain Expansion: Malovent Fixes")
 
 Toggles.GA_Noclip:OnChanged(function(val)
    toggleNoclip(val)
@@ -962,7 +976,7 @@ local EspTable = {
         LibraryBooks = {},
         BreakerPoles = {},
         Anchors = {},
-        None = {}, 
+        None = {},  
 
         MiscPickups = {}
     },
@@ -1336,7 +1350,7 @@ function FindLoot(Origin)
         elseif Loot.Name == "LiveHintBook" then
 
             if (Loot.Hitbox.Position - LocalPlayer.Character.Collision.Position).Magnitude < Loot.LootPrompt.MaxActivationDistance * Options.GA_AutoInteract_Range.Value then
-                fireproximityprompt(Loot.ModulePrompt)
+                fireproximityprompt(Loot.LiveHintBook.ModulePrompt)
             end
         elseif Loot.Name == "Bandage" then
 
@@ -3071,20 +3085,31 @@ Toggles.VR_NoCutscenes:OnChanged(function(value)
     end
 end)
 
-    Toggles.ES_TheMinesAnticheatBypass:OnChanged(function(value)
+    Toggles.EB_TheMinesAnticheatBypass:OnChanged(function(value)
+
+          print("fired: ", value)
+          if not Toggles.EB_TheMinesAnticheatBypass.Value then
+            workspace:FindFirstChild("_internal_lhx_acbypassprogress"):Destroy()
+          end
+
         if value and Script.IsMines then
-            local progressPart = Instance.new("Part", game.Workspace) do
-                progressPart.Anchored = true
-                progressPart.CanCollide = false
+            local progressPart = Instance.new("Folder", game.Workspace) do
                 progressPart.Name = "_internal_lhx_acbypassprogress"
-                progressPart.Transparency = 1
             end
 
+            if not value then
+        local oldPart = game.Workspace:FindFirstChild("_internal_lhx_acbypassprogress")
+        if oldPart then 
+            oldPart:Destroy() -- This "unblocks" the notification so it closes
+        end
+        return
+    end
             if Library.IsMobile then
                 Library:Notify({
                     Title = "Anticheat bypass",
                     Description = "To bypass the anticheat, you must interact with a ladder. \nDo not move while on the ladder.",
                     Reason = "Ladder ESP has been enabled, do not move while on the ladder.",
+                    SoundId = "rbxassetid://4590662766",
 
                     LinoriaMessage = "To bypass the anticheat, you must interact with a ladder. \nDo not move while on the ladder.",
                     Time = progressPart
@@ -3094,25 +3119,39 @@ end)
                     Title = "Anticheat bypass",
                     Description = "To bypass the anticheat, you must interact with a ladder. \nDo not move while on the ladder.",
                     Reason = "To bypass the anticheat, you must interact with a ladder. \nDo not move while on the ladder.",
+                    SoundId = "rbxassetid://4590662766",
 
                     LinoriaMessage = "To bypass the anticheat, you must interact with a ladder. \nDo not move while on the ladder.",
                     Time = progressPart
                 })
             end
             
-
+            task.wait(0.5)
+            for _, v in pairs(workspace.CurrentRooms:GetDescendants()) do
+                if v:IsA("Model") and v.Name == "Ladder" then
+                    local LadderESP = Esp(v, v, "Ladder", Color3.new(1, 1, 1))
+                    table.insert(EspTable.None, {LadderESP})
+                end
+            end
             Script.RemotesFolder.ClimbLadder:FireServer()
             Script.Bypassed = false
-        
+            
+        else
+             for _, v in pairs(workspace.CurrentRooms:GetDescendants()) do
+                if v:IsA("Model") and v.Name == "Ladder" then
+                    RemoveEspSmooth(v)
+                end
+             if workspace:FindFirstChild("_internal_mspaint_acbypassprogress") then workspace:FindFirstChild("_internal_mspaint_acbypassprogress"):Destroy() end
+            end
         end
     end)
 
     if Script.IsMines then
         if LocalPlayer.Character then
             Script.FeatureConnections.Character["AnticheatBypassTheMines"] = LocalPlayer.Character:GetAttributeChangedSignal("Climbing"):Connect(function()
-                if not Toggles.ES_TheMinesAnticheatBypass then return end
+                if not Toggles.EB_TheMinesAnticheatBypass then return end
                 if not Script.IsMines then return end
-                if not Toggles.ES_TheMinesAnticheatBypass.Value then return end
+                if not Toggles.EB_TheMinesAnticheatBypass.Value then return end
                 if not LocalPlayer.Character:GetAttribute("Climbing") then return end
 
                 task.wait(1)
@@ -3124,6 +3163,7 @@ end)
                     Title = "Anticheat Bypass",
                     Description = "Bypassed the anticheat successfully! This will only last until the next cutscene!",
                     Reason = "This will only last until the next cutscene!",
+                    SoundId = "rbxassetid://4590662766",
 
                    LinoriaMessage = "Bypassed the anticheat successfully! This will only last until the next cutscene"
                 })
@@ -3139,11 +3179,14 @@ if Script.IsMines and Script.Bypassed and currentRoomModel:GetAttribute("RawName
             Title = "Anticheat Bypass",
             Description = "Halt has broken anticheat bypass, please go on a ladder again to fix it.",
             Reason = "Please go on a ladder again to fix it.",
+            SoundId = "rbxassetid://4590662766",
 
             LinoriaMessage = "Halt has broken anticheat bypass, please go on a ladder again to fix it."
         })
 
     end
+
+
 
 local ReviveHook; ReviveHook = hookfunction(require(game.ReplicatedStorage.ModulesClient.ReviveCutscene), function(...)
     if Toggles.VR_NoReviveCutscene.Value then
