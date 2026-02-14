@@ -159,8 +159,7 @@ Script.Bypassed = false
 Script.CutsceneExclude = {
     "FigureHotelChase",
     "Elevator1",
-    "MinesFinale",
-    "MinecartChase"
+    "MinesFinale"
 }
 
 local lhxnxt_custom_captions = Instance.new("ScreenGui")
@@ -2264,6 +2263,11 @@ shared.Connections = {}
                 v.Lever.Sound.Played:Once(function()
                     RemoveEspSmooth(v)
                 end)
+            elseif v.Name == "Ladder" then
+
+                local Highlight, TextLabel = Esp(v, v, "Ladder", Color3.new(1, 1, 1))
+                table.insert(EspTable.None)
+
             elseif v.Name == "KeyObtain" then
 
                 v:WaitForChild("Hitbox", 9e9)
@@ -3128,23 +3132,10 @@ end)
                 })
             end
             
-            task.wait(0.5)
-            for _, v in pairs(workspace.CurrentRooms:GetDescendants()) do
-                if v:IsA("Model") and v.Name == "Ladder" then
-                    local LadderESP = Esp(v, v, "Ladder", Color3.new(1, 1, 1))
-                    table.insert(EspTable.None, {LadderESP})
-                end
-            end
-            Script.RemotesFolder.ClimbLadder:FireServer()
             Script.Bypassed = false
             
         else
-             for _, v in pairs(workspace.CurrentRooms:GetDescendants()) do
-                if v:IsA("Model") and v.Name == "Ladder" then
-                    RemoveEspSmooth(v)
-                end
              if workspace:FindFirstChild("_internal_mspaint_acbypassprogress") then workspace:FindFirstChild("_internal_mspaint_acbypassprogress"):Destroy() end
-            end
         end
     end)
 
