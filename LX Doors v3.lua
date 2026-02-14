@@ -153,12 +153,14 @@ Script.MainUI = game.Players.LocalPlayer.PlayerGui:WaitForChild("MainUI")
 Script.MainGame = Script.MainUI:WaitForChild("Initiator"):WaitForChild("Main_Game")
 Script.FloorReplicated = game.ReplicatedStorage.FloorReplicated
 Script.IsMines = Script.FloorVal.Value == "Mines"
+Script.IsBackdoor = Script.FloorVal.Value == "Backdoor"
 Script.Bypassed = false
 
 Script.CutsceneExclude = {
     "FigureHotelChase",
     "Elevator1",
-    "MinesFinale"
+    "MinesFinale",
+    "MinecartChase"
 }
 
 local lhxnxt_custom_captions = Instance.new("ScreenGui")
@@ -276,8 +278,10 @@ local Tabs = { General = Window:AddTab("General", "house", "General Features"), 
 
 local GeneralAutomation = Tabs.General:AddLeftGroupbox("Automation")
 GeneralAutomation:AddToggle("GA_AutoInteract", { Text = "Automatic Interact", Default = false, }):AddKeyPicker("GA_AutoInteract_K", { Default = "R", SyncToggleState = false, Mode = "Hold", Text = "Auto Interact", NoUI = false, Tooltip = "Will activate any nearby interactables when key is active." })
-GeneralAutomation:AddToggle("GA_Fly", { Text = "Enable Fly", Default = false, Tooltip = "Enables flying in-game."}):AddKeyPicker("GA_FlyingF", { Default = "F", SyncToggleState = true, Mode = "Toggle", Text = "Enable Flying", NoUI = false, Tooltip = "Enables Flying" })
 GeneralAutomation:AddSlider("GA_FlySpeed", { Text = "Fly Speed", Default = 15, Min = 0, Max = 50, Tooltip = "Flying Speed."})
+GeneralAutomation:AddDivider()
+GeneralAutomation:AddToggle("GA_Fly", { Text = "Fly", Default = false, Tooltip = "Enables flying in-game."}):AddKeyPicker("GA_FlyingF", { Default = "F", SyncToggleState = true, Mode = "Toggle", Text = "Fly", NoUI = false, Tooltip = "Enables Flying" })
+GeneralAutomation:AddToggle("GA_Noclip", { Text = "Noclip", Default = false, Tooltip = "Disables Collision BETA."}):AddKeyPicker("GA_NN", { Default = "N", SyncToggleState = true, Mode = "Toggle", Text = "Noclip", NoUI = false, Tooltip = "Disables Collision." })
 GeneralAutomation:AddDropdown("GA_AutoInteract_Options", { Values = { "Use Lockpick ( Doors )", "Use Lockpick ( Other )", "Ignore Light Sources", "Ignore Can-Die" }, Default = 0, Multi = true, Text = "Automatic Interact Options" })
 GeneralAutomation:AddSlider("GA_AutoInteract_Range", { Text = "Range Multiplier", Default = 1, Min = 1, Max = 2, Rounding = 1, Compact = false })
 GeneralAutomation:AddDivider()
@@ -463,24 +467,33 @@ RunService.RenderStepped:Connect(function()
     if UserInputService:IsKeyDown(Enum.KeyCode.Space) then velocity += cam.CFrame.UpVector end
     if UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) then velocity -= cam.CFrame.UpVector end
 
-    if velocity.Magnitude > 0 then
-        -- MOVING: Use Physics
-        root.Anchored = false 
+if velocity.Magnitude > 0 then
+        -- 1. Smoothly ensure we are unanchored
+        if root.Anchored then 
+            root.Anchored = false 
+        end
+        
         if Fly.FlyBody.Parent ~= root then
             Fly.FlyBody.Parent = root
             Fly.FlyGyro.Parent = root
         end
         
+        -- 2. Apply Velocity
         Fly.FlyBody.Velocity = velocity * Fly.Speed
-        Fly.FlyGyro.CFrame = cam.CFrame
+        
+        -- 3. The Flattened Rotation (Your previous fix)
+        local camLook = cam.CFrame.LookVector
+        Fly.FlyGyro.CFrame = CFrame.lookAt(Vector3.zero, Vector3.new(camLook.X, 0, camLook.Z))
     else
-        -- STATIONARY: Anchor to kill Jitter
+        -- 4. Only anchor if we are truly standing still
         Fly.FlyBody.Velocity = Vector3.zero
-        root.Anchored = true
+        if not root.Anchored then
+            root.Anchored = true
+        end
     end
     
-    -- Force the orientation even when anchored
-    root.CFrame = CFrame.new(root.CFrame.Position, root.CFrame.Position + cam.CFrame.LookVector)
+    -- oh what?? it worked?? no shit
+    -- evera
 end)
 
 function Fly:Set(val)
@@ -525,6 +538,89 @@ function Fly:Disable()
     self:Set(false)
 end
 
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+local player = Players.LocalPlayer
+
+local noclipEnabled = false
+local savedStates = {}
+local connection
+
+local function setupCharacter(char)
+    savedStates = {}
+
+    for _, v in ipairs(char:GetDescendants()) do
+        if v:IsA("BasePart") then
+            savedStates[v] = v.CanCollide
+        end
+    end
+
+    -- Also save future parts (tools, accessories)
+    char.DescendantAdded:Connect(function(v)
+        if v:IsA("BasePart") then
+            savedStates[v] = v.CanCollide
+            if noclipEnabled then
+                v.CanCollide = false
+            end
+        end
+    end)
+end
+
+local function enableNoclip()
+    local char = player.Character
+    if not char then return end
+
+    noclipEnabled = true
+
+    connection = RunService.Stepped:Connect(function()
+        for part, _ in pairs(savedStates) do
+            if part and part.Parent then
+                part.CanCollide = false
+            end
+        end
+    end)
+end
+
+local function disableNoclip()
+    noclipEnabled = false
+
+    if connection then
+        connection:Disconnect()
+        connection = nil
+    end
+
+    for part, state in pairs(savedStates) do
+        if part and part.Parent then
+            part.CanCollide = state
+        end
+    end
+end
+
+-- Toggle function
+local function toggleNoclip()
+    if noclipEnabled then
+        disableNoclip()
+    else
+        enableNoclip()
+    end
+end
+
+-- Setup on spawn
+player.CharacterAdded:Connect(function(char)
+    char:WaitForChild("HumanoidRootPart")
+    setupCharacter(char)
+end)
+
+if player.Character then
+    setupCharacter(player.Character)
+end
+
+print("Domain Expanison: Malovent Fixes")
+
+Toggles.GA_Noclip:OnChanged(function(val)
+   toggleNoclip(val)
+end)
 
 local CurrentRainbowColor = Color3.new(1, 1, 1)
 
@@ -2708,7 +2804,7 @@ Toggles.ES_HASTECLOCK:OnChanged(function(value)
     HasteLoopActive = value
     print("Toggle changed: " .. tostring(value)) -- DEBUG 1
     
-    if value then
+    if value and Script.IsBackdoor then
         task.spawn(function()
             local ReplicatedStorage = game:GetService("ReplicatedStorage")
             
@@ -2987,19 +3083,19 @@ end)
             if Library.IsMobile then
                 Library:Notify({
                     Title = "Anticheat bypass",
-                    Description = "To bypass the ac, you must interact with a ladder.",
+                    Description = "To bypass the anticheat, you must interact with a ladder. \nDo not move while on the ladder.",
                     Reason = "Ladder ESP has been enabled, do not move while on the ladder.",
 
-                    LinoriaMessage = "To bypass the anticheat, you must interact with a ladder. Ladder ESP has been enabled.\nDo not move while on the ladder.",
+                    LinoriaMessage = "To bypass the anticheat, you must interact with a ladder. \nDo not move while on the ladder.",
                     Time = progressPart
                 })
             else
                 Library:Notify({
                     Title = "Anticheat bypass",
-                    Description = "To bypass the ac, you must interact with a ladder.",
-                    Reason = "Ladder ESP has been enabled, do not move while on the ladder.",
+                    Description = "To bypass the anticheat, you must interact with a ladder. \nDo not move while on the ladder.",
+                    Reason = "To bypass the anticheat, you must interact with a ladder. \nDo not move while on the ladder.",
 
-                    LinoriaMessage = "To bypass the anticheat, you must interact with a ladder. Ladder ESP has been enabled.\nDo not move while on the ladder.",
+                    LinoriaMessage = "To bypass the anticheat, you must interact with a ladder. \nDo not move while on the ladder.",
                     Time = progressPart
                 })
             end
@@ -3026,7 +3122,7 @@ end)
 
                 Library:Notify({
                     Title = "Anticheat Bypass",
-                    Description = "Bypassed the anticheat successfully! This will only last until the next cutscene",
+                    Description = "Bypassed the anticheat successfully! This will only last until the next cutscene!",
                     Reason = "This will only last until the next cutscene!",
 
                    LinoriaMessage = "Bypassed the anticheat successfully! This will only last until the next cutscene"
@@ -3041,7 +3137,7 @@ if Script.IsMines and Script.Bypassed and currentRoomModel:GetAttribute("RawName
         Script.Bypassed = false
         Library:Notify({
             Title = "Anticheat Bypass",
-            Description = "Halt has broken anticheat bypass.",
+            Description = "Halt has broken anticheat bypass, please go on a ladder again to fix it.",
             Reason = "Please go on a ladder again to fix it.",
 
             LinoriaMessage = "Halt has broken anticheat bypass, please go on a ladder again to fix it."
@@ -3736,7 +3832,7 @@ task.spawn(function()
      Notify("Copied to clipboard!", "El Pasco!")
      end)
     MenuProperties:AddToggle("keybindmenu", { Text = "Show Keybinds", Default = false })
-    MenuProperties:AddLabel("if you find a bug, please report them to the bug report server, the link is below.")
+    MenuProperties:AddLabel("if you find a bug, please report them to the bug report server.")
 
     MenuProperties:AddButton("Bug Report Server", function()
      setclipboard("https://discord.gg/9YgVsGBK")
