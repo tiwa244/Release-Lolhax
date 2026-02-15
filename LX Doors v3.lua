@@ -2228,7 +2228,7 @@ shared.Connections = {}
                     end
 
                     if Script.IsBackdoor then
-                        RoomID -= 50
+                        RoomID -= 51
                     end
 
                     if game.ReplicatedStorage.GameData.Floor.Value == "Hotel" then
@@ -3213,7 +3213,7 @@ for _, v in Rooms:GetDescendants() do
                     end
 
                     if Script.IsBackdoor then
-                        RoomID -= 50
+                        RoomID -= 51
                     end
 
                     if game.ReplicatedStorage.GameData.Floor.Value == "Hotel" then
