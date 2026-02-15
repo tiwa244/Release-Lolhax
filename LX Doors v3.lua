@@ -975,7 +975,9 @@ local EspTable = {
         LibraryBooks = {},
         BreakerPoles = {},
         Anchors = {},
-        None = {},  
+        None = {
+            Ladder = {}
+        },
 
         MiscPickups = {}
     },
@@ -2221,6 +2223,14 @@ shared.Connections = {}
                 if RoomID then
                     local Adornee = v.Door
 
+                    if Script.IsMines then 
+                        RoomID += 100
+                    end
+
+                    if Script.IsBackdoor then
+                        RoomID -= 50
+                    end
+
                     if game.ReplicatedStorage.GameData.Floor.Value == "Hotel" then
                         if RoomID >= 50 and RoomID <= 51 then
                         	Adornee = v
@@ -2266,7 +2276,7 @@ shared.Connections = {}
             elseif v.Name == "Ladder" then
 
                 local Highlight, TextLabel = Esp(v, v, "Ladder", Color3.new(1, 1, 1))
-                table.insert(EspTable.None, {Highlight, TextLabel})
+                table.insert(EspTable.None.Ladder, {Highlight, TextLabel})
 
             elseif v.Name == "KeyObtain" then
 
@@ -3197,6 +3207,14 @@ for _, v in Rooms:GetDescendants() do
 
                 if RoomID then
                     local Adornee = v.Door
+
+                    if Script.IsMines then 
+                        RoomID += 100
+                    end
+
+                    if Script.IsBackdoor then
+                        RoomID -= 50
+                    end
 
                     if game.ReplicatedStorage.GameData.Floor.Value == "Hotel" then
                         if RoomID >= 50 and RoomID <= 51 then
