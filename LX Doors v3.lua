@@ -149,12 +149,14 @@ Script.FeatureConnections = {
 }
 
 Script.FloorVal = game.ReplicatedStorage:FindFirstChild("GameData"):WaitForChild("Floor")
+Script.GameData = game.ReplicatedStorage:FindFirstChild("GameData")
 Script.MainUI = game.Players.LocalPlayer.PlayerGui:WaitForChild("MainUI")
 Script.MainGame = Script.MainUI:WaitForChild("Initiator"):WaitForChild("Main_Game")
 Script.FloorReplicated = game.ReplicatedStorage.FloorReplicated
 Script.IsMines = Script.FloorVal.Value == "Mines"
 Script.IsBackdoor = Script.FloorVal.Value == "Backdoor"
 Script.Bypassed = false
+Script.LatestRoom = Script.GameData:WaitForChild("LatestRoom")
 
 Script.CutsceneExclude = {
     "FigureHotelChase",
@@ -292,8 +294,12 @@ GeneralAutomation:AddSlider("GA_AutoHide_PredictionTime", { Text = "Prediction T
 GeneralAutomation:AddSlider("GA_AutoHide_PredictionDistanceMultiplier", { Text = "Distance Multiplier", Default = 1, Min = 0.8, Max = 1.5, Rounding = 1, Compact = true, Suffix = "x" })
 GeneralAutomation:AddDivider()
 GeneralAutomation:AddToggle("GA_HideTimeShow", { Text = "Closet Hiding Timer", Default = false, Tooltip = "Shows the Hiding Timer Before Hide Kicks you out."})
+GeneralAutomation:AddDivider()
 GeneralAutomation:AddSlider("GA_PROMPTREACH_MULTIPLIER", { Text = "Prompt Reach Mutiplier", Default = 1, Min = 1, Max = 2, Rounding = 1 })
+GeneralAutomation:AddToggle("GA_PromptClip", { Text = "Prompt Clip", Default = false, Tooltip = "Clips Prompt."})
 GeneralAutomation:AddToggle("GA_INSTAINTERACT", { Text = "Instant Interact", Default = false, Tooltip = "Instantly unlock prompts." }):AddKeyPicker("GA_InstaInteract_K", { Default = "I", SyncToggleState = true, Mode = "Toggle", Text = "Instant Interact", NoUI = false, Tooltip = "No Prompt Hold."})
+GeneralAutomation:AddToggle("GA_DoorReach", { Text = "Door Reach", Default = false }) 
+GeneralAutomation:AddDivider()
 GeneralAutomation:AddToggle("GA_MinecartInteract", { Text = "Minecart Interact Spam", Default = false, Tooltip = "Automatically spam interact with nearby minecarts when key is active." }):AddKeyPicker("GA_MinecartInteract_K", { Default = "H", SyncToggleState = false, Mode = "Hold", Text = "Minecart Interact Spam", NoUI = false, })
 GeneralAutomation:AddToggle("GA_AnchorAutoSolve", { Text = "Anchor Automatic Solve", Default = false, Tooltip = "Automatically solves any anchor when close enough, if it's the designated one." })
 GeneralAutomation:AddDivider()
@@ -379,7 +385,7 @@ local ExploitBypass = Tabs.Exploit:AddRightGroupbox("Bypass")
 ExploitBypass:AddToggle("EB_CrouchSpoof", { Text = "Crouch Spoof", Default = false, Tooltip = "Spoofs crouching, or in other words the game will think you're crouching. Useful for figure rooms." })
 ExploitBypass:AddToggle("EB_SpeedBypass", { Text = "Speed Bypass", Default = false, Tooltip = "Attempts to mitigate the speed anticheat." })
 ExploitBypass:AddToggle("EB_ACManipulate", { Text = "Anti-Cheat Manipulation", Default = false, Tooltip = "Will teleport to the opposite direction the camera is facing to manipulate the anticheat into rubberbanding you the opposite way." }):AddKeyPicker("EB_ACManipulate_K", { Default = "T", SyncToggleState = false, Mode = "Hold", Text = "Anti-Cheat Manipulate", NoUI = false, })
-ExploitBypass:AddToggle("EB_TheMinesAnticheatBypass", { Text = "Mines AntiCheat-Bypass", Default = false, Tooltip = "Disables AntiCheat in Mines"})
+ExploitBypass:AddToggle("EB_TheMinesAnticheatBypass", { Text = "Anticheat Bypass", Default = false, Tooltip = "Disables Anticheat in Mines."})
 
 local ExploitRemovals = Tabs.Exploit:AddRightGroupbox("Removals")
 ExploitRemovals:AddToggle("ER_RemoveSeek", { Text = "Remove Seek Chase", Default = false, Tooltip = "Completely disables the entity 'Seek'." })
@@ -2276,7 +2282,6 @@ shared.Connections = {}
             elseif v.Name == "Ladder" then
 
                 local Highlight, TextLabel = Esp(v, v, "Ladder", Color3.new(1, 1, 1))
-                table.insert(EspTable.None.Ladder, {Highlight, TextLabel})
 
             elseif v.Name == "KeyObtain" then
 
@@ -3173,7 +3178,7 @@ end)
         end
 end
 
-local currentRoomModel = workspace.CurrentRooms:FindFirstChild(tostring(Script.CurrentRoom))
+local currentRoomModel = Rooms
 if Script.IsMines and Script.Bypassed and currentRoomModel:GetAttribute("RawName") == "Mines_HaltHallway" then
         Script.Bypassed = false
         Library:Notify({
@@ -3437,83 +3442,151 @@ Options.VV_FieldOfView:OnChanged(function()
 end)
 
 -- Handle existing and future prompts
-task.spawn(function()
-    while task.wait(0.5) do -- Runs every half second
-        if Toggles.GA_INSTAINTERACT and Toggles.GA_INSTAINTERACT.Value then
-            -- Look through the ENTIRE workspace for any ProximityPrompt
-            for _, prompt in pairs(workspace:GetDescendants()) do
-                if prompt:IsA("ProximityPrompt") then
-                    -- If it's not already 0, make it 0
-                    if prompt.HoldDuration > 0 then
-                        -- Save original duration if we haven't yet
-                        if not prompt:GetAttribute("Hold") then
-                            prompt:SetAttribute("Hold", prompt.HoldDuration)
-                        end
-                        prompt.HoldDuration = 0
-                    end
-                end
-            end
-        end
-    end
-end)
-
--- The Janitor (To turn it off properly)
 Toggles.GA_INSTAINTERACT:OnChanged(function(value)
-    if not value then
-        for _, prompt in pairs(workspace:GetDescendants()) do
-            if prompt:IsA("ProximityPrompt") then
-                prompt.HoldDuration = prompt:GetAttribute("Hold") or 0.2
+    for _, prompt in pairs(workspace.CurrentRooms:GetDescendants()) do
+        if prompt:IsA("ProximityPrompt") then
+            if value then
+                if not prompt:GetAttribute("Hold") then prompt:SetAttribute("Hold", prompt.HoldDuration) end
+                prompt.HoldDuration = 0
+            else
+                prompt.HoldDuration = prompt:GetAttribute("Hold") or 0
             end
         end
     end
 end)
 
+workspace.CurrentRooms.DescendantAdded:Connect(function(child)
+    if child:IsA("ProximityPrompt") then
+        task.defer(function()
+            -- 1. Always ensure we have the backup first
+            if not child:GetAttribute("Hold") then 
+                child:SetAttribute("Hold", child.HoldDuration)
+            end -- Close the Attribute check here!
+
+            -- 2. Now apply the current toggle state
+            if Toggles.GA_INSTAINTERACT.Value then
+                child.HoldDuration = 0
+            else
+                child.HoldDuration = child:GetAttribute("Hold") or 0
+            end 
+        end)
+    end
+end)
 -- [[ 2. THE NEW ROOM WATCHDOG ]]
 -- This is what fixes the "Secondth time don't work" bug
--- [[ 1. THE UNIFIED FUNCTION ]]
-local function ApplyReach(target, mult)
-    for _, prompt in pairs(target:GetDescendants()) do
-        if prompt:IsA("ProximityPrompt") then
-            -- Bypass the custom condition for a second to test
-            -- if Script.Functions.PromptCondition(prompt) then 
-
-            -- 1. HARD RESET / ATTRIBUTE CHECK
-            local saved = prompt:GetAttribute("Distance")
-            if not saved or saved == 0 then
-                -- If the game distance is 0, use Doors default 6
-                local current = prompt.MaxActivationDistance
-                saved = (current > 0) and current or 6
-                prompt:SetAttribute("Distance", saved)
-            end
-            
-            -- 2. APPLY LOGIC
-            if mult > 1 then
-                prompt.MaxActivationDistance = saved * mult
-                prompt.RequiresLineOfSight = false
-                prompt.Exclusivity = Enum.ProximityPromptExclusivity.AlwaysShow
-                prompt.Enabled = true
-            else
-                -- 3. TOTAL RESET TO NORMAL
-                prompt.MaxActivationDistance = saved
-                prompt.RequiresLineOfSight = true
-                prompt.Exclusivity = Enum.ProximityPromptExclusivity.OneAtATime
-            end
-            -- end
-        end
-    end
-end
 
 -- [[ TRIGGER ON CHANGE ]]
+
+Script.PromptTable = {
+    GamePrompts = {},
+
+    Aura = {
+        ["ActivateEventPrompt"] = false,
+        ["AwesomePrompt"] = true,
+        ["FusesPrompt"] = true,
+        ["HerbPrompt"] = false,
+        ["LeverPrompt"] = true,
+        ["LootPrompt"] = false,
+        ["ModulePrompt"] = true,
+        ["SkullPrompt"] = false,
+        ["UnlockPrompt"] = true,
+        ["ValvePrompt"] = false,
+        ["PropPrompt"] = true
+    },
+    AuraObjects = {
+        "Lock",
+        "Button"
+    },
+
+    Clip = {
+        "AwesomePrompt",
+        "FusesPrompt",
+        "HerbPrompt",
+        "HidePrompt",
+        "LeverPrompt",
+        "LootPrompt",
+        "ModulePrompt",
+        "Prompt",
+        "PushPrompt",
+        "SkullPrompt",
+        "UnlockPrompt",
+        "ValvePrompt"
+    },
+    ClipObjects = {
+        "LeverForGate",
+        "LiveBreakerPolePickup",
+        "LiveHintBook",
+        "Button",
+    },
+
+    Excluded = {
+        Prompt = {
+            "HintPrompt",
+            "InteractPrompt"
+        },
+
+        Parent = {
+            "KeyObtainFake",
+            "Padlock"
+        },
+
+        ModelAncestor = {
+            "DoorFake"
+        }
+    }
+}
+
+function Script.Functions.PromptCondition(prompt)
+    local modelAncestor = prompt:FindFirstAncestorOfClass("Model")
+    return 
+        prompt:IsA("ProximityPrompt") and (
+            not table.find(Script.PromptTable.Excluded.Prompt, prompt.Name) 
+            and not table.find(Script.PromptTable.Excluded.Parent, prompt.Parent and prompt.Parent.Name or "") 
+            and not (table.find(Script.PromptTable.Excluded.ModelAncestor, modelAncestor and modelAncestor.Name or ""))
+        )
+end
+
 Options.GA_PROMPTREACH_MULTIPLIER:OnChanged(function(value)
-    -- Search whole workspace once to force-update everything
-    ApplyReach(workspace, value)
+    for _, prompt in pairs(workspace.CurrentRooms:GetDescendants()) do
+        if Script.Functions.PromptCondition(prompt) then
+            if not prompt:GetAttribute("Distance") then prompt:SetAttribute("Distance", prompt.MaxActivationDistance) end
+
+            prompt.MaxActivationDistance = prompt:GetAttribute("Distance") * value
+        end
+    end
 end)
 
--- [[ TRIGGER ON NEW ROOM ]]
-workspace.CurrentRooms.ChildAdded:Connect(function(room)
-    task.wait(0.5) 
-    ApplyReach(room, Options.GA_PROMPTREACH_MULTIPLIER.Value)
+workspace.CurrentRooms.DescendantAdded:Connect(function(prompt)
+    if prompt:IsA("ProximityPrompt") and Script.Functions.PromptCondition(prompt) then
+        task.defer(function()
+            if not prompt:GetAttribute("Distance") then 
+                prompt:SetAttribute("Distance", prompt.MaxActivationDistance)
+            end
+
+            prompt.MaxActivationDistance = prompt:GetAttribute("Distance") * Options.GA_PROMPTREACH_MULTIPLIER.Value
+        end)
+    end
 end)
+
+Toggles.GA_PromptClip:OnChanged(function(value)
+    for _, prompt in pairs(workspace.CurrentRooms:GetDescendants()) do        
+        if Script.Functions.PromptCondition(prompt) then
+            if value then
+                prompt.RequiresLineOfSight = false
+            else
+                prompt.RequiresLineOfSight = prompt:GetAttribute("Clip") or true
+            end
+        end
+    end
+end)
+
+ if Toggles.GA_DoorReach.Value and workspace.CurrentRooms:FindFirstChild(Script.LatestRoom.Value) then
+            local door = workspace.CurrentRooms[Script.LatestRoom.Value]:FindFirstChild("Door")
+
+            if door and door:FindFirstChild("ClientOpen") then
+                door.ClientOpen:FireServer()
+            end
+        end
 
 -- [[ RE-SYNC THE UI ]]
 -- [[ 2. THE SLIDER LOGIC ]]
