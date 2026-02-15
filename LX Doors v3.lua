@@ -2187,7 +2187,7 @@ shared.Connections = {}
     Rooms.ChildAdded:Connect(function(v)
         repeat task.wait() until v:GetAttribute("RawName")
 
-        if v:GetAttribute("RawName") == "HaltHallway" and Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["Halt"] then
+        if v:GetAttribute("RawName") == "Mines_HaltHallway" and Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["Halt"] then
             Notify("Entity 'Halt' spawns in the next room!", "...")
         end
     end),
@@ -2266,7 +2266,7 @@ shared.Connections = {}
             elseif v.Name == "Ladder" then
 
                 local Highlight, TextLabel = Esp(v, v, "Ladder", Color3.new(1, 1, 1))
-                table.insert(EspTable.None)
+                table.insert(EspTable.None, {Highlight, TextLabel})
 
             elseif v.Name == "KeyObtain" then
 
@@ -3166,7 +3166,7 @@ end)
 end
 
 local currentRoomModel = workspace.CurrentRooms:FindFirstChild(tostring(Script.CurrentRoom))
-if Script.IsMines and Script.Bypassed and currentRoomModel:GetAttribute("RawName") == "HaltHallway" then
+if Script.IsMines and Script.Bypassed and currentRoomModel:GetAttribute("RawName") == "Mines_HaltHallway" then
         Script.Bypassed = false
         Library:Notify({
             Title = "Anticheat Bypass",
