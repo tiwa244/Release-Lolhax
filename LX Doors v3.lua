@@ -66,19 +66,110 @@
 -- credits to lolhax developers for creating and developing lolhax still 
 -- lolhax v2 used to be number 1 doors script on the market it fell off
 local Loadtime = tick()
-local Repository = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/"
 local IdCheck = "lolhax v3 | ID: " .. game.Players.LocalPlayer.Name
-local Library = loadstring(game:HttpGet(Repository .. "Library.lua"))()
-local ThemeManager = loadstring(game:HttpGet(Repository .. "addons/ThemeManager.lua"))()
-local SaveManager = loadstring(game:HttpGet(Repository .. "addons/SaveManager.lua"))()
-local Icons = loadstring(game:HttpGet("https://raw.githubusercontent.com/deividcomsono/lucide-roblox-direct/refs/heads/main/source.lua"))()
-local Toggles = Library.Toggles
-local Options = Library.Options
+getgenv().UseLib = getgenv().UseLib or {
+    Use2Lib = true,
+    CurrentLib = "Obsidian"
+}
+
+local UIConfig = getgenv().UseLib
+local Repository, Library, Window, Tabs, Icons, ThemeManager, SaveManager, LinoriaNotify -- Defined at the top so they don't "vanish"
+
+if UIConfig.CurrentLib == "Linoria" then -- FIXED: Was "Obsidian"
+    Repository = "https://raw.githubusercontent.com/violin-suzutsuki/LinoriaLib/main/"
+    Library = loadstring(game:HttpGet(Repository .. "Library.lua"))()
+    
+    -- No need to save these to variables unless you're using them later
+    ThemeManager = loadstring(game:HttpGet(Repository .. "addons/ThemeManager.lua"))()
+    SaveManager =  loadstring(game:HttpGet(Repository .. "addons/SaveManager.lua"))()
+    -- 1. Save the ORIGINAL Linoria function to a unique name
+local InternalNotify = Library.Notify
+
+-- 2. Define the wrapper so Library:Notify({table}) works
+Library.Notify = function(self, options)
+    -- Handle the colon/dot logic to get the data table
+    local data = (type(self) == "table" and self ~= Library) and self or options
+    
+    -- Extract the string and time
+    local msg = data.Description
+    local waitTime = data.Time
+
+    local sound = Instance.new("Sound")
+    sound.Parent = game:GetService("SoundService")
+    sound.SoundId = "rbxassetid://4590662766"
+    sound.Volume = 1
+    sound.PlayOnRemove = true
+    sound:Destroy()
+    
+    -- 3. Call the ORIGINAL function we saved (passing Library as 'self')
+    pcall(function()
+        InternalNotify(data.Title, msg, waitTime)
+    end)
+end
+    Window = Library:CreateWindow({ 
+        Title = " LOLHAX | ".. game.Players.LocalPlayer.Name, 
+        Center = true, 
+        AutoShow = true, 
+        TabPadding = 3, 
+        MenuFadeTime = 0.15 
+    })
+    
+    Tabs = { 
+        General = Window:AddTab("General"), 
+        Exploit = Window:AddTab("Exploits"), 
+        ESP = Window:AddTab("ESP"),
+        Visuals = Window:AddTab("Visuals"), 
+        Misc = Window:AddTab("Miscellaneous"), 
+        Config = Window:AddTab("Config") 
+    }
+
+elseif UIConfig.CurrentLib == "Obsidian" then
+    Repository = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/"
+    Library = loadstring(game:HttpGet(Repository .. "Library.lua"))()
+    
+    Icons = loadstring(game:HttpGet("https://raw.githubusercontent.com/deividcomsono/lucide-roblox-direct/refs/heads/main/source.lua"))()
+    Library:SetIconModule(Icons)
+    ThemeManager = loadstring(game:HttpGet(Repository .. "addons/ThemeManager.lua"))()
+    SaveManager =  loadstring(game:HttpGet(Repository .. "addons/SaveManager.lua"))()
+    Toggles = Library.Toggles
+    Options = Library.Options   
+    
+    Window = Library:CreateWindow({ 
+        Title = "lolhax v3", 
+        Icon = 90305907167101, 
+        Footer = "lolhax v3 | ID: " .. game.Players.LocalPlayer.Name , 
+        Center = true, 
+        AutoShow = true, 
+        TabPadding = 3, 
+        MenuFadeTime = 0.15 
+    })
+    
+    Tabs = { 
+        General = Window:AddTab("General", "house", "General Features"), 
+        Exploit = Window:AddTab("Exploits", "bug", "In-Game Exploits"), 
+        ESP = Window:AddTab("ESP", "scan-eye", "ESP Settings."), 
+        Visuals = Window:AddTab("Visuals", "sparkles", "Visuals Features."), 
+        Misc = Window:AddTab("Miscellaneous", "triangle-alert", "Miscellaneous features."), 
+        Config = Window:AddTab("Config", "settings", "UI Config And Settings.") 
+    }
+end
+
+-- This only works AFTER the if/else block finishes
 
 if not shared.Script then
     shared.Script = {
         Functions = {},
-        Temp = {},
+        Temp = {
+    AnchorFinished = {},
+    AutoWardrobeEntities = {},
+    Bridges = {},
+    PipeBridges = {},
+    CollisionSize = Vector3.new(5.5, 3, 3),
+    Guidance = {},
+    PaintingDebounce = {},
+    UsedBreakers = {},
+    VoidGlitchNotifiedRooms = {}
+},
         Humanoid = {},
         FloorReplicated = game:GetService("ReplicatedStorage"):WaitForChild("FloorReplicated"),
         ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -155,6 +246,7 @@ Script.MainGame = Script.MainUI:WaitForChild("Initiator"):WaitForChild("Main_Gam
 Script.FloorReplicated = game.ReplicatedStorage.FloorReplicated
 Script.IsMines = Script.FloorVal.Value == "Mines"
 Script.IsBackdoor = Script.FloorVal.Value == "Backdoor"
+Script.IsRooms = Script.FloorVal.Value == "Rooms"
 Script.Bypassed = false
 Script.LatestRoom = Script.GameData:WaitForChild("LatestRoom")
 
@@ -273,19 +365,17 @@ local Detection = game:GetService("TextChatService").MessageReceived:Connect(fun
     end
 end)
 -- UI vvv
-Library:SetIconModule(Icons)
-local Window = Library:CreateWindow({ Title = "lolhax v3", Icon = 90305907167101, Footer = "lolhax v3 | ID: "  .. LocalPlayer.Name , Center = true, AutoShow = true, TabPadding = 3, MenuFadeTime = 0.15 })
-local Tabs = { General = Window:AddTab("General", "house", "General Features"), Exploit = Window:AddTab("Exploits", "bug", "In-Game Exploits"), ESP = Window:AddTab("ESP", "scan-eye", "ESP Settings."), Visuals = Window:AddTab("Visuals", "sparkles", "Visuals Features."), Misc = Window:AddTab("Miscellaneous", "triangle-alert", "Miscellaneous features."), Config = Window:AddTab("Config", "settings", "UI Config And Settings.") }
 
 local GeneralAutomation = Tabs.General:AddLeftGroupbox("Automation")
 GeneralAutomation:AddToggle("GA_AutoInteract", { Text = "Automatic Interact", Default = false, }):AddKeyPicker("GA_AutoInteract_K", { Default = "R", SyncToggleState = false, Mode = "Hold", Text = "Auto Interact", NoUI = false, Tooltip = "Will activate any nearby interactables when key is active." })
-GeneralAutomation:AddSlider("GA_FlySpeed", { Text = "Fly Speed", Default = 15, Min = 0, Max = 50, Tooltip = "Flying Speed."})
+GeneralAutomation:AddSlider("GA_FlySpeed", { Text = "Fly Speed", Default = 15, Min = 0, Max = 50, Tooltip = "Flying Speed.", Rounding = 2, Compact = true})
 GeneralAutomation:AddDivider()
 GeneralAutomation:AddToggle("GA_Fly", { Text = "Fly", Default = false, Tooltip = "Enables flying in-game."}):AddKeyPicker("GA_FlyingF", { Default = "F", SyncToggleState = true, Mode = "Toggle", Text = "Fly", NoUI = false, Tooltip = "Enables Flying" })
 GeneralAutomation:AddToggle("GA_Noclip", { Text = "Noclip", Default = false, Tooltip = "Disables Collision BETA."}):AddKeyPicker("GA_NN", { Default = "N", SyncToggleState = true, Mode = "Toggle", Text = "Noclip", NoUI = false, Tooltip = "Disables Collision." })
 GeneralAutomation:AddDropdown("GA_AutoInteract_Options", { Values = { "Use Lockpick ( Doors )", "Use Lockpick ( Other )", "Ignore Light Sources", "Ignore Can-Die" }, Default = 0, Multi = true, Text = "Automatic Interact Options" })
 GeneralAutomation:AddSlider("GA_AutoInteract_Range", { Text = "Range Multiplier", Default = 1, Min = 1, Max = 2, Rounding = 1, Compact = false })
 GeneralAutomation:AddDivider()
+GeneralAutomation:AddToggle("GA_NotifyOxygen", { Text = "Notify Oxygen", Default = false, Tooltip = "Notifies Oxygen"})
 GeneralAutomation:AddToggle("GA_FastClosetExt", { Text = "Fast Closet Exit", Default = true })
 GeneralAutomation:AddToggle("GA_EatCandies", { Text = "Automatic Candy Use", Default = false, }):AddKeyPicker("GA_EatCandies_K", { Default = "V", SyncToggleState = false, Mode = "Hold", Text = "Auto Use Candy", NoUI = false, Tooltip = "Will eat all candy in the player inventory when key is active." })
 GeneralAutomation:AddToggle("GA_AutoHide", { Text = "Automatic Hide", Default = false, Tooltip = "Will automatically predict entities and hide in the nearest available spot when enabled." })
@@ -347,6 +437,8 @@ ExploitSelf:AddToggle("ES_AntiEyes", { Text = "Anti-Eyes", Default = false, Tool
 ExploitSelf:AddToggle("ES_AntiLookman", { Text = "Anti-Lookman", Default = false, Tooltip = "Forces character to look down from the entity 'Lookman'." })
 ExploitSelf:AddToggle("ES_AntiChanedlier", { Text = "Anti-Chandelier", Default = false, Tooltip = "Disallows touching on any fallen chandeliers during the seek chase." })
 ExploitSelf:AddToggle("ES_AntiSeekArms", { Text = "Anti-Seek Arms", Default = false, Tooltip = "Disallows touching on any seek arms during the seek chase." })
+ExploitSelf:AddToggle("ES_AutoRooms", { Text = "Auto Rooms", Defaut = false, Tooltip = 'bozo', "randomizer"})
+ExploitSelf:AddToggle("ES_AutoRoomsDebug", { Text = "Auto Rooms Debug", Default = nil, Tooltip = "turn this shit off please"})
 local ExploitTroll = Tabs.Exploit:AddLeftGroupbox("Trolling")
 if game.ReplicatedStorage.GameData.Floor.Value == "Mines" then 
     ExploitTroll:AddButton({
@@ -637,8 +729,8 @@ end)
 
 print("Domain Expansion: Malovent Fixes")
 
-Toggles.GA_Noclip:OnChanged(function(val)
-   toggleNoclip(val)
+Toggles.GA_Noclip:OnChanged(function()
+    toggleNoclip(value)
 end)
 
 local CurrentRainbowColor = Color3.new(1, 1, 1)
@@ -667,13 +759,13 @@ game.Workspace.DescendantAdded:Connect(TagObject)
 
 task.spawn(function()
     
-    repeat task.wait(0.5) until Toggles and Toggles.ESPI_RAINBOW_HIGHLIGHT and Options.ESPI_RAINBOW_SPEED
+    repeat task.wait(0.5) until Toggles and Toggles.ESPI_RAINBOW_HIGHLIGHT.Value and Options.ESPI_RAINBOW_SPEED
     
     while task.wait() do
 
         if _G.StopRainbow then return end 
 
-        if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
+        if Toggles.ESPI_RAINBOW_HIGHLIGHT then
             local Speed = Options.ESPI_RAINBOW_SPEED.Value or 5
             local Hue = (tick() % Speed / Speed)
             local CurrentColor = Color3.fromHSV(Hue, 0.8, 1)
@@ -800,6 +892,8 @@ local VisualsWorld = Tabs.Visuals:AddRightGroupbox("World")
 VisualsWorld:AddToggle("VW_Ambience", { Text = "Ambience", Default = false, Tooltip = "Changes color of the map." }):AddColorPicker("VW_Ambience_C", { Default = Color3.new(1, 1, 1), Title = "Ambience Color" })
 VisualsWorld:AddToggle("VW_NoFog", { Text = "Remove Fog", Default = false, Tooltip = "Removes map fog if available." })
 VisualsWorld:AddDivider()
+VisualsWorld:AddToggle("VW_SeekPath", { Text = "Visualise Seek Path", Tooltip = "Show Correct Seek path as nodes"})
+VisualsWorld:AddToggle("VW_SeekPathFake", { Text = "Visualise Fake Seek Path", Default = false, Tooltip = "Shows Fake Seek Path."})
 VisualsWorld:AddToggle("VW_RushNodes", {Text = "Show Rush Nodes", Tooltip = "Shows the path Rush and Ambush will take when moving."})
 
 local VisualsRemovals = Tabs.Visuals:AddRightGroupbox("Removals")
@@ -881,7 +975,7 @@ end
 local OldFogEnd = game.Lighting.FogEnd
 
 -- Require Variables vvv
-
+Script.Collision = LocalPlayer.Character:WaitForChild("Collision")
 local Main_Game = require(LocalPlayer.PlayerGui.MainUI.Initiator.Main_Game)
 local ShadeModule = require(game.ReplicatedStorage.ModulesClient.EntityModules.Shade)
 local GlitchModule = require(game.ReplicatedStorage.ModulesClient.EntityModules.Glitch)
@@ -2283,6 +2377,12 @@ shared.Connections = {}
 
                 local Highlight, TextLabel = Esp(v, v, "Ladder", Color3.new(1, 1, 1))
 
+            elseif v.Name == "WaterPump" then
+
+                v:WaitForChild("Wheel", 9e9)
+
+                local Highlight, TextLabel = Esp(v, v, "Pump", Color3.new(1, 1, 1))
+        
             elseif v.Name == "KeyObtain" then
 
                 v:WaitForChild("Hitbox", 9e9)
@@ -2420,7 +2520,7 @@ shared.Connections = {}
                     local NextAnchor = Anchors[NumberIndex]
 
                     if NumberIndex > 1 then
-                        local Code = LocalPlayer.PlayerGui.MainUI.MainFrame.AnchorHintFrame.Code.Text
+                        local Code = LocalPlayer.PlayerGui.MainUI.AnchorHintFrame.Code.Text
                         local Offset = tonumber(NextAnchor.Note.SurfaceGui.TextLabel.Text)
 
                         local Solved = SolveAnchor(Code, Offset)
@@ -2441,7 +2541,7 @@ shared.Connections = {}
                         table.insert(EspTable.Interactables.Anchors, {Highlight, TextLabel})
 					else
                         task.spawn(function()
-                            local Code = LocalPlayer.PlayerGui.MainUI.MainFrame:WaitForChild("AnchorHintFrame", 9e9).Code.Text
+                            local Code = LocalPlayer.PlayerGui.MainUI:WaitForChild("AnchorHintFrame", 9e9).Code.Text
 
                             while not Library.Unloaded and task.wait() and not NextAnchor:GetAttribute("Activated") do
                                 if Toggles.GA_AnchorAutoSolve.Value and (LocalPlayer.Character.Collision.Position - NextAnchor.AnchorBase.Position).Magnitude < 12 then
@@ -3116,13 +3216,6 @@ end)
                 progressPart.Name = "_internal_lhx_acbypassprogress"
             end
 
-            if not value then
-        local oldPart = game.Workspace:FindFirstChild("_internal_lhx_acbypassprogress")
-        if oldPart then 
-            oldPart:Destroy() -- This "unblocks" the notification so it closes
-        end
-        return
-    end
             if Library.IsMobile then
                 Library:Notify({
                     Title = "Anticheat bypass",
@@ -3143,12 +3236,11 @@ end)
                     LinoriaMessage = "To bypass the anticheat, you must interact with a ladder. \nDo not move while on the ladder.",
                     Time = progressPart
                 })
+
             end
-            
-            Script.Bypassed = false
-            
         else
-             if workspace:FindFirstChild("_internal_mspaint_acbypassprogress") then workspace:FindFirstChild("_internal_mspaint_acbypassprogress"):Destroy() end
+             if workspace:FindFirstChild("_internal_lhx_acbypassprogress") then workspace:FindFirstChild("_internal_lhx_acbypassprogress"):Destroy() end
+            Script.Bypassed = false
         end
     end)
 
@@ -3178,21 +3270,856 @@ end)
         end
 end
 
-local currentRoomModel = Rooms
-if Script.IsMines and Script.Bypassed and currentRoomModel:GetAttribute("RawName") == "Mines_HaltHallway" then
-        Script.Bypassed = false
-        Library:Notify({
-            Title = "Anticheat Bypass",
-            Description = "Halt has broken anticheat bypass, please go on a ladder again to fix it.",
-            Reason = "Please go on a ladder again to fix it.",
-            SoundId = "rbxassetid://4590662766",
+if Toggles.EB_TheMinesAnticheatBypass and Script.Bypassed == "true" and not LocalPlayer:GetAttribute("Climbing") then
+                Library:Notify({
+                    Title = "Anticheat bypass",
+                    Description = "something might have broken Anticheat Bypass, please interact with a ladder to fix it.",
+                    SoundId = "rbxassetid://4590662766",
+                    Time = 60
+                })
+            end
 
-            LinoriaMessage = "Halt has broken anticheat bypass, please go on a ladder again to fix it."
-        })
+Script.Functions.Minecart = {
+    pathfindQueue = {},
+    Pathfind = function(...) return true end, --thanks wax, really cool module loading fr fr dawg
+    Teleport = function(...) return true end, --thanks wax, really cool module loading fr fr dawg
+    DrawNodes = function(...) return true end, --thanks wax, really cool module loading fr fr dawg
 
+    debug = function(...)
+        --if Toggles.MinecartTeleportDebug.Value == false then return end
+        print(...)
+        local msg = {}
+        for _, v in pairs({ ... }) do
+            table.insert(msg, tostring(v))
+        end
+        -- Library:Notify({
+        --     Title = "[DEBUG Minecart TP]",
+        --     Description = table.concat(msg, " "),
+        --     Reason = ""
+        -- })
+    end
+}
+
+type tPathfind = {
+    esp: boolean,
+    room_number: number, -- the room number
+    real: table,
+    fake: table,
+    destroyed: boolean -- if the pathfind was destroyed for the Teleport
+}
+
+type tGroupTrack = {
+    nodes: table,
+    hasStart: boolean,
+    hasEnd: boolean,
+}
+
+--@Internal nodes sorted by @GetNodes or @Pathfind
+type tSortedNodes = {
+    real: table,
+    fake: table,
+    room: number,
+}
+
+local function tGroupTrackNew(startNode: Part | nil): tGroupTrack
+    local create: tGroupTrack = {
+        nodes = startNode and {startNode} or {},
+        hasStart = false,
+        hasEnd   = false,
+    }
+    return create
+end
+
+Script.MinecartPathNodeColor = {
+    Disabled = nil,
+    Red = Color3.new(1, 0, 0),
+    Yellow = Color3.new(1, 1, 0),
+    Purple = Color3.new(1, 0, 1),
+    Green = Color3.new(0, 1, 0),
+    Cyan = Color3.new(0, 1, 1),
+    Orange = Color3.new(1, 0.5, 0),
+    White = Color3.new(1, 1, 1),
+}
+
+local function sortNodes(nodes: table, reversed: boolean)
+    table.sort(nodes, function(a, b)
+        local Anumber = (a.Name):gsub("[^%d+]", "")
+        local Bnumber = (b.Name):gsub("[^%d+]", "")
+        
+        -- Convert to numbers once, and use 0 if the name had no numbers (like "Normal")
+        local aVal = tonumber(Anumber) or 0
+        local bVal = tonumber(Bnumber) or 0
+
+        if reversed then
+            -- This uses your match logic for safety
+            return (tonumber(Anumber:match("%d+")) or 0) > (tonumber(Bnumber:match("%d+")) or 0)
+        end
+        
+        -- FIX: Use the safe variables here so it doesn't compare nil
+        return aVal < bVal 
+    end)
+    return nodes
+end
+
+local function HasAlreadyPathfind(nodesFolder: Folder): boolean
+    local hasPathfind = nodesFolder:GetAttribute("_lhx_nodes_pathfind")
+    return hasPathfind
+end
+
+local function PathfindSetNodes(nodes: table, nameAttribute: string)
+    Script.Functions.Minecart.debug("[SetNodes] Setting pathfind attributes") 
+    for i, node: Part in ipairs(nodes) do
+        node:SetAttribute(nameAttribute, i)
+        end
     end
 
+local function HasNodesToPathfind(room: Model)
+    local roomNumber = tonumber(room.Name)
+    --Make room number restrictions to avoid useless mapping.
+    local seekChaseMinecartRooms = (roomNumber >= 42 and roomNumber <= 52)
+    local seekChaseDuctsRoom     = (roomNumber >= 70 and roomNumber <= 100)
+    local result = (seekChaseMinecartRooms or seekChaseDuctsRoom)
+    Script.Functions.Minecart.debug("[HasNodesToPathfind]: " .. tostring(result) .. " - " .. room.Name)
+    return result
+end
 
+--@Return nil. Map the nodes in the __RunnerNodes__ and call features functions (@DrawNode; @Teleport).
+function Script.Functions.Minecart.Pathfind(room: Model, forcePathfind: boolean)
+    if not HasNodesToPathfind(room) then return end
+
+    if not forcePathfind then
+        --wait until SendRunnerNodes is trigged
+        local pathTimeout = tick() + 5
+        repeat task.wait()
+        until #Script.Functions.Minecart.pathfindQueue > 0 or tick() > pathTimeout
+        pcall(table.remove, Script.Functions.Minecart.pathfindQueue, 1)
+    end
+
+    local nodesFolder = room:FindFirstChild("RunnerNodes")
+    if (nodesFolder == nil) then return end
+
+    local nodes = nodesFolder:GetChildren()
+
+    local numOfNodes = #nodes
+    if numOfNodes <= 0 then return end 
+
+    if HasAlreadyPathfind(nodesFolder) then return end
+    Script.Functions.Minecart.debug("[Pathfind] Initialized pathfind for room: " .. room.Name .. " - nodes: ", numOfNodes)
+
+    --[[
+        Pathfind is a computational expensive process to make, 
+        however we don't have node loops, 
+        so we can ignore a few verifications.
+        If you want to understand how this is working, search for "Pathfiding Algorithms"
+
+        The shortest explanation i can give is that, this is a custom pathfinding to find "gaps" between
+        nodes and creating "path" groups. With the groups estabilished we can make the correct validations.
+
+        -Bacalhauz
+    ]]
+    --Distance weights [DO NOT EDIT, unless something breaks...]
+    local _shortW = 4
+    local _longW = 24
+
+    local doorModel = room:WaitForChild("Door", 5) -- Will be used to find the correct last node.
+
+    local _startNode = nodes[1]
+    local _lastNode = nil --we need to find this node.
+
+    local _gpID = 1
+    local stackNode = {} --Group all track groups here.
+    stackNode[_gpID] = tGroupTrackNew()
+    
+    --Ensure sort all nodes properly (reversed)
+    nodes = sortNodes(nodes, true)
+
+    local _last = 1
+    for i=_last+1, numOfNodes, 1 do
+        local nodeA: Part = nodes[_last]
+        local nodeB: Part = _lastNode and nodes[i] or doorModel
+
+        local distance = (nodeA:GetPivot().Position - nodeB:GetPivot().Position).Magnitude
+
+        local isEndNode = distance <= _shortW
+        local isNodeNear = (distance > _shortW and distance <= _longW)
+
+        local _currNodeTask = "Track"
+        if isNodeNear or isEndNode then
+            if not _lastNode then -- this will only be true, once.
+                _currNodeTask = "End"
+                _lastNode = nodeA
+            end
+        else
+            _currNodeTask = "Fake"
+        end
+
+        --check if group is diff, ignore "End" or "Start" tasks
+        if  (_currNodeTask == "Fake" or _currNodeTask == "End") and _lastNode then
+            _gpID += 1
+            stackNode[_gpID] = tGroupTrackNew()
+            if _currNodeTask == "End" then
+                stackNode[_gpID].hasEnd = true
+            end
+        end
+        table.insert(stackNode[_gpID].nodes, nodeA)
+
+        --Use this to debug the nodeTask
+        Script.Functions.Minecart.debug(string.format("[%s] - [%s] Distance between: %s <--> %s ==> %.2f", _gpID, _currNodeTask, nodeA.Name, nodeB.Name, distance))
+
+        _last = i
+        --_lastNodeTask = _currNodeTask
+    end
+    stackNode[_gpID].hasStart = true --after the reversed path finding, the last group has the start node.
+    table.insert(stackNode[_gpID].nodes, _startNode)
+    --if we only have one group, means that there's no fake path.
+    local hasMoreThanOneGroup = _gpID > 1
+
+    local _closestNodes = {} --unwanted nodes if any
+    local hasIncorrectPath = false -- if this is true, we're cooked. No path for you ):
+    if hasMoreThanOneGroup then
+        Script.Functions.Minecart.debug()
+        for _gpI, v: tGroupTrack in ipairs(stackNode) do
+            _closestNodes[_gpI] = {}
+            Script.Functions.Minecart.debug(string.format("[TrackGroup] Group %s has %s nodes. \t Start: %s | End: %s", _gpI, #v.nodes, tostring(v.hasStart), tostring(v.hasEnd)))
+
+            if _gpI <= 1 then continue end
+            Script.Functions.Minecart.debug(string.format("[TrackGroup] Group %s was selected to deep pathfinding", _gpI))
+
+            --Sort table for the normal flow, A -> B (was B -> A before)
+            v.nodes = sortNodes(v.nodes, false)
+
+            --Finally, perform the clean up by removing wrong nodes when a "distance jump" is found
+            local _gplast = 1
+            local hasNodeJump = false
+            for _gpS=_gplast+1, #v.nodes, 1 do
+                local nodeA: Part = v.nodes[_gplast]
+                local nodeB: Part = v.nodes[_gpS]
+
+                local distance = (nodeA:GetPivot().Position - nodeB:GetPivot().Position).Magnitude
+
+                hasNodeJump = (distance >= _longW)
+                if not hasNodeJump then _gplast = _gpS continue end
+                Script.Functions.Minecart.debug(string.format("[%s] Distance between %s <--> %s ==> %.2f", _gpI, nodeA.Name, nodeB.Name, distance))
+
+                --Ok, we found a node jump, now we need to know what should be the closest node
+                --table.remove(v.nodes, _gpS)
+                Script.Functions.Minecart.debug(string.format("[TrackGroup] Group %s with, %s will find his closest node now.", _gpI, nodeB.Name))
+                local nodeSearchPath = nodeB
+
+                --Search again with the nodeSearchPath
+                local closestDistance = math.huge
+
+                local _gpFlast = #v.nodes
+                for i=_gpFlast-1, 1, -1 do
+
+                    local fnode = v.nodes[_gpFlast]
+                    local Sdistance = (nodeSearchPath:GetPivot().Position - fnode:GetPivot().Position).Magnitude
+                    _gpFlast = i
+
+                    if Sdistance == 0.00 then continue end --node is self
+                    Script.Functions.Minecart.debug(string.format("  [%s] DeepPath ==> Distance between %s <--> %s ==> %.2f", _gpI, nodeSearchPath.Name, fnode.Name, Sdistance))
+
+                    if Sdistance <= closestDistance then
+                        closestDistance = Sdistance
+                        table.insert(_closestNodes[_gpI], fnode)
+                        table.remove(v.nodes, _gpFlast+1)
+                        continue
+                    end
+                    break
+                end
+                --table.insert(v.nodes, _gpS, nodeSearchPath)
+
+                local _FoundAmount = #_closestNodes[_gpI]
+                if _FoundAmount > 1 then 
+                    Script.Functions.Minecart.debug(string.format("[TrackGroup] Group %s with, closest node is: %s ", _gpI, _closestNodes[_gpI][_FoundAmount].Name))
+                else
+                    warn(string.format("[TrackGroup] Group %s ERROR: Unable to find closest node, path is likely broken.", _gpI))
+                    hasIncorrectPath = true
+                end
+                break
+            end
+            if not hasNodeJump then
+                Script.Functions.Minecart.debug(string.format("[TrackGroup] Group %s has a correct path! ", _gpI))
+            end
+        end
+
+        for _gpI, v: tGroupTrack in ipairs(stackNode) do
+            Script.Functions.Minecart.debug(string.format("[TrackGroup -- VERIFY] Group %s has %s nodes. \t Start: %s | End: %s", _gpI, #v.nodes, tostring(v.hasStart), tostring(v.hasEnd)))
+        end
+    end
+
+    if hasIncorrectPath then return end
+
+    --finally, draw the correct path. gg
+    local realNodes = {} --our precious nodes finally here :pray:
+    local fakeNodes = {} --we hate you but ok
+    for _gpFI, v: tGroupTrack in ipairs(stackNode) do
+        local finalWrongNode = false
+        if _gpFI == 1 and hasMoreThanOneGroup then
+            finalWrongNode = true 
+        end
+
+        for _, vfinal in ipairs(v.nodes) do
+            if finalWrongNode then
+                table.insert(fakeNodes, vfinal)
+                continue
+            end
+            table.insert(realNodes, vfinal)
+        end
+
+        if _closestNodes[_gpFI] and type(_closestNodes[_gpFI]) == "table" then
+        for _, nfinal in ipairs(_closestNodes[_gpFI]) do
+            table.insert(fakeNodes, nfinal)
+        end
+    else
+        local roomname = room.Name
+        Script.Functions.Minecart.debug("skipping close nd for roomnumb: " .. roomname)
+    end
+end
+
+    local nodesList: tSortedNodes = {
+        real = sortNodes(realNodes, false),
+        fake = sortNodes(fakeNodes, false)
+    }
+
+    nodesFolder:SetAttribute("_lhx_nodes_pathfind", true)
+    PathfindSetNodes(nodesList.real, "_lhx_real_node")
+    PathfindSetNodes(nodesList.fake, "_lhx_fake_node")
+    --Call any feature that requires the pathfind nodes--
+end
+
+local function PathfindGetNodes(room: Model): tSortedNodes | nil
+    Script.Functions.Minecart.debug("[GetNodes] Starting getting nodes for: " .. room.Name)
+    if not HasNodesToPathfind(room) then return end
+
+    local Nodes = {
+        real = {},
+        fake = {}
+    }
+    local nodeArray = room:WaitForChild("RunnerNodes", 5.0)
+    if (nodeArray == nil) then 
+        Script.Functions.Minecart.debug("[GetNodes] No node has been found for the room: " .. room.Name)
+        return
+    end
+
+    if not HasAlreadyPathfind(nodeArray) then 
+      Script.Functions.Minecart.debug("[GetNodes] Pathfind not initialized for room: " .. room.Name)
+      Script.Functions.Minecart.Pathfind(room, true)
+    end
+
+    Script.Functions.Minecart.debug("[GetNodes] Get real & fake nodes for room: " .. room.Name, " - nodes:" .. tostring(#nodeArray:GetChildren()))
+
+    for _, node: Part in ipairs(nodeArray:GetChildren()) do
+        --check for real nodes
+        
+        local realNumber = node:GetAttribute("_lhx_real_node")
+        if realNumber then table.insert(Nodes.real, node) continue end
+        --check for fake nodes
+        local fakeNumber = node:GetAttribute("_lhx_fake_node")
+        if fakeNumber then table.insert(Nodes.fake, node) end
+    end
+
+    --If there's no nodes, return the empty table
+    if #Nodes.real <= 0 and #Nodes.fake <= 0 then 
+        Script.Functions.Minecart.debug("[GetNodes] No node has been mapped yet for room: " .. room.Name)
+        return
+    end
+
+    local sortedReal = sortNodes(Nodes.real)
+    local sortedFake = sortNodes(Nodes.fake)
+
+    local nodesList = {
+        real = sortedReal,
+        fake = sortedFake,
+        roomNumber = tonumber(room.Name)
+    }
+    Script.Functions.Minecart.debug("[GetNodes] Successfully sent sorted nodes in room: " .. room.Name) 
+    return nodesList
+end
+
+local WhitelistConfig = {
+    [45] = {firstKeep = 3, lastKeep = 2},
+    [46] = {firstKeep = 2, lastKeep = 2},
+    [47] = {firstKeep = 2, lastKeep = 2},
+    [48] = {firstKeep = 2, lastKeep = 2},
+    [49] = {firstKeep = 2, lastKeep = 4},
+    [50] = {firstKeep = 1, lastKeep = 3},
+}
+
+local function changeNodeColor(node: Model, color: Color3): Model
+    if color == nil then
+        node.Color = Script.MinecartPathNodeColor.Yellow
+        node.Transparency = 1
+        node.Size = Vector3.new(1.0, 1.0, 1.0)
+        return
+    end
+    node.Color = color
+    node.Material = Enum.Material.Neon
+    node.Transparency = 0
+    node.Shape = Enum.PartType.Ball
+    node.Size = Vector3.new(0.7, 0.7, 0.7)
+    return node
+end
+
+
+function Script.Functions.Minecart.DrawNodes(room: Model)
+    local nodesList = PathfindGetNodes(room)
+    if not nodesList then return end
+
+    local espRealColor = if Toggles.VW_SeekPath.Value then Script.MinecartPathNodeColor.Green else Script.MinecartPathNodeColor.Disabled
+
+    --[ESP] Draw the real path
+    for _, realNode in ipairs(nodesList.real) do
+        changeNodeColor(realNode, espRealColor)
+    end
+
+ if Toggles.VW_SeekPathFake.Value then
+    for idx, fakeNode in ipairs(nodesList.fake) do
+        changeNodeColor(fakeNode, Script.MinecartPathNodeColor.Red)
+       end
+    end
+end
+
+Toggles.VW_SeekPath:OnChanged(function(value)
+    if not Script.IsMines then return end
+    -- 1. Kill any existing watcher first
+    if SeekPathConnection then 
+        SeekPathConnection:Disconnect() 
+        SeekPathConnection = nil 
+    end
+
+    if value then
+        -- 2. Define the "Gatekeeper" list
+        local validRooms = {["43"]=true, ["44"]=true, ["45"]=true, ["46"]=true, ["47"]=true, ["48"]=true, ["49"]=true,["50"]=true, ["70"]=true, ["71"]=true, ["72"]=true, ["73"]=true,["74"]=true,["75"]=true}
+
+        -- 3. Function to check and draw
+        local function checkAndDraw(room)
+            if validRooms[room.Name] then
+                Script.Functions.Minecart.debug("[Toggle] room " .. room.Name .. " is valid so im drawing +4")
+                task.spawn(Script.Functions.Minecart.DrawNodes, room)
+            else
+                -- Connection stays alive, but ignores rooms like 141
+                Script.Functions.Minecart.debug("[Toggle] Ignoring room btw: " .. room.Name)
+            end
+        end
+
+        -- 4. Initial check for rooms already there
+        for _, room in pairs(workspace.CurrentRooms:GetChildren()) do
+            checkAndDraw(room)
+        end
+
+        -- 5. THE AUTOMATIC WATCHER
+        SeekPathConnection = workspace.CurrentRooms.ChildAdded:Connect(function(room)
+            -- Small delay so the Name and Folder have time to exist
+            task.delay(0.1, function()
+                if Toggles.VW_SeekPath.Value then
+                    checkAndDraw(room)
+                end
+            end)
+        end)
+    end
+end)
+
+local function HasAlreadyDestroyed(room: Model): boolean
+    Script.Functions.Minecart.debug("[HasAlreadyDestroyed] Checking destroyed nodes on room: " .. room.Name)
+    local nodesFolder = room:WaitForChild("RunnerNodes", 5.0)
+    if (nodesFolder == nil) then 
+        Script.Functions.Minecart.debug("[HasAlreadyDestroyed] No node has been found." )
+        return
+    end
+    local result = nodesFolder:GetAttribute("_lhx_player_teleported") ~= nil
+    Script.Functions.Minecart.debug("[HasAlreadyDestroyed] Destroyed: " .. tostring(result))
+    return result
+end
+
+local function NodeDestroy(nodesList: tSortedNodes)
+    if not nodesList then return end
+
+    print("[NodeDestroy] Attempting to destroy nodes in room: " .. tostring(nodesList.roomNumber))
+
+    local roomConfig = WhitelistConfig[nodesList.roomNumber]
+
+    local _firstKeep = roomConfig.firstKeep
+    local _lastKeep  = roomConfig.lastKeep
+
+    local _removeTotal = #nodesList.real - (_firstKeep + _lastKeep) --remove nodes that arent in the first or last
+    for idx=1, _removeTotal do
+        local node = nodesList.real[_firstKeep + 1]
+        --changeNodeColor(node, MinecartPathNodeColor.Orange) --debug only
+        node:Destroy()
+        table.remove(nodesList.real, _firstKeep + 1)
+    end
+
+    --Destroy all the fake nodes
+    for _, node in ipairs(nodesList.fake) do
+        node:Destroy()
+        table.remove(nodesList.fake, 1)
+    end
+
+    Script.Functions.Minecart.debug(string.format("[NodeDestroy] Task completed, remaining: Real nodes: %d | Fake nodes %s", #nodesList.real, #nodesList.fake))
+end
+
+
+Script.FeatureConnections.Character["Oxygen"] = LocalPlayer.Character:GetAttributeChangedSignal("Oxygen"):Connect(function()
+            if not Toggles.GA_NotifyOxygen then return end
+            if not Toggles.GA_NotifyOxygen.Value then return end
+            if LocalPlayer.Character:GetAttribute("Oxygen") >= 100 then return end
+                Script.Functions.Captions(string.format("Oxygen: %.1f", LocalPlayer.Character:GetAttribute("Oxygen")))
+        end)
+
+local Connect = {}
+shared.Connections = {}
+
+function Connect:GiveSignal(signal: RBXScriptConnection | RBXScriptSignal)
+    table.insert(shared.Connections, signal)
+end
+
+function Connect:DisconnectSignal(signal: RBXScriptConnection | RBXScriptSignal)
+    if not signal then return end
+
+    if signal.Connected then
+        signal:Disconnect()
+    end
+end
+
+function Script.Functions.DistanceFromCharacter(position: Instance | Vector3, getPositionFromCamera: boolean | nil)
+    if not position then return 9e9 end
+    if typeof(position) == "Instance" then
+        position = position:GetPivot().Position
+    end
+
+    if getPositionFromCamera and (workspace.CurrentCamera or workspace.CurrentCamera) then
+        local cameraPosition = if workspace.CurrentCamera then workspace.CurrentCamera.CFrame.Position else workspace.CurrentCamera.CFrame.Position
+
+        return (cameraPosition - position).Magnitude
+    end
+
+    if LocalPlayer.Character.HumanoidRootPart then
+        return (LocalPlayer.Character.HumanoidRootPart.Position - position).Magnitude
+    elseif workspace.CurrentCamera then
+        return (workspace.CurrentCamera.CFrame.Position - position).Magnitude
+    end
+
+    return 9e9
+end
+
+local PathfindingService = game:GetService("PathfindingService")
+function Script.Functions.GetNearestAssetWithCondition(condition: () -> ())
+    local nearestDistance = math.huge
+    local nearest
+    for _, room in pairs(workspace.CurrentRooms:GetChildren()) do
+        if not room:FindFirstChild("Assets") then continue end
+
+        for _, asset in pairs(room.Assets:GetChildren()) do
+            if condition(asset) and Script.Functions.DistanceFromCharacter(asset) < nearestDistance then
+                nearestDistance = Script.Functions.DistanceFromCharacter(asset)
+                nearest = asset
+            end
+        end
+    end
+
+    return nearest
+end
+
+function Script.Functions.IsPromptInRange(prompt: ProximityPrompt)
+    return Script.Functions.DistanceFromCharacter(prompt:FindFirstAncestorWhichIsA("BasePart") or prompt:FindFirstAncestorWhichIsA("Model") or prompt.Parent) <= prompt.MaxActivationDistance
+end
+
+function Script.Functions.GetNearestAssetWithCondition(condition: () -> ())
+    local nearestDistance = math.huge
+    local nearest
+    for _, room in pairs(workspace.CurrentRooms:GetChildren()) do
+        if not room:FindFirstChild("Assets") then continue end
+
+        for _, asset in pairs(room.Assets:GetChildren()) do
+            if condition(asset) and Script.Functions.DistanceFromCharacter(asset) < nearestDistance then
+                nearestDistance = Script.Functions.DistanceFromCharacter(asset)
+                nearest = asset
+            end
+        end
+    end
+
+    return nearest
+end
+
+    Connect:GiveSignal(RunService.Heartbeat:Connect(function()
+        if not Toggles.ES_AutoRooms then return end
+
+        local entity = (workspace:FindFirstChild("A60") or workspace:FindFirstChild("A120"))
+        local isEntitySpawned = (entity and entity.PrimaryPart.Position.Y > -10)
+        
+        if isEntitySpawned and not LocalPlayer.Character.HumanoidRootPart.Anchored then
+            local pathfindingGoal = Script.Functions.GetAutoRoomsPathfindingGoal()
+
+            if Script.Functions.IsPromptInRange(pathfindingGoal.Parent.HidePrompt) then
+                fireproximityprompt(pathfindingGoal.Parent.HidePrompt)
+            end
+        elseif not isEntitySpawned and LocalPlayer.Character.HumanoidRootPart.Anchored then
+            for i = 1, 10 do
+                game.ReplicatedStorage.RemotesFolder.CamLock:FireServer()
+            end
+        end
+    end))
+
+
+    function Script.Functions.GetAutoRoomsPathfindingGoal(): BasePart
+        local entity = (workspace:FindFirstChild("A60") or workspace:FindFirstChild("A120"))
+        if entity and entity.PrimaryPart.Position.Y > -10 then
+            local GoalLocker = Script.Functions.GetNearestAssetWithCondition(function(asset)
+                return asset.Name == "Rooms_Locker" and not asset.HiddenPlayer.Value and asset.PrimaryPart.Position.Y > -10
+            end)
+
+            return GoalLocker.PrimaryPart
+        end
+
+        return workspace.CurrentRooms[Script.LatestRoom.Value].RoomExit
+    end
+
+    local _internal_lhx_pathfinding_nodes = Instance.new("Folder", workspace) do
+        _internal_lhx_pathfinding_nodes.Name = "_internal_lhx_pathfinding_nodes"
+    end
+
+    local _internal_lhx_pathfinding_block = Instance.new("Folder", workspace) do
+        _internal_lhx_pathfinding_block.Name = "_internal_lhx_pathfinding_block"
+    end
+
+local lastRoom = -1
+local NotifiedFail = -2
+local lastRoomID = -1
+local isWalking = false
+local lastNotifiedRoom
+    Toggles.ES_AutoRooms:OnChanged(function(value)
+        local hasResetFailsafe = false
+
+        local function nodeCleanup()
+            _internal_lhx_pathfinding_nodes:ClearAllChildren()
+            _internal_lhx_pathfinding_block:ClearAllChildren()
+            hasResetFailsafe = true
+        end
+
+        local function moveToCleanup()
+            if LocalPlayer.Character.Humanoid then
+                LocalPlayer.Character.Humanoid:Move(LocalPlayer.Character.HumanoidRootPart.Position)
+                LocalPlayer.Character.Humanoid.WalkToPart = nil
+                LocalPlayer.Character.Humanoid.WalkToPoint = LocalPlayer.Character.HumanoidRootPart.Position
+            end
+            nodeCleanup()
+        end
+
+        if value then
+            local lastRoomValue = 0
+
+            local function createNewBlockedPoint(point: PathWaypoint)
+                local block = Instance.new("Part", _internal_lhx_pathfinding_block)
+                local pathMod = Instance.new("PathfindingModifier", block)
+                pathMod.Label = "_ms_pathBlock"
+
+                block.Name = "_lhx_blocked_path"
+                block.Shape = Enum.PartType.Block
+
+                local sizeY = 10
+                
+                block.Size = Vector3.new(1, sizeY, 1)
+                block.Color = Color3.fromRGB(255, 130, 30)
+                block.Material = Enum.Material.Neon
+                block.Position = point.Position + Vector3.new(0, sizeY / 2, 0)
+                block.Anchored = true
+                block.CanCollide = false
+                block.Transparency = 0.5
+            end
+
+            local function doAutoRooms()
+                local current = Script.LatestRoom.Value
+                local pathfindingGoal = Script.Functions.GetAutoRoomsPathfindingGoal()
+
+                if Script.LatestRoom.Value ~= lastRoomValue then
+                    _internal_lhx_pathfinding_block:ClearAllChildren()
+                    lastRoomValue = Script.LatestRoom.Value
+                end
+            if Script.LatestRoom.Value ~= lastNotifiedRoom and Toggles.ES_AutoRoomsDebug.Value and getgenv().UseLib.CurrentLib == "Obsidian" then
+                lastNotifiedRoom = Script.LatestRoom.Value
+                Library:Notify({
+                    Title = "Auto Rooms",
+                    Description = "Calculated Objective Successfully Objective: " .. pathfindingGoal.Parent.Name .. "\nCreating path...",
+                    SoundId = "rbxassetid://4590662766"
+                })
+            elseif Script.LatestRoom.Value ~= lastNotifiedRoom and Toggles.ES_AutoRoomsDebug.Value and getgenv().UseLib.CurrentLib == "Linoria" then
+                lastNotifiedRoom = Script.LatestRoom.Value
+                Library:Notify({
+                    Title = "Auto Rooms",
+                    Description = "Calculated Objective Successfully!\nObjective: " .. pathfindingGoal.Parent.Name .. "\nCreating path...",
+                    SoundId = "rbxassetid://4590662766"
+                })
+            end
+
+                    local path = PathfindingService:CreatePath({
+                    AgentCanJump = false,
+                    AgentCanClimb = false,
+                    WaypointSpacing = 8,
+                    AgentRadius = 2,
+                    Costs = {
+                        _ms_pathBlock = 5 --cost will increase the more stuck you get.
+                    }
+                })
+               if Script.LatestRoom.Value ~= lastNotifiedRoom and Toggles.ES_AutoRoomsDebug.Value then
+                Library:Notify({
+                    Title = "Auto Rooms",
+                    Description = "Computing Path to " .. pathfindingGoal.Parent.Name .. "...",
+                    SoundId = "rbxassetid://4590662766"
+                })
+            end
+
+                path:ComputeAsync(LocalPlayer.Character.HumanoidRootPart.Position - Vector3.new(0, 2.5, 0), pathfindingGoal.Position)
+                local waypoints = path:GetWaypoints()
+                local waypointAmount = #waypoints
+
+                if path.Status == Enum.PathStatus.Success then
+                    hasResetFailsafe = true
+                    task.spawn(function()
+                        task.wait(0.1)
+                        hasResetFailsafe = false
+                        if LocalPlayer.Character.Humanoid and Script.Collision then
+                            local checkFloor = LocalPlayer.Character.Humanoid.FloorMaterial
+                            local isStuck = checkFloor == Enum.Material.Air or checkFloor == Enum.Material.Concrete
+                            if isStuck then
+                                repeat task.wait()
+                                    Script.Collision.CanCollide = false
+                                    Script.Collision.CollisionCrouch.CanCollide = not Library.IsMobile
+                    until not isStuck or hasResetFailsafe
+                            end
+                            hasResetFailsafe = true
+                        end
+                    end)
+                if Script.LatestRoom.Value ~= lastNotifiedRoom and Toggles.ES_AutoRoomsDebug.Value then
+                    Library:Notify({
+                        Title = "Auto Rooms",
+                        Description = "Computed path successfully with " .. waypointAmount .. " waypoints!",
+                        SoundId = "rbxassetid://4590662766"
+                    })
+                end
+                    _internal_lhx_pathfinding_nodes:ClearAllChildren()
+
+                    for i, waypoint in pairs(waypoints) do
+                        local node = Instance.new("Part", _internal_lhx_pathfinding_nodes) do
+                            node.Name = "_internal_node_" .. i
+                            node.Size = Vector3.new(1, 1, 1)
+                            node.Position = waypoint.Position
+                            node.Anchored = true
+                            node.CanCollide = false
+                            node.Shape = Enum.PartType.Ball
+                            node.Color = Color3.new(1, 0, 0)
+                            node.Transparency = 0
+                        end
+                    end
+
+                    local lastWaypoint = nil
+                    for i, waypoint in pairs(waypoints) do
+                        local moveToFinished = false
+                        local recalculate = false
+                        local waypointConnection = LocalPlayer.Character.Humanoid.MoveToFinished:Connect(function() moveToFinished = true end)
+                        if not moveToFinished or not Toggles.ES_AutoRooms then
+                            LocalPlayer.Character.Humanoid:MoveTo(waypoint.Position)
+                            
+                            local entity = (workspace:FindFirstChild("A60") or workspace:FindFirstChild("A120"))
+                            local isEntitySpawned = (entity and entity.PrimaryPart.Position.Y > -10)
+
+                            if isEntitySpawned and not LocalPlayer.Character.HumanoidRootPart.Anchored and pathfindingGoal.Parent.Name ~= "Rooms_Locker" then
+                                waypointConnection:Disconnect()
+
+                                if not Toggles.ES_AutoRooms then
+                                    nodeCleanup()
+                                    break
+                                else
+                                    if _internal_lhx_pathfinding_nodes:FindFirstChild("_internal_node_" .. i) then
+                                        
+                                    end
+                                end
+
+                                break
+                            end
+
+                            task.delay(0.5, function()
+                                if moveToFinished then return end
+                                if (not Toggles.ES_AutoRooms or Library.Unloaded) then return moveToCleanup() end
+
+                                repeat task.wait(0.25) until (not LocalPlayer.Character:GetAttribute("Hiding") and not LocalPlayer.Character.PrimaryPart.Anchored)
+                              
+                            if Toggles.ES_AutoRoomsDebug.Value then
+                                Library:Notify({
+                                    Title = "Auto Rooms",
+                                    Description = "Seems like you are stuck, trying to recalculate path...",
+                                    Reason = "Failed to move to waypoint",
+                                    SoundId = "rbxassetid://4590662766"
+                                })
+                            end
+
+                                recalculate = true
+                                if lastWaypoint == nil and waypointAmount > 1 then
+                                    waypoint = waypoints[i+1]
+                                else
+                                    waypoint = waypoints[i-1]
+                                end
+
+                                createNewBlockedPoint(waypoint)
+                            end)
+                        end
+
+                        repeat task.wait() until moveToFinished or not Toggles.ES_AutoRooms or recalculate or Library.Unloaded
+                        lastWaypoint = waypoint
+
+                        waypointConnection:Disconnect()
+
+                        if not Toggles.ES_AutoRooms then
+                            nodeCleanup()
+                            break
+                        else
+                            if _internal_lhx_pathfinding_nodes:FindFirstChild("_internal_node_" .. i) then
+                                
+                            end
+                        end
+
+                        if recalculate then break end
+                    end
+
+                else
+                if Script.LatestRoom.Value ~= lastRoomID and path.Status == Enum.PathStatus.NoPath then
+                    lastNotifiedRoom = currentRoom
+                    lastRoomID = Script.LatestRoom.Value
+                    Library:Notify({
+                        Title = "Auto Rooms",
+                        Description = "Pathfinding failed with status " .. tostring(path.Status),
+                        SoundId = "rbxassetid://4590662766"
+                    })
+                   end
+                end
+            end
+
+            -- Movement
+            while Toggles.ES_AutoRooms and not Library.Unloaded do
+                if Script.LatestRoom.Value == 1000 and Toggles.ES_AutoRoomsDebug.Value then
+                    Library:Notify({
+                        Title = "Auto Rooms",
+                        Description = "You have reached A-1000",
+                        Reason = "A-1000 reached by lolhax (msport) autorooms congrats..",
+                        SoundId = "rbxassetid://4590662766"
+                    })
+                    break
+                end
+    if current ~= lastRoom or not isWalking then
+        lastRoom = current
+                
+        task.spawn(function()
+                isWalking = true
+                doAutoRooms()
+                isWalking = false -- When the function finishes, it allows a retry
+              end)
+            end
+        task.wait()
+    end
+            -- Unload Auto Rooms
+            moveToCleanup()
+        end
+    end)
 
 local ReviveHook; ReviveHook = hookfunction(require(game.ReplicatedStorage.ModulesClient.ReviveCutscene), function(...)
     if Toggles.VR_NoReviveCutscene.Value then
@@ -3333,7 +4260,7 @@ for _, v in Rooms:GetDescendants() do
                     local NextAnchor = Anchors[NumberIndex]
 
                     if NumberIndex > 1 then
-                        local Code = LocalPlayer.PlayerGui.MainUI.MainFrame.AnchorHintFrame.Code.Text
+                        local Code = LocalPlayer.PlayerGui.MainUI.AnchorHintFrame.Code.Text
                         local Offset = tonumber(NextAnchor.Note.SurfaceGui.TextLabel.Text)
 
                         local Solved = SolveAnchor(Code, Offset)
@@ -3354,7 +4281,7 @@ for _, v in Rooms:GetDescendants() do
                         table.insert(EspTable.Interactables.Anchors, {Highlight, TextLabel})
 					else
                         task.spawn(function()
-                            local Code = LocalPlayer.PlayerGui.MainUI.MainFrame:WaitForChild("AnchorHintFrame", 9e9).Code.Text
+                            local Code = LocalPlayer.PlayerGui.MainUI:WaitForChild("AnchorHintFrame", 9e9).Code.Text
 
                             while not Library.Unloaded and task.wait() and not NextAnchor:GetAttribute("Activated") do
                                 if Toggles.GA_AnchorAutoSolve.Value and (LocalPlayer.Character.Collision.Position - NextAnchor.AnchorBase.Position).Magnitude < 12 then
@@ -3568,20 +4495,28 @@ workspace.CurrentRooms.DescendantAdded:Connect(function(prompt)
     end
 end)
 
+
 Toggles.GA_PromptClip:OnChanged(function(value)
-    for _, prompt in pairs(workspace.CurrentRooms:GetDescendants()) do        
-        if Script.Functions.PromptCondition(prompt) then
-            if value then
-                prompt.RequiresLineOfSight = false
-            else
-                prompt.RequiresLineOfSight = prompt:GetAttribute("Clip") or true
-            end
+    if PromptConnection then PromptConnection:Disconnect() end
+
+    local function apply(p)
+        if p:IsA("ProximityPrompt") and Script.Functions.PromptCondition(p) then
+            p.RequiresLineOfSight = not value
         end
+    end
+
+    -- Run for current rooms
+    for _, p in pairs(workspace.CurrentRooms:GetDescendants()) do apply(p) end
+
+    -- Catch new rooms
+    if value then
+        PromptConnection = workspace.CurrentRooms.DescendantAdded:Connect(apply)
     end
 end)
 
- if Toggles.GA_DoorReach.Value and workspace.CurrentRooms:FindFirstChild(Script.LatestRoom.Value) then
-            local door = workspace.CurrentRooms[Script.LatestRoom.Value]:FindFirstChild("Door")
+local roomName = tostring(Script.LatestRoom.Value)
+ if Toggles.GA_DoorReach.Value and workspace.CurrentRooms:FindFirstChild(roomName) then
+            local door = workspace.CurrentRooms[roomName]:FindFirstChild("Door")
 
             if door and door:FindFirstChild("ClientOpen") then
                 door.ClientOpen:FireServer()
@@ -3922,9 +4857,10 @@ task.spawn(function()
     end)
  
     MenuProperties:AddLabel("Menu bind"):AddKeyPicker("MenuKeybind", { Default = "RightShift", NoUI = true, Text = "Menu keybind" })
+  if UIConfig.CurrentLib == "Obsidian" then
     MenuProperties:AddDropdown("DPIDropdown", {
 	Values = { "50%", "75%", "100%", "125%", "150%", "175%", "200%" },
-	Default = "100%",
+	Default = "100%",   
 
 	Text = "DPI Scale",
 
@@ -3934,7 +4870,8 @@ task.spawn(function()
 
 		Library:SetDPIScale(DPI)
 	end,
-})
+    })
+end
     Library.ShowCustomCursor = false
     MenuProperties:AddToggle("ShowCustomCursor", {
 	Text = "Custom Cursor",
@@ -3951,6 +4888,19 @@ task.spawn(function()
 		Library.ForceCheckbox = Value
 	end,
 })
+    MenuProperties:AddDropdown("UILib", {
+        Text = "UI Library",
+        Values = { "Obsidian", "Linoria"},
+        Default = getgenv().UseLib.CurrentLib,
+        Callback = function(value)
+           getgenv().UseLib.CurrentLib = value
+           Library:Notify({
+            Title = "UI Library",
+            Description = "Restart lolhax to apply changes.",
+            Time = 5
+           })
+        end,
+    })
     MenuProperties:AddDivider()
     MenuProperties:AddButton("LX Discord Server", function()
      setclipboard("https://discord.gg/3xqFjM4R")
