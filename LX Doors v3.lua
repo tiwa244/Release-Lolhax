@@ -58,7 +58,7 @@
 -- credits2 mspaint developer: upio for ig creating the dpi feature inside example.lua in obisidnan library 
 -- this script was MADE by: te original lolhax developers, and not_xcode in discord
 -- r\\\\///\\||/\/\/\ also dont contact not_xcode if u wanna do a fork just do it cuz i cant accetp mesagwes 
--- credits2 () 
+-- credits2 (placeholder) 
 -- FAH
 -- credits2 upio for creating mspaint (yes hes the goddamn owner) and credits to mspaint devs for making mspaint its awesome 
 -- mspaint is awesome btw
@@ -67,50 +67,118 @@
 -- lolhax v2 used to be number 1 doors script on the market it fell off
 local Loadtime = tick()
 local IdCheck = "lolhax v3 | ID: " .. game.Players.LocalPlayer.Name
-getgenv().UseLib = getgenv().UseLib or {
+local Linoria = loadstring(game:HttpGet('https://raw.githubusercontent.com/mstudio45/LinoriaLib/main/Library.lua'))()
+local Obsidian = loadstring(game:HttpGet('https://raw.githubusercontent.com/deividcomsono/Obsidian/main/Library.lua'))()
+local HttpService = game:GetService("HttpService")
+local foldername = "lolhax"
+local filename = foldername .. "/LibraryConfig.json"
+local LHXLoadFinish = false
+
+if not isfolder(foldername) then
+    makefolder(foldername)
+end
+
+-- 1. Local Table for speed
+local config = {
     Use2Lib = true,
-    CurrentLib = "Obsidian"
+    CurrentLib = "Obsidian",
+    CurrentNotify = "Obsidian"
 }
 
-local UIConfig = getgenv().UseLib
-local Repository, Library, Window, Tabs, Icons, ThemeManager, SaveManager, LinoriaNotify -- Defined at the top so they don't "vanish"
+-- 2. Load the file (Merge it into our local config)
+if isfile(filename) then
+    local rawData = readfile(filename)
+    print("eh: ", rawData) -- This runs BEFORE decoding
 
-if UIConfig.CurrentLib == "Linoria" then -- FIXED: Was "Obsidian"
-    Repository = "https://raw.githubusercontent.com/violin-suzutsuki/LinoriaLib/main/"
+    local success, content = pcall(function()
+        return HttpService:JSONDecode(rawData)
+    end)
+
+    if success and type(content) == "table" then
+        for k, v in pairs(content) do
+            config[k] = v
+        end
+        print("saved")
+    else
+        warn("faild to save err: ", content)
+    end
+end
+
+-- 3. LOCAL Functions (No getgenv here!)
+local foldername = "lolhax"
+local filename = foldername .. "/LibraryConfig.json"
+
+-- Ensure the folder exists before doing ANYTHING else
+if not isfile(filename) then
+    writefile(filename, HttpService:JSONEncode(config))
+    print("created missig file lmao at: " .. filename)
+end
+
+local function SaveToFile()
+    writefile(filename, HttpService:JSONEncode(config))
+end
+
+local function SwitchLib(libName)
+    -- If the script isn't fully loaded, IGNORE all automated clicks from the UI
+    if not LHXLoadFinish then 
+        print("ignored:", libName)
+        return 
+    end
+
+    if libName ~= config.CurrentLib then
+        config.CurrentLib = libName
+        writefile(filename, HttpService:JSONEncode(config))
+        print("saved ye " .. libName)
+    end
+end
+
+local function SwitchNotify(notifyName)
+    -- 1. The Startup Gate (using your specific variable)
+    if not LHXLoadFinish then 
+        print("ignoring: " ..  notifyName .. "sinc, its a config overwtie")
+        return 
+    end
+
+    -- 2. Only save if the user actually clicked a DIFFERENT style
+    if notifyName ~= config.CurrentNotify then
+        config.CurrentNotify = notifyName
+        
+        local success, err = pcall(function()
+            writefile(filename, HttpService:JSONEncode(config))
+        end)
+        
+        if success then
+            print("Successfully MANUALLY SAVED Notify: " .. notifyName)
+        else
+            warn("SAVE FAILED for Notify:", err)
+        end
+    else
+        print("nah, config overwrite denied")
+    end
+end
+
+getgenv().UseLib = config
+getgenv().SwitchLib = SwitchLib
+getgenv().SwitchNotify = SwitchNotify
+
+local UIConfig = getgenv().UseLib
+local Repository, Library, Window, Tabs, Icons, ThemeManager, SaveManager, LinoriaNotify, Toggles, Options -- Defined at the top so they don't "vanish"
+
+if UIConfig.CurrentLib == "Linoria" then 
+    Repository = "https://raw.githubusercontent.com/mstudio45/LinoriaLib/main/"
     Library = loadstring(game:HttpGet(Repository .. "Library.lua"))()
+    Toggles = Library.Toggles
+    Options = Library.Options
+
     
-    -- No need to save these to variables unless you're using them later
     ThemeManager = loadstring(game:HttpGet(Repository .. "addons/ThemeManager.lua"))()
     SaveManager =  loadstring(game:HttpGet(Repository .. "addons/SaveManager.lua"))()
-    -- 1. Save the ORIGINAL Linoria function to a unique name
-local InternalNotify = Library.Notify
-
--- 2. Define the wrapper so Library:Notify({table}) works
-Library.Notify = function(self, options)
-    -- Handle the colon/dot logic to get the data table
-    local data = (type(self) == "table" and self ~= Library) and self or options
     
-    -- Extract the string and time
-    local msg = data.Description
-    local waitTime = data.Time
-
-    local sound = Instance.new("Sound")
-    sound.Parent = game:GetService("SoundService")
-    sound.SoundId = "rbxassetid://4590662766"
-    sound.Volume = 1
-    sound.PlayOnRemove = true
-    sound:Destroy()
-    
-    -- 3. Call the ORIGINAL function we saved (passing Library as 'self')
-    pcall(function()
-        InternalNotify(data.Title, msg, waitTime)
-    end)
-end
     Window = Library:CreateWindow({ 
         Title = " LOLHAX | ".. game.Players.LocalPlayer.Name, 
         Center = true, 
         AutoShow = true, 
-        TabPadding = 3, 
+        TabPadding = 3,     
         MenuFadeTime = 0.15 
     })
     
@@ -154,7 +222,6 @@ elseif UIConfig.CurrentLib == "Obsidian" then
     }
 end
 
--- This only works AFTER the if/else block finishes
 
 if not shared.Script then
     shared.Script = {
@@ -168,7 +235,7 @@ if not shared.Script then
     Guidance = {},
     PaintingDebounce = {},
     UsedBreakers = {},
-    VoidGlitchNotifiedRooms = {}
+    VoidGlitchNotifiedRooms = {},
 },
         Humanoid = {},
         FloorReplicated = game:GetService("ReplicatedStorage"):WaitForChild("FloorReplicated"),
@@ -176,23 +243,143 @@ if not shared.Script then
     }
   end
 
+local Script = shared.Script
+Script.Functions = {}
+shared.Humanoid = game.Players.LocalPlayer.Character.Humanoid
+Script.Functions.EnforceTypes = function(args, template)
+    args = if typeof(args) == "table" then args else {}
+
+    for key, value in pairs(template) do
+        local argValue = args[key]
+
+        if argValue == nil or (value ~= nil and typeof(argValue) ~= typeof(value)) then
+            args[key] = value
+        elseif typeof(value) == "table" then
+            args[key] = Script.Functions.EnforceTypes(argValue, value)
+        end
+    end
+
+    return args
+end
+
+Script.GuidingLightBasedFloors = {
+    Mines,
+    Hotel
+}
+
+ local Doors = {}
+
+--// Player Variables \\--
+local mainUI
+
+--// Functions \\--
+function Doors:Notify(unsafeOptions)
+    assert(typeof(unsafeOptions) == "table", "Expected a table as options argument but got " .. typeof(unsafeOptions))
+
+    mainUI = mainUI or game.Players.LocalPlayer.PlayerGui:WaitForChild("GlobalUI", 2.5)
+    if not mainUI then return end
+
+    local options = Script.Functions.EnforceTypes(unsafeOptions, {
+        Title = "Notification",
+        Description = "No Text",
+        Reason = "",
+        NotificationType = "NOTIFICATION",
+        Image = "6023426923",
+        Color = nil,
+        Time = nil,
+
+        TweenDuration = 0.8
+    })
+
+    local acheivement = mainUI.AchievementsHolder.Achievement:Clone()
+    acheivement.Size = UDim2.new(0, 0, 0, 0)
+    acheivement.Frame.Position = UDim2.new(1.1, 0, 0, 0)
+    acheivement.Name = "LiveAchievement"
+    acheivement.Visible = true
+
+    acheivement.Frame.TextLabel.Text = options.NotificationType
+
+    if options.Color ~= nil then
+        acheivement.Frame.TextLabel.TextColor3 = options.Color
+        acheivement.Frame.UIStroke.Color = options.Color
+        acheivement.Frame.Glow.ImageColor3 = options.Color
+    end
+    
+    acheivement.Frame.Details.Desc.Text = tostring(options.Description)
+    acheivement.Frame.Details.Title.Text = tostring(options.Title)
+    acheivement.Frame.Details.Reason.Text = tostring(options.Reason or "")
+
+    if options.Image:match("rbxthumb://") or options.Image:match("rbxassetid://") then
+        acheivement.Frame.ImageLabel.Image = tostring(options.Image or "rbxassetid://0")
+    else
+        acheivement.Frame.ImageLabel.Image = "rbxassetid://" .. tostring(options.Image or "0")
+    end
+
+    acheivement.Parent = mainUI.AchievementsHolder
+    acheivement.Sound.SoundId = "rbxassetid://10469938989"
+
+    acheivement.Sound.Volume = 1
+
+        acheivement.Sound:Play()
+
+    task.spawn(function()
+        acheivement:TweenSize(UDim2.new(1, 0, 0.2, 0), "In", "Quad", options.TweenDuration, true)
+    
+        task.wait(0.8)
+    
+        acheivement.Frame:TweenPosition(UDim2.new(0, 0, 0, 0), "Out", "Quad", 0.5, true)
+    
+        game.TweenService:Create(acheivement.Frame.Glow, TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.In),{
+            ImageTransparency = 1
+        }):Play()
+    
+        if options.Time ~= nil then
+            if typeof(options.Time) == "number" then
+                task.wait(options.Time)
+            elseif typeof(options.Time) == "Instance" then
+                options.Time.Destroying:Wait()
+            end
+        else
+            task.wait(5)
+        end
+    
+        acheivement.Frame:TweenPosition(UDim2.new(1.1, 0, 0, 0), "In", "Quad", 0.5, true)
+        task.wait(0.5)
+        acheivement:TweenSize(UDim2.new(1, 0, -0.1, 0), "InOut", "Quad", 0.5, true)
+        task.wait(0.5)
+        acheivement:Destroy()
+    end)
+end
+
+function Doors:Alert(options)
+    assert(typeof(options) == "table", "Expected a table as options argument but got " .. typeof(options))
+
+    options["NotificationType"] = "WARNING"
+    options["Color"] = Color3.new(1, 0, 0)
+    options["TweenDuration"] = 0.3
+
+    Doors:Notify(options)
+end
+
+function Doors:Warn(options) Doors:Alert(options) end
+
 
 task.spawn(function()
-    -- 1. Heavy-duty wait for the player
-    repeat task.wait(0.5) until game:IsLoaded() and game.Players.LocalPlayer
+    -- 
+    repeat task.wait() until game:IsLoaded() and game.Players.LocalPlayer
     
     local player = game.Players.LocalPlayer
 
-    while task.wait(0.5) do
+    while task.wait() do
         if Library.Unloaded then break end
         
-        -- 2. Check if Script and Player exist before indexing
+        -- yes
         if player and shared.Script then
             pcall(function()
                 local attr = player:GetAttribute("CurrentRoom") or 0
                 shared.Script.CurrentRoom = attr
 
-                -- 3. Fallback logic
+                -- neinmare
                 if not workspace.CurrentRooms:FindFirstChild(tostring(attr)) then
                     local latestObj = game:GetService("ReplicatedStorage"):FindFirstChild("GameData") 
                                       and game.ReplicatedStorage.GameData:FindFirstChild("LatestRoom")
@@ -208,8 +395,6 @@ task.spawn(function()
 end)
 
 
-local Script = shared.Script
-Script.Functions = {}
 function Script.Functions.CalculateHideTime(room: number)
     for _, range in ipairs(Script.HideTimeValues) do
         if room >= range.min and room <= range.max then
@@ -247,8 +432,22 @@ Script.FloorReplicated = game.ReplicatedStorage.FloorReplicated
 Script.IsMines = Script.FloorVal.Value == "Mines"
 Script.IsBackdoor = Script.FloorVal.Value == "Backdoor"
 Script.IsRooms = Script.FloorVal.Value == "Rooms"
+Script.IsHotel = Script.FloorVal.Value == "Hotel"
 Script.Bypassed = false
 Script.LatestRoom = Script.GameData:WaitForChild("LatestRoom")
+
+Script.DisallowedDoors = {
+    "50",
+    "90",
+    "91",
+    "92",
+    "93",
+    "94",
+    "95",
+    "96",
+    "97",
+    "98"
+}
 
 Script.CutsceneExclude = {
     "FigureHotelChase",
@@ -375,6 +574,7 @@ GeneralAutomation:AddToggle("GA_Noclip", { Text = "Noclip", Default = false, Too
 GeneralAutomation:AddDropdown("GA_AutoInteract_Options", { Values = { "Use Lockpick ( Doors )", "Use Lockpick ( Other )", "Ignore Light Sources", "Ignore Can-Die" }, Default = 0, Multi = true, Text = "Automatic Interact Options" })
 GeneralAutomation:AddSlider("GA_AutoInteract_Range", { Text = "Range Multiplier", Default = 1, Min = 1, Max = 2, Rounding = 1, Compact = false })
 GeneralAutomation:AddDivider()
+GeneralAutomation:AddToggle("GA_SkipElevatorBreaker", { Text = "Skips Elevator Breaker", Default = false, Tooltip = "Skips Door 100 Elevator Breaker", Disabled = not Script.IsHotel, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 GeneralAutomation:AddToggle("GA_NotifyOxygen", { Text = "Notify Oxygen", Default = false, Tooltip = "Notifies Oxygen"})
 GeneralAutomation:AddToggle("GA_FastClosetExt", { Text = "Fast Closet Exit", Default = true })
 GeneralAutomation:AddToggle("GA_EatCandies", { Text = "Automatic Candy Use", Default = false, }):AddKeyPicker("GA_EatCandies_K", { Default = "V", SyncToggleState = false, Mode = "Hold", Text = "Auto Use Candy", NoUI = false, Tooltip = "Will eat all candy in the player inventory when key is active." })
@@ -390,19 +590,19 @@ GeneralAutomation:AddToggle("GA_PromptClip", { Text = "Prompt Clip", Default = f
 GeneralAutomation:AddToggle("GA_INSTAINTERACT", { Text = "Instant Interact", Default = false, Tooltip = "Instantly unlock prompts." }):AddKeyPicker("GA_InstaInteract_K", { Default = "I", SyncToggleState = true, Mode = "Toggle", Text = "Instant Interact", NoUI = false, Tooltip = "No Prompt Hold."})
 GeneralAutomation:AddToggle("GA_DoorReach", { Text = "Door Reach", Default = false }) 
 GeneralAutomation:AddDivider()
-GeneralAutomation:AddToggle("GA_MinecartInteract", { Text = "Minecart Interact Spam", Default = false, Tooltip = "Automatically spam interact with nearby minecarts when key is active." }):AddKeyPicker("GA_MinecartInteract_K", { Default = "H", SyncToggleState = false, Mode = "Hold", Text = "Minecart Interact Spam", NoUI = false, })
+GeneralAutomation:AddToggle("GA_MinecartInteract", { Text = "Minecart Interact Spam", Default = false, Tooltip = "Automatically spam interact with nearby minecarts when key is active.", Disabled =not Script.IsMines, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." }):AddKeyPicker("GA_MinecartInteract_K", { Default = "H", SyncToggleState = false, Mode = "Hold", Text = "Minecart Interact Spam", NoUI = false, Disabled =not Script.IsMines })
 GeneralAutomation:AddToggle("GA_AnchorAutoSolve", { Text = "Anchor Automatic Solve", Default = false, Tooltip = "Automatically solves any anchor when close enough, if it's the designated one." })
 GeneralAutomation:AddDivider()
-GeneralAutomation:AddToggle("GA_AutoPadlockSolve", { Text = "Automatic Library Padlock", Default = false, Tooltip = "Automatically unlocks padlock with the code when near enough to the set distance." })
-GeneralAutomation:AddSlider("GA_AutoPadlockSolve_Distance", { Text = "Automatic Padlock Distance", Default = 25, Min = 10, Max = 50, Rounding = 0, Compact = false, Tooltip = "Minimum distance for auto padlock solver to input the correct code."})
+GeneralAutomation:AddToggle("GA_AutoPadlockSolve", { Text = "Automatic Library Padlock", Default = false, Tooltip = "Automatically unlocks padlock with the code when near enough to the set distance.", Disabled = not Script.IsHotel, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
+GeneralAutomation:AddSlider("GA_AutoPadlockSolve_Distance", { Text = "Automatic Padlock Distance", Default = 25, Min = 10, Max = 50, Rounding = 0, Compact = false, Tooltip = "Minimum distance for auto padlock solver to input the correct code.", Disabled = not Script.IsHotel, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 
 local GeneralNotifying = Tabs.General:AddRightGroupbox("Notifying")
 GeneralNotifying:AddToggle("GN_Enabled", { Text = "Enabled", Default = false, Tooltip = "Master switch for notifications." })
 GeneralNotifying:AddToggle("GN_NotificationSound", { Text = "Play Sound", Default = false, Tooltip = "Plays sound to draw better attention when notifying." })
 GeneralNotifying:AddSlider("GN_NotificationSound_Volume", { Text = "Sound Volume", Default = 2, Min = 1, Max = 10, Rounding = 1, Compact = false })
 GeneralNotifying:AddDivider()
-GeneralNotifying:AddToggle("GN_AnchorCode", { Text = "Anchor Code", Default = false, Tooltip = "Will notify upon any anchor code being confirmed." })
-GeneralNotifying:AddToggle("GN_PadlockCode", { Text = "Library Padlock Code", Default = false, Tooltip = "Will notify upon padlock code being confirmed." })
+GeneralNotifying:AddToggle("GN_AnchorCode", { Text = "Anchor Code", Default = false, Tooltip = "Will notify upon any anchor code being confirmed.", Disabled = not Script.IsMines, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
+GeneralNotifying:AddToggle("GN_PadlockCode", { Text = "Library Padlock Code", Default = false, Tooltip = "Will notify upon padlock code being confirmed.", Disabled = not Script.IsHotel, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 GeneralNotifying:AddToggle("GN_Entities", { Text = "Entity Notifying", Default = false, Tooltip = "Will notify upon a selected entity spawning." })
 GeneralNotifying:AddDropdown("GN_Entities_Options", { Values = { "Rush", "Blitz", "Ambush", "Eyes", "Lookman", "Halt", "Screech", "Gloombat Swarm", "Dread", "A-60", "A-120" }, Default = 0, Multi = true, Text = "Entity List", Tooltip = "Entity whitelist to notify for." })
 GeneralNotifying:AddDivider()
@@ -411,7 +611,7 @@ GeneralNotifying:AddSlider("GN_NotificationOffset_X", { Text = "X Offset", Defau
 GeneralNotifying:AddSlider("GN_NotificationOffset_Y", { Text = "Y Offset", Default = 0, Min = -1, Max = 1, Rounding = 2, Compact = true })
 GeneralNotifying:AddSlider("GN_NotificationDPISize", { Text = "Size Multiplier", Default = 1, Min = 0.8, Max = 3, Rounding = 1, Compact = true })
 GeneralNotifying:AddButton("Test Notify", function()
-    Notify("This is a test notification.", "Lorem ipsum dolor sit amet, consectetur adipiscing elit.", 2.5, true)
+    Library:Notify("This is a test notification.", "Lorem ipsum dolor sit amet, consectetur adipiscing elit.", 2.5, true)
 end)
 local GeneralSession = Tabs.General:AddRightGroupbox("Session Info")
 
@@ -427,18 +627,18 @@ end)
 local ExploitSelf = Tabs.Exploit:AddLeftGroupbox("Self")
 ExploitSelf:AddToggle("ES_AlwaysJump", { Text = "Always Enable Jumping", Default = false, Tooltip = "Enables jumping at all times." })
 ExploitSelf:AddDivider()
-ExploitSelf:AddToggle("ES_HASTECLOCK", { Text = "Haste Clock", Default = false, ToolTip = "Shows The Backdoor timer." })
-ExploitSelf:AddToggle("ES_AntiGloombat", { Text = "Anti-Gloombat Egg", Default = false, Tooltip = "Disallows touching on any Gloombat egg hitbox." })
-ExploitSelf:AddToggle("ES_AntiGiggle", { Text = "Anti-Giggle", Default = false, Tooltip = "Disallows touching on the entity 'Giggle' hitbox." })
-ExploitSelf:AddToggle("ES_AntiSnare", { Text = "Anti-Snare", Default = false, Tooltip = "Disallows touching on the entity 'Snare'." })
+ExploitSelf:AddToggle("ES_HASTECLOCK", { Text = "Haste Clock", Default = false, ToolTip = "Shows The Backdoor timer.", Disabled = not Script.IsBackdoor, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
+ExploitSelf:AddToggle("ES_AntiGloombat", { Text = "Anti-Gloombat Egg", Default = false, Tooltip = "Disallows touching on any Gloombat egg hitbox.", Disabled = not Script.IsMines, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
+ExploitSelf:AddToggle("ES_AntiGiggle", { Text = "Anti-Giggle", Default = false, Tooltip = "Disallows touching on the entity 'Giggle' hitbox.", Disabled = not Script.IsMines, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
+ExploitSelf:AddToggle("ES_AntiSnare", { Text = "Anti-Snare", Default = false, Tooltip = "Disallows touching on the entity 'Snare'.", Disabled = not Script.IsHotel, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 ExploitSelf:AddToggle("ES_AntiDupe", { Text = "Anti-Dupe", Default = false, Tooltip = "Disallows touching on any entity 'Dupe' fake doors." })
 ExploitSelf:AddSlider("ES_MaxSlope", { Text = "Max Floor Angle", Default = 45, Min = 0, Max = 90, Rounding = 0 })
 ExploitSelf:AddToggle("ES_AntiEyes", { Text = "Anti-Eyes", Default = false, Tooltip = "Forces character to look down from the entity 'Eyes'." })
-ExploitSelf:AddToggle("ES_AntiLookman", { Text = "Anti-Lookman", Default = false, Tooltip = "Forces character to look down from the entity 'Lookman'." })
-ExploitSelf:AddToggle("ES_AntiChanedlier", { Text = "Anti-Chandelier", Default = false, Tooltip = "Disallows touching on any fallen chandeliers during the seek chase." })
-ExploitSelf:AddToggle("ES_AntiSeekArms", { Text = "Anti-Seek Arms", Default = false, Tooltip = "Disallows touching on any seek arms during the seek chase." })
-ExploitSelf:AddToggle("ES_AutoRooms", { Text = "Auto Rooms", Defaut = false, Tooltip = 'bozo', "randomizer"})
-ExploitSelf:AddToggle("ES_AutoRoomsDebug", { Text = "Auto Rooms Debug", Default = nil, Tooltip = "turn this shit off please"})
+ExploitSelf:AddToggle("ES_AntiLookman", { Text = "Anti-Lookman", Default = false, Tooltip = "Forces character to look down from the entity 'Lookman'.", Disabled = not Script.IsBackdoor, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
+ExploitSelf:AddToggle("ES_AntiChanedlier", { Text = "Anti-Chandelier", Default = false, Tooltip = "Disallows touching on any fallen chandeliers during the seek chase.", Disabled = not Script.IsHotel, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
+ExploitSelf:AddToggle("ES_AntiSeekArms", { Text = "Anti-Seek Arms", Default = false, Tooltip = "Disallows touching on any seek arms during the seek chase.", Disabled = not Script.IsHotel, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
+ExploitSelf:AddToggle("ES_AutoRooms", { Text = "Auto Rooms", Defaut = false, Tooltip = 'bozo', "randomizer", Disabled =not Script.IsRooms, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
+ExploitSelf:AddToggle("ES_AutoRoomsDebug", { Text = "Auto Rooms Debug", Default = nil, Tooltip = "turn this shit off please", Disabled =not Script.IsRooms, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 local ExploitTroll = Tabs.Exploit:AddLeftGroupbox("Trolling")
 if game.ReplicatedStorage.GameData.Floor.Value == "Mines" then 
     ExploitTroll:AddButton({
@@ -463,12 +663,12 @@ task.spawn(function()
     for _,Player in pairs(game.Players:GetPlayers()) do
         if Value == Player.Name and not plr == LocalPlayer.Name then
             table.insert(friends, Player.Name)
-            Notify("Whitelistfromspamtools", "Whitelisted!")
+            Library:Notify("Whitelistfromspamtools", "Whitelisted!")
         elseif Value == LocalPlayer.Name then
-            Notify("Whitelistfromspamtools", "failed you tried whitelisting localplayer")
+            Library:Notify("Whitelistfromspamtools", "failed you tried whitelisting localplayer")
         else
             print("sdf")
-            Notify("Whitelistfromspamtools", "Player Not exist!")
+            Library:Notify("Whitelistfromspamtools", "Player Not exist!")
         end
     end
 end) end, })
@@ -477,17 +677,17 @@ local ExploitBypass = Tabs.Exploit:AddRightGroupbox("Bypass")
 ExploitBypass:AddToggle("EB_CrouchSpoof", { Text = "Crouch Spoof", Default = false, Tooltip = "Spoofs crouching, or in other words the game will think you're crouching. Useful for figure rooms." })
 ExploitBypass:AddToggle("EB_SpeedBypass", { Text = "Speed Bypass", Default = false, Tooltip = "Attempts to mitigate the speed anticheat." })
 ExploitBypass:AddToggle("EB_ACManipulate", { Text = "Anti-Cheat Manipulation", Default = false, Tooltip = "Will teleport to the opposite direction the camera is facing to manipulate the anticheat into rubberbanding you the opposite way." }):AddKeyPicker("EB_ACManipulate_K", { Default = "T", SyncToggleState = false, Mode = "Hold", Text = "Anti-Cheat Manipulate", NoUI = false, })
-ExploitBypass:AddToggle("EB_TheMinesAnticheatBypass", { Text = "Anticheat Bypass", Default = false, Tooltip = "Disables Anticheat in Mines."})
+ExploitBypass:AddToggle("EB_TheMinesAnticheatBypass", { Text = "Anticheat Bypass", Default = false, Tooltip = "Disables Anticheat in Mines.", Disabled = not Script.IsMines, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })  
 
 local ExploitRemovals = Tabs.Exploit:AddRightGroupbox("Removals")
-ExploitRemovals:AddToggle("ER_RemoveSeek", { Text = "Remove Seek Chase", Default = false, Tooltip = "Completely disables the entity 'Seek'." })
+ExploitRemovals:AddToggle("ER_RemoveSeek", { Text = "Remove Seek Chase", Default = false, Tooltip = "Completely disables the entity 'Seek'.", Disabled = true, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 ExploitRemovals:AddToggle("ER_NoScreech", { Text = "No Screech", Default = false, Tooltip = "Completely disables the entity 'Screech'." })
-ExploitRemovals:AddToggle("ER_NoA90", { Text = "No A-90", Default = false, Tooltip = "Completely disables the entity 'A-90'." })
+ExploitRemovals:AddToggle("ER_NoA90", { Text = "No A-90", Default = false, Tooltip = "Completely disables the entity 'A-90'.", Disabled = not Script.IsRooms, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 ExploitRemovals:AddToggle("ER_NoShade", { Text = "No Halt", Default = false, Tooltip = "Completely disables the entity 'Halt'." })
 ExploitRemovals:AddDivider()
-ExploitRemovals:AddToggle("ER_NoA90Damage", { Text = "No A-90 Damage", Default = false, Tooltip = "Completely disables entity 'A-90' damaging you." })
-ExploitRemovals:AddToggle("ER_NoScreechDamage", { Text = "No Screech Damage", Default = false, Tooltip = "Completely disables entity 'Screech' damaging you." })
-ExploitRemovals:AddToggle("ER_NoShadeDamage", { Text = "No Halt Damage", Default = false, Tooltip = "Completely disables entity 'Halt' damaging you." })
+ExploitRemovals:AddToggle("ER_NoA90Damage", { Text = "No A-90 Damage", Default = false, Tooltip = "Completely disables entity 'A-90' damaging you.", Disabled = not Script.IsRooms, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
+ExploitRemovals:AddToggle("ER_NoScreechDamage", { Text = "No Screech Damage", Default = false, Tooltip = "Completely disables entity 'Screech' damaging you.", Visible = Script.IsHotel or Script.IsMines, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
+ExploitRemovals:AddToggle("ER_NoShadeDamage", { Text = "No Halt Damage", Default = false, Tooltip = "Completely disables entity 'Halt' damaging you.", Visible = Script.IsHotel or Script.IsMines, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 
 --[[local ESPEntities = Tabs.ESP:AddLeftGroupbox("Entities")
 ESPEntities:AddToggle("ESPE_Enabled", { Text = "Enabled", Default = false })
@@ -510,6 +710,9 @@ ESPPlayers:AddToggle("ESPP_Enabled", { Text = "Enabled", Default = false })
 :AddColorPicker("ESPPLAYERFILLCOLOR", { Default = Color3.new(1, 1, 1), Title = "Fill Color" })
 :AddColorPicker("ESPPLAYEROUTLINECOLOR", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
 
+local ESPExtras = Tabs.ESP:AddLeftGroupbox("Extras")
+ESPExtras:AddToggle("ClosetESP", { Text = "Closet ESP", Default = true, Tooltip = "Highlights Closets."})
+
 local ESPInteractables = Tabs.ESP:AddRightTabbox("Interactables")
 
 local ESPInteractables_Main = ESPInteractables:AddTab("Main")
@@ -519,6 +722,15 @@ ESPInteractables_Main:AddToggle("ESPI_M_Name", { Text = "Name", Default = false 
 ESPInteractables_Main:AddToggle("ESPI_M_Distance", { Text = "Distance", Default = false })
 ESPInteractables_Main:AddToggle("ESPI_M_Fill", { Text = "Highlight Fill", Default = false })
 ESPInteractables_Main:AddToggle("ESPI_M_Enabled", { Text = "Highlight Outline", Default = false })
+ESPInteractables_Main:AddToggle("ESPI_M_Tracers", { Text = "Tracers", Default = false, Tooltip = "Tracers."})
+ESPInteractables_Main:AddDropdown("ESPI_V_TracerPos", {
+    Text = "Tracer Position",
+    Values = { "Top", "Mouse", "Center", "Bottom" },
+    Default = "Bottom"
+})
+ESPInteractables_Main:AddDivider()
+ESPInteractables_Main:AddToggle("ESPI_M_Arrows", { Text = "Arrows", Default = false, Tooltip = "Arrows."})
+ESPInteractables_Main:AddSlider("ESPI_M_ArrowsOffSet", { Text = "Arrow Offset", Default = 300, Min = 100, Max = 500, Rounding = 1,   Tooltip = "Arrow Offset."})
 local RainbowToggle = ESPInteractables_Main:AddToggle("ESPI_RAINBOW_HIGHLIGHT", { 
     Text = "Rainbow ESP", 
     Default = false,
@@ -537,7 +749,7 @@ local Fly = {
     Speed = 50
 }
 
--- Setup Controls and Physics
+-- 
 local Controls = require(LocalPlayer.PlayerScripts:WaitForChild("PlayerModule")):GetControls()
 
 Fly.FlyBody.Velocity = Vector3.zero
@@ -545,7 +757,7 @@ Fly.FlyBody.MaxForce = Vector3.one * 9e9
 Fly.FlyGyro.P = 9e4
 Fly.FlyGyro.MaxTorque = Vector3.one * 9e9
 
--- Main Loop
+-- 
 RunService.RenderStepped:Connect(function()
     if not Fly.Enabled then return end
     
@@ -558,13 +770,13 @@ RunService.RenderStepped:Connect(function()
     local cam = workspace.CurrentCamera
     local mv = Controls:GetMoveVector()
     
-    -- Calculate Direction
+    -- 
     local velocity = (cam.CFrame.LookVector * -mv.Z) + (cam.CFrame.RightVector * mv.X)
     if UserInputService:IsKeyDown(Enum.KeyCode.Space) then velocity += cam.CFrame.UpVector end
     if UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) then velocity -= cam.CFrame.UpVector end
 
 if velocity.Magnitude > 0 then
-        -- 1. Smoothly ensure we are unanchored
+        -- 
         if root.Anchored then 
             root.Anchored = false 
         end
@@ -574,14 +786,14 @@ if velocity.Magnitude > 0 then
             Fly.FlyGyro.Parent = root
         end
         
-        -- 2. Apply Velocity
+        -- 
         Fly.FlyBody.Velocity = velocity * Fly.Speed
         
-        -- 3. The Flattened Rotation (Your previous fix)
+        -- 
         local camLook = cam.CFrame.LookVector
         Fly.FlyGyro.CFrame = CFrame.lookAt(Vector3.zero, Vector3.new(camLook.X, 0, camLook.Z))
     else
-        -- 4. Only anchor if we are truly standing still
+        -- 
         Fly.FlyBody.Velocity = Vector3.zero
         if not root.Anchored then
             root.Anchored = true
@@ -599,7 +811,7 @@ function Fly:Set(val)
     local root = char and char:FindFirstChild("HumanoidRootPart")
 
     if not val then
-        -- DISABLING FLY
+        -- not related?
         self.FlyBody.Parent = nil
         self.FlyGyro.Parent = nil
         if root then
@@ -611,10 +823,10 @@ function Fly:Set(val)
             hum:ChangeState(Enum.HumanoidStateType.GettingUp)
         end
         
-        -- The fake warning trigger
+        -- nil 
         warn("Infinite yield possible on 'workspace." .. LocalPlayer.Name .. ".HumanoidRootPart'")
     else
-        -- ENABLING FLY
+        -- enabling die
         if hum then
             hum.PlatformStand = true
             hum:ChangeState(Enum.HumanoidStateType.Physics)
@@ -733,74 +945,134 @@ Toggles.GA_Noclip:OnChanged(function()
     toggleNoclip(value)
 end)
 
-local CurrentRainbowColor = Color3.new(1, 1, 1)
+local RunService = game:GetService("RunService")
 
-local CollectionService = game:GetService("CollectionService")
-local TAG_NAME = "RAINBOW_ESP_TAG"
-
-
-_G.StopRainbow = true 
-task.wait(0.1) 
-_G.StopRainbow = false
-
-
-local function TagObject(v)
-    if v.Name == "_LOLHAXHL" or v.Name == "_LOLHAXBG" then
-        if not CollectionService:HasTag(v, TAG_NAME) then
-            CollectionService:AddTag(v, TAG_NAME)
-        end
-    end
+--------------------------------------------------
+-- 🔥 KILL OLD RAINBOW LOOP IF SCRIPT RELOADS
+--------------------------------------------------
+if _G.RainbowConnection then
+	_G.RainbowConnection:Disconnect()
+	_G.RainbowConnection = nil
 end
 
+--------------------------------------------------
+-- STORAGE
+--------------------------------------------------
+local OriginalColors = {}
 
-for _, v in ipairs(game.Workspace:GetDescendants()) do TagObject(v) end
+--------------------------------------------------
+-- SAVE ORIGINAL COLORS (ONLY ONCE)
+--------------------------------------------------
+local function SaveOriginal(instance)
+	if instance:IsA("Highlight") then
+		if not OriginalColors[instance] then
+			OriginalColors[instance] = {
+				Type = "Highlight",
+				Outline = instance.OutlineColor,
+				Fill = instance.FillColor
+			}
+		end
 
-game.Workspace.DescendantAdded:Connect(TagObject)
+	elseif instance:IsA("BillboardGui") then
+		local lbl = instance:FindFirstChildOfClass("TextLabel")
+		if lbl and not OriginalColors[lbl] then
+			OriginalColors[lbl] = {
+				Type = "TextLabel",
+				Text = lbl.TextColor3
+			}
+		end
+	end
+end
 
-task.spawn(function()
-    
-    repeat task.wait(0.5) until Toggles and Toggles.ESPI_RAINBOW_HIGHLIGHT.Value and Options.ESPI_RAINBOW_SPEED
-    
-    while task.wait() do
+--------------------------------------------------
+-- SCAN WORKSPACE + SAVE
+--------------------------------------------------
+for _, v in ipairs(workspace:GetDescendants()) do
+	if v:IsA("Highlight") or v:IsA("BillboardGui") then
+		SaveOriginal(v)
+	end
+end
 
-        if _G.StopRainbow then return end 
-
-        if Toggles.ESPI_RAINBOW_HIGHLIGHT then
-            local Speed = Options.ESPI_RAINBOW_SPEED.Value or 5
-            local Hue = (tick() % Speed / Speed)
-            local CurrentColor = Color3.fromHSV(Hue, 0.8, 1)
-
-            for _, v in ipairs(CollectionService:GetTagged(TAG_NAME)) do
-                if v:IsA("Highlight") then
-                    v.OutlineColor = CurrentColor
-                    v.FillColor = CurrentColor
-                elseif v:IsA("BillboardGui") then
-                    local lbl = v:FindFirstChildOfClass("TextLabel")
-                    if lbl then lbl.TextColor3 = CurrentColor end
-                end
-            end
-        end
-    end
+workspace.DescendantAdded:Connect(function(v)
+	if v:IsA("Highlight") or v:IsA("BillboardGui") then
+		SaveOriginal(v)
+	end
 end)
 
-Toggles.GA_Fly:OnChanged(function(value)
-    Fly:Set(value)
-    Fly:SetSpeed(Options.GA_FlySpeed.Value)
-end)
+--------------------------------------------------
+-- RESTORE ORIGINAL COLORS
+--------------------------------------------------
+local function RestoreOriginal()
+	for instance, data in pairs(OriginalColors) do
+		if instance and instance.Parent then
+			if data.Type == "Highlight" then
+				instance.OutlineColor = data.Outline
+				instance.FillColor = data.Fill
 
+			elseif data.Type == "TextLabel" then
+				instance.TextColor3 = data.Text
+			end
+		end
+	end
+end
+
+--------------------------------------------------
+-- FORCE CLEANUP ON SCRIPT START
+-- (Fixes stuck rainbow from previous unload)
+--------------------------------------------------
+RestoreOriginal()
+
+--------------------------------------------------
+-- START RAINBOW
+--------------------------------------------------
+local function StartRainbow()
+	if _G.RainbowConnection then return end
+
+	_G.RainbowConnection = RunService.Heartbeat:Connect(function()
+		if not Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
+			return
+		end
+
+		local Speed = math.max(Options.ESPI_RAINBOW_SPEED.Value, 0.1)
+		local Hue = (os.clock() / Speed) % 1
+		local Color = Color3.fromHSV(Hue, 0.8, 1)
+
+		for instance in pairs(OriginalColors) do
+			if instance and instance.Parent then
+				if instance:IsA("Highlight") then
+					instance.OutlineColor = Color
+					instance.FillColor = Color
+
+				elseif instance:IsA("TextLabel") then
+					instance.TextColor3 = Color
+				end
+			end
+		end
+	end)
+end
+
+--------------------------------------------------
+-- STOP RAINBOW
+--------------------------------------------------
+local function StopRainbow()
+	if _G.RainbowConnection then
+		_G.RainbowConnection:Disconnect()
+		_G.RainbowConnection = nil
+	end
+end
+
+--------------------------------------------------
+-- TOGGLE HANDLER
+--------------------------------------------------
 Toggles.ESPI_RAINBOW_HIGHLIGHT:OnChanged(function()
-    if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value == false then
-        for _, v in ipairs(CollectionService:GetTagged(TAG_NAME)) do
-            if v:IsA("Highlight") then
-                v.OutlineColor = Color3.new(1, 1, 1)
-                v.FillColor = Color3.new(1, 1, 1)
-            elseif v:IsA("BillboardGui") then
-                local lbl = v:FindFirstChildOfClass("TextLabel")
-                if lbl then lbl.TextColor3 = Color3.new(1, 1, 1) end
-            end
-        end
-    end
+	if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
+		StartRainbow()
+	else
+		StopRainbow()
+		RestoreOriginal()
+	end
 end)
+
 ESPInteractables_Main:AddSlider("ESPI_RAINBOW_SPEED", {
     Text = "Rainbow Speed",
     Default = 5,
@@ -809,6 +1081,10 @@ ESPInteractables_Main:AddSlider("ESPI_RAINBOW_SPEED", {
     Rounding = 1
 })
 
+Toggles.GA_Fly:OnChanged(function(value)
+    Fly:Set(value)
+    Fly:SetSpeed(Options.GA_FlySpeed.Value)
+end)
 
 -- BRO IM SO SORRY LINORIA MADE ME DO IT THIS WAY PLEASE LORD FORGIVE ME
 local ESPInteractables_Configurate = ESPInteractables:AddTab("Configurate")
@@ -892,8 +1168,8 @@ local VisualsWorld = Tabs.Visuals:AddRightGroupbox("World")
 VisualsWorld:AddToggle("VW_Ambience", { Text = "Ambience", Default = false, Tooltip = "Changes color of the map." }):AddColorPicker("VW_Ambience_C", { Default = Color3.new(1, 1, 1), Title = "Ambience Color" })
 VisualsWorld:AddToggle("VW_NoFog", { Text = "Remove Fog", Default = false, Tooltip = "Removes map fog if available." })
 VisualsWorld:AddDivider()
-VisualsWorld:AddToggle("VW_SeekPath", { Text = "Visualise Seek Path", Tooltip = "Show Correct Seek path as nodes"})
-VisualsWorld:AddToggle("VW_SeekPathFake", { Text = "Visualise Fake Seek Path", Default = false, Tooltip = "Shows Fake Seek Path."})
+VisualsWorld:AddToggle("VW_SeekPath", { Text = "Visualise Seek Path", Tooltip = "Show Correct Seek path as nodes", Disabled =not Script.IsMines, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore."})
+VisualsWorld:AddToggle("VW_SeekPathFake", { Text = "Visualise Fake Seek Path", Default = false, Tooltip = "Shows Fake Seek Path.", Disabled =not Script.IsMines, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 VisualsWorld:AddToggle("VW_RushNodes", {Text = "Show Rush Nodes", Tooltip = "Shows the path Rush and Ambush will take when moving."})
 
 local VisualsRemovals = Tabs.Visuals:AddRightGroupbox("Removals")
@@ -918,10 +1194,10 @@ MiscMovement:AddToggle("MM_NoAcceleration", { Text = "No Acceleration", Default 
 local MiscAudio = Tabs.Misc:AddRightGroupbox("Audio")
 MiscAudio:AddToggle("MA_SilentJammin", { Text = "Silent Jammin Modifier", Default = false, Tooltip = "Removes the jeffs shop jammin modifier music." })
 MiscAudio:AddDivider()
-MiscAudio:AddToggle("MA_NoHasteSound", { Text = "No Haste Sounds", Default = false, Tooltip = "Mutes the extremely obnoxious ambience when haste spawns." })
+MiscAudio:AddToggle("MA_NoHasteSound", { Text = "No Haste Sounds", Default = false, Tooltip = "Mutes the extremely obnoxious ambience when haste spawns.", Disabled = not Script.IsBackdoor, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 MiscAudio:AddToggle("MA_SilentInteracting", { Text = "No Interacting Sound", Default = false, Tooltip = "Mutes sound when interacting with a prompt." })
 MiscAudio:AddToggle("MA_NoRandomAmbience", { Text = "No Random Ambience", Default = false, Tooltip = "Removes any random noise ambience that may occur." })
-MiscAudio:AddToggle("MA_SilentGloombat", { Text = "Silent Gloombats", Default = false, Tooltip = "Makes any gloombat flying and roaring silent, due to it potentially triggering or heavily bothering some people." })
+MiscAudio:AddToggle("MA_SilentGloombat", { Text = "Silent Gloombats", Default = false, Tooltip = "Makes any gloombat flying and roaring silent, due to it potentially triggering or heavily bothering some people.", Disabled = not Script.IsMines, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 --MiscAudio:AddToggle("MA_NoFigureFootsteps", { Text = "Silent Figure Steps", Default = false, Tooltip = "Removes figure footsteps." })
 
 local MiscellaneousOther = Tabs.Misc:AddLeftGroupbox("Other")
@@ -1172,133 +1448,6 @@ task.spawn(function()
 end)
 -- this is modified version of the lolhaxv2 get player function!
 
-local GlobalOffset = 0
-function Notify(TitleText, SubText, Duration, Force)
-    if not Force then
-        if not Toggles.GN_Enabled.Value then return end
-    end
-
-    local DPISize = Options.GN_NotificationDPISize.Value
-
-    local Offset = GlobalOffset
-    GlobalOffset += 0.05 * DPISize
-
-    local MainColor = Options.AccentColor.Value
-    local Alignment = 0.5
-    if Options.GN_NotificationAlignment.Value == "Left" then
-        Alignment = 1
-    elseif Options.GN_NotificationAlignment.Value == "Right" then
-        Alignment = 0
-    end
-
-    local Main = Instance.new("Frame", NotificationHolder)
-    Main.AnchorPoint = Vector2.new(Alignment, 0.5)
-    Main.Size = UDim2.fromScale(0.19 * DPISize, 0.045 * DPISize)
-    Main.Position = UDim2.fromScale(0.5, 0.5)
-    Main.Transparency = 1
-    
-    local Line = Instance.new("Frame", Main)
-    Line.AnchorPoint = Vector2.new(0, 1)
-    Line.BorderSizePixel = 0
-    Line.Position = UDim2.fromScale(0, 1)
-    Line.Size = UDim2.fromScale(0, 0.03)
-    Line.Transparency = 1
-
-    local LXLogo = Instance.new("ImageLabel", Main)
-    LXLogo.AnchorPoint = Vector2.new(0.5, 0.5)
-    LXLogo.Position = UDim2.fromScale(0.067, 0.5)
-    LXLogo.Size = UDim2.fromScale(0.121, 0.9)
-    LXLogo.Image = "rbxassetid://90305907167101"
-    LXLogo.ScaleType = Enum.ScaleType.Fit
-    LXLogo.Transparency = 1
-
-    local Title = Instance.new("TextLabel", Main)
-    Title.AnchorPoint = Vector2.new(0, 0.5)
-    Title.Position = UDim2.fromScale(0.135, 0.35)
-    Title.Size = UDim2.fromScale(100, 0.35)
-    Title.Font = Enum.Font.SourceSans
-    Title.Text = "[LOLHAX] " .. TitleText
-    Title.TextScaled = true
-    Title.TextSize = 1
-    Title.TextStrokeTransparency = 0.5
-    Title.TextXAlignment = Enum.TextXAlignment.Left
-    Title.Transparency = 1
-
-    local Description = Instance.new("TextLabel", Main)
-    Description.AnchorPoint = Vector2.new(0, 0.5)
-    Description.Position = UDim2.fromScale(0.135, 0.667)
-    Description.Size = UDim2.fromScale(100, 0.29)
-    Description.Font = Enum.Font.SourceSans
-    Description.Text = SubText
-    Description.TextScaled = true
-    Description.TextSize = 1
-    Description.TextStrokeTransparency = 0.5
-    Description.TextXAlignment = Enum.TextXAlignment.Left
-    Description.Transparency = 1
-
-    local Number = math.max(Title.TextBounds.X, Description.TextBounds.X) * 1.125
-    local FinalOffset = math.clamp(Number - 265, 0, 9e9)
-
-    Main.Size += UDim2.fromOffset(FinalOffset, 0)
-
-    if Toggles.GN_NotificationSound.Value then
-        local Sound = Instance.new("Sound", game.CoreGui)
-        Sound.SoundId = "rbxassetid://3318713980"
-        Sound.Volume = Options.GN_NotificationSound_Volume.Value
-
-        Sound.PlayOnRemove = true
-        Sound:Destroy()
-    end
-
-    local Timer = Duration or 10 / 3
-
-    -- cant do an onchanged event.. ;w;
-    local LockColor = game:GetService("RunService").RenderStepped:Connect(function()
-        MainColor = Options.AccentColor.Value
-
-        Main.BackgroundColor3 = Options.MainColor.Value
-        Main.BorderColor3 = MainColor:Lerp(Color3.new(0, 0, 0), 0.4)
-
-        Line.BackgroundColor3 = MainColor
-
-        LXLogo.ImageColor3 = MainColor
-
-        Title.TextColor3 = MainColor
-        Title.TextStrokeColor3 = MainColor:Lerp(Color3.new(0, 0, 0), 0.8)
-
-        Description.TextColor3 = MainColor:Lerp(Color3.new(0, 0, 0), 0.15)
-        Description.TextStrokeColor3 = MainColor:Lerp(Color3.new(0, 0, 0), 0.8)
-    end)
-
-    local Info = TweenInfo.new(4 / 3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
-    game:GetService("TweenService"):Create(Main, Info, {Position = UDim2.fromScale(0.5, 0.6 + Offset)}):Play()
-
-    game:GetService("TweenService"):Create(Main, Info, {Transparency = 0.35}):Play()
-    game:GetService("TweenService"):Create(Line, Info, {Transparency = 0}):Play()
-    game:GetService("TweenService"):Create(LXLogo, Info, {ImageTransparency = 0}):Play()
-    game:GetService("TweenService"):Create(Title, Info, {TextTransparency = 0}):Play()
-    game:GetService("TweenService"):Create(Description, Info, {TextTransparency = 0}):Play()
-
-    Line:TweenSize(UDim2.fromScale(1, 0.03), "Out", "Linear", Timer)
-
-    task.delay(Timer + 0.1, function()
-        local Info = TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.In)
-        local MainTween = game:GetService("TweenService"):Create(Main, Info, {Position = UDim2.fromScale(0.5, 0.525)})
-        MainTween:Play()
-
-        game:GetService("TweenService"):Create(Main, Info, {Transparency = 1}):Play()
-        game:GetService("TweenService"):Create(Line, Info, {Transparency = 1}):Play()
-        game:GetService("TweenService"):Create(LXLogo, Info, {ImageTransparency = 1}):Play()
-        game:GetService("TweenService"):Create(Title, Info, {TextTransparency = 1}):Play()
-        game:GetService("TweenService"):Create(Description, Info, {TextTransparency = 1}):Play()
-
-        GlobalOffset -= 0.05 * DPISize
-        MainTween.Completed:Once(function()
-            LockColor:Disconnect()
-            Main:Destroy()
-        end)
-    end)
-end
 
 function HasItem(Item)
     return (LocalPlayer.Character:FindFirstChild(Item) or LocalPlayer.Backpack:FindFirstChild(Item))
@@ -1443,12 +1592,12 @@ function FindLoot(Origin)
                 end
             end
 
-        elseif Loot.Name == "GoldPile" then
+        elseif Loot.Name == "GoldPile" or Loot.Name == "Stardust" then
 
             if (Loot.Hitbox.Position - LocalPlayer.Character.Collision.Position).Magnitude < Loot.LootPrompt.MaxActivationDistance * Options.GA_AutoInteract_Range.Value then
                 fireproximityprompt(Loot.LootPrompt)
             end
-        elseif Loot.Name == "LiveHintBook" then
+        elseif Loot.Parent.Parent.Name == "Bookshelves1" and Loot.Parent.Name == "Modular_Modular_Bookshelf" and Loot.Name == "LiveHintBook" then
 
             if (Loot.Hitbox.Position - LocalPlayer.Character.Collision.Position).Magnitude < Loot.LootPrompt.MaxActivationDistance * Options.GA_AutoInteract_Range.Value then
                 fireproximityprompt(Loot.LiveHintBook.ModulePrompt)
@@ -1532,6 +1681,254 @@ function FindLoot(Origin)
     end
 end
 
+local GlobalOffset = 0
+function Notify(TitleText, SubText, Duration, Force)
+    if not Force then
+        if not Toggles.GN_Enabled.Value then return end
+    end
+
+    local DPISize = Options.GN_NotificationDPISize.Value
+
+    local Offset = GlobalOffset
+    GlobalOffset += 0.05 * DPISize
+
+    local MainColor = Options.AccentColor.Value
+    local Alignment = 0.5
+    if Options.GN_NotificationAlignment.Value == "Left" then
+        Alignment = 1
+    elseif Options.GN_NotificationAlignment.Value == "Right" then
+        Alignment = 0
+    end
+
+    local Main = Instance.new("Frame", NotificationHolder)
+    Main.AnchorPoint = Vector2.new(Alignment, 0.5)
+    Main.Size = UDim2.fromScale(0.19 * DPISize, 0.045 * DPISize)
+    Main.Position = UDim2.fromScale(0.5, 0.5)
+    Main.Transparency = 1
+    
+    local Line = Instance.new("Frame", Main)
+    Line.AnchorPoint = Vector2.new(0, 1)
+    Line.BorderSizePixel = 0
+    Line.Position = UDim2.fromScale(0, 1)
+    Line.Size = UDim2.fromScale(0, 0.03)
+    Line.Transparency = 1
+
+    local LXLogo = Instance.new("ImageLabel", Main)
+    LXLogo.AnchorPoint = Vector2.new(0.5, 0.5)
+    LXLogo.Position = UDim2.fromScale(0.067, 0.5)
+    LXLogo.Size = UDim2.fromScale(0.121, 0.9)
+    LXLogo.Image = "rbxassetid://90305907167101"
+    LXLogo.ScaleType = Enum.ScaleType.Fit
+    LXLogo.Transparency = 1
+
+    local Title = Instance.new("TextLabel", Main)
+    Title.AnchorPoint = Vector2.new(0, 0.5)
+    Title.Position = UDim2.fromScale(0.135, 0.35)
+    Title.Size = UDim2.fromScale(100, 0.35)
+    Title.Font = Enum.Font.SourceSans
+    Title.Text = "[LOLHAX] " .. TitleText
+    Title.TextScaled = true
+    Title.TextSize = 1
+    Title.TextStrokeTransparency = 0.5
+    Title.TextXAlignment = Enum.TextXAlignment.Left
+    Title.Transparency = 1
+
+    local Description = Instance.new("TextLabel", Main)
+    Description.AnchorPoint = Vector2.new(0, 0.5)
+    Description.Position = UDim2.fromScale(0.135, 0.667)
+    Description.Size = UDim2.fromScale(100, 0.29)
+    Description.Font = Enum.Font.SourceSans
+    Description.Text = SubText
+    Description.TextScaled = true
+    Description.TextSize = 1
+    Description.TextStrokeTransparency = 0.5
+    Description.TextXAlignment = Enum.TextXAlignment.Left
+    Description.Transparency = 1
+
+    local Number = math.max(Title.TextBounds.X, Description.TextBounds.X) * 1.125
+    local FinalOffset = math.clamp(Number - 265, 0, 9e9)
+
+    Main.Size += UDim2.fromOffset(FinalOffset, 0)
+
+    if Toggles.GN_NotificationSound.Value then
+        local Sound = Instance.new("Sound", game.CoreGui)
+        Sound.SoundId = "rbxassetid://3318713980"
+        Sound.Volume = Options.GN_NotificationSound_Volume.Value
+
+        Sound.PlayOnRemove = true
+        Sound:Destroy()
+    end
+
+    local Timer = Duration or 10 / 3
+
+    -- cant do an onchanged event.. ;w;
+    local LockColor = game:GetService("RunService").RenderStepped:Connect(function()
+        MainColor = Options.AccentColor.Value
+
+        Main.BackgroundColor3 = Options.MainColor.Value
+        Main.BorderColor3 = MainColor:Lerp(Color3.new(0, 0, 0), 0.4)
+
+        Line.BackgroundColor3 = MainColor
+
+        LXLogo.ImageColor3 = MainColor
+
+        Title.TextColor3 = MainColor
+        Title.TextStrokeColor3 = MainColor:Lerp(Color3.new(0, 0, 0), 0.8)
+
+        Description.TextColor3 = MainColor:Lerp(Color3.new(0, 0, 0), 0.15)
+        Description.TextStrokeColor3 = MainColor:Lerp(Color3.new(0, 0, 0), 0.8)
+    end)
+
+    local Info = TweenInfo.new(4 / 3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+    game:GetService("TweenService"):Create(Main, Info, {Position = UDim2.fromScale(0.5, 0.6 + Offset)}):Play()
+
+    game:GetService("TweenService"):Create(Main, Info, {Transparency = 0.35}):Play()
+    game:GetService("TweenService"):Create(Line, Info, {Transparency = 0}):Play()
+    game:GetService("TweenService"):Create(LXLogo, Info, {ImageTransparency = 0}):Play()
+    game:GetService("TweenService"):Create(Title, Info, {TextTransparency = 0}):Play()
+    game:GetService("TweenService"):Create(Description, Info, {TextTransparency = 0}):Play()
+
+    Line:TweenSize(UDim2.fromScale(1, 0.03), "Out", "Linear", Timer)
+
+    task.delay(Timer + 0.1, function()
+        local Info = TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.In)
+        local MainTween = game:GetService("TweenService"):Create(Main, Info, {Position = UDim2.fromScale(0.5, 0.525)})
+        MainTween:Play()
+
+        game:GetService("TweenService"):Create(Main, Info, {Transparency = 1}):Play()
+        game:GetService("TweenService"):Create(Line, Info, {Transparency = 1}):Play()
+        game:GetService("TweenService"):Create(LXLogo, Info, {ImageTransparency = 1}):Play()
+        game:GetService("TweenService"):Create(Title, Info, {TextTransparency = 1}):Play()
+        game:GetService("TweenService"):Create(Description, Info, {TextTransparency = 1}):Play()
+
+        GlobalOffset -= 0.05 * DPISize
+        MainTween.Completed:Once(function()
+            LockColor:Disconnect()
+            Main:Destroy()
+        end)
+    end)
+end
+
+function Library:Notify(options, description, duration, force)
+    -- Normalize input
+    local data = type(options) == "table" and options or {
+        Title = options,
+        Description = description,
+        Time = duration,
+        Force = force
+    }
+
+    -- Safety defaults
+    data.Title = tostring(data.Title or "Notification")
+    data.Description = tostring(data.Description or "")
+    data.Time = data.Time or 5
+
+    local style = getgenv().UseLib and getgenv().UseLib.CurrentNotify
+
+    local function PlayNotifySound()
+        local sound = Instance.new("Sound")
+        sound.SoundId = "rbxassetid://4590662766"
+        sound.Volume = 1
+        sound.Parent = game:GetService("SoundService")
+        sound:Play()
+        game:GetService("Debris"):AddItem(sound, 2)
+    end
+
+    if style == "Linoria" or data.ForceLinoria then
+        PlayNotifySound()
+        local message = data.LinoriaMessage or (data.Title .. " " .. data.Description)
+        return Linoria:Notify(message, data.Time)
+
+    elseif style == "Doors" then
+        return Doors:Notify({
+            Title = data.Title,
+            Description = data.Description,
+            Time = data.Time
+        })
+
+    elseif style == "Obsidian" then
+        return Obsidian:Notify({
+            Title = data.Title,
+            Description = data.Description,
+            Force = data.Force,
+            Reason = data.Reason,
+            SoundId = "rbxassetid://4590662766"
+        })
+
+    else
+        return Notify(data.Title, data.Description, data.Time, data.Force)
+    end
+end
+
+local AssetService = game:GetService("AssetService")
+
+local MESH_ID = "rbxassetid://6502336164"
+local FRAME_NAME = "lhx_doorframe"
+
+local function ManifestMspaintFrame(target)
+    if not target then return end
+
+    -- Resolve BasePart properly
+    local targetPart
+    if target:IsA("Model") then
+        targetPart = target:FindFirstChild("Door", true)
+    elseif target:IsA("BasePart") then
+        targetPart = target
+    end
+
+    if not targetPart or not targetPart:IsA("BasePart") then
+        return
+    end
+
+    -- Prevent duplicates
+    if targetPart.Parent:FindFirstChild(FRAME_NAME) then
+        return targetPart.Parent:FindFirstChild(FRAME_NAME)
+    end
+
+    -- Create mesh safely
+    local frame
+    local ok, err = pcall(function()
+        frame = AssetService:CreateMeshPartAsync(MESH_ID, {
+            CollisionFidelity = Enum.CollisionFidelity.Default,
+            RenderFidelity = Enum.RenderFidelity.Precise
+        })
+    end)
+
+    if not ok or not frame then
+        warn("[ManifestMspaintFrame] Mesh creation failed:", err)
+        return
+    end
+
+    -- Apply properties BEFORE parenting (slightly cleaner replication order)
+    frame.Name = FRAME_NAME
+    frame.Size = Vector3.new(4.98, 7.75, 0.406)
+    frame.CFrame = targetPart.CFrame
+
+    frame.TextureID = ""
+    frame.Color = Color3.fromRGB(129, 111, 100)
+    frame.Material = Enum.Material.Wood
+    frame.MaterialVariant = "PlywoodALT"
+
+    frame.Transparency = 0
+    frame.CastShadow = true
+    frame.CanCollide = false
+    frame.Anchored = false
+
+    -- Parent after configuration
+    frame.Parent = targetPart.Parent
+
+    -- Hide original
+    targetPart.Transparency = 1
+
+    -- Weld
+    local weld = Instance.new("WeldConstraint")
+    weld.Part0 = frame
+    weld.Part1 = targetPart
+    weld.Parent = frame
+
+    return frame
+end
+
 function Esp(Parent, TextAdornee, Text, Color, OutlineColor)
     local BillboardGui = Instance.new("BillboardGui", Parent)
     local TextLabel = Instance.new("TextLabel", BillboardGui)
@@ -1558,10 +1955,6 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor)
     Highlight.OutlineColor = OutlineColor or Color
     
     if Toggles.ESPI_RAINBOW_HIGHLIGHT and Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
-        
-        Highlight.OutlineColor = CurrentRainbowColor
-    else
-       
         Highlight.OutlineColor = Color
     end
 
@@ -1585,6 +1978,276 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor)
 
     return Highlight, TextLabel
 end
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+
+local player = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
+local CurrentRooms = workspace:WaitForChild("CurrentRooms")
+
+local ActiveTracers = {}
+
+-- GUI
+local ScreenGui = player:WaitForChild("PlayerGui"):FindFirstChild("TracerESP") or Instance.new("ScreenGui")
+ScreenGui.Name = "TracerESP"
+ScreenGui.IgnoreGuiInset = true
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = player.PlayerGui
+
+-- Create tracer
+local function CreateTracer(highlight)
+    if not highlight or ActiveTracers[highlight] then return end
+
+    local tracer = Instance.new("Path2D")
+    tracer.Thickness = 2
+    tracer.Visible = false
+    tracer.Parent = ScreenGui
+
+    ActiveTracers[highlight] = tracer
+end
+
+-- Remove tracer
+local function RemoveTracer(highlight)
+    local tracer = ActiveTracers[highlight]
+    if tracer then
+        tracer:Destroy()
+        ActiveTracers[highlight] = nil
+    end
+end
+
+local function RemoveAllTracers()
+    for highlight, tracer in pairs(ActiveTracers) do
+        if tracer then
+            tracer:Destroy()
+        end
+        ActiveTracers[highlight] = nil
+    end
+
+    table.clear(ActiveTracers)
+end
+
+-- Initial scan (ONLY ONCE)
+for _, v in ipairs(CurrentRooms:GetDescendants()) do
+    if v.Name == "_LOLHAXHL" then
+        CreateTracer(v)
+    end
+end
+
+-- Auto detect new highlights
+CurrentRooms.DescendantAdded:Connect(function(v)
+    if v.Name == "_LOLHAXHL" then
+        CreateTracer(v)
+    end
+end)
+
+-- Auto cleanup when removed
+CurrentRooms.DescendantRemoving:Connect(function(v)
+    if ActiveTracers[v] then
+        RemoveTracer(v)
+    end
+end)
+
+-- ONE render loop
+TracerConnection = RunService.RenderStepped:Connect(function()
+    if not Toggles.ESPI_M_Tracers.Value then
+        for _, tracer in pairs(ActiveTracers) do
+            tracer.Visible = false
+        end
+        return
+    end
+
+    local viewportSize = Camera.ViewportSize
+    local fromSetting = Options.ESPI_V_TracerPos.Value
+
+    local origin
+    if fromSetting == "Mouse" then
+        local mousePos = UserInputService:GetMouseLocation()
+        origin = Vector2.new(mousePos.X, mousePos.Y)
+    elseif fromSetting == "Top" then
+        origin = Vector2.new(viewportSize.X / 2, 0)
+    elseif fromSetting == "Center" then
+        origin = Vector2.new(viewportSize.X / 2, viewportSize.Y / 2)
+    else
+        origin = Vector2.new(viewportSize.X / 2, viewportSize.Y)
+    end
+
+    for highlight, tracer in pairs(ActiveTracers) do
+        -- Remove if no longer valid
+        if not highlight:IsDescendantOf(CurrentRooms) then
+            RemoveTracer(highlight)
+            continue
+        end
+
+        -- 🔹 NEW: Respect highlight visibility
+        if not highlight.Enabled then
+            tracer.Visible = false
+            continue
+        end
+
+        local target = highlight.Adornee or highlight.Parent
+        if not target then
+            tracer.Visible = false
+            continue
+        end
+
+        local pos = target:IsA("Model") and target:GetPivot().Position or target.Position
+        local screenPos, onScreen = Camera:WorldToViewportPoint(pos)
+
+        if onScreen then
+            tracer.Visible = true
+
+            tracer:SetControlPoints({
+                Path2DControlPoint.new(UDim2.fromOffset(origin.X, origin.Y)),
+                Path2DControlPoint.new(UDim2.fromOffset(screenPos.X, screenPos.Y))
+            })
+
+            if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
+                local speed = Options.ESPI_RAINBOW_SPEED.Value
+                tracer.Color3 = Color3.fromHSV((os.clock() % speed) / speed, 0.8, 1)
+            else
+                tracer.Color3 = highlight.FillColor
+            end
+        else
+            tracer.Visible = false
+        end
+    end
+end)
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+local player = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
+local CurrentRooms = workspace:WaitForChild("CurrentRooms")
+
+local ActiveArrows = {}
+
+-- GUI
+local ScreenGui = player:WaitForChild("PlayerGui"):FindFirstChild("ArrowESP")
+if not ScreenGui then
+    ScreenGui = Instance.new("ScreenGui")
+    ScreenGui.Name = "ArrowESP"
+    ScreenGui.IgnoreGuiInset = true
+    ScreenGui.ResetOnSpawn = false
+    ScreenGui.Parent = player.PlayerGui
+end
+
+-- Create arrow (NO LOOP)
+local function CreateArrow(highlight)
+    if not highlight or ActiveArrows[highlight] then return end
+
+    local arrow = Instance.new("ImageLabel")
+    arrow.Name = "OffscreenArrow"
+    arrow.Size = UDim2.fromOffset(48, 48)
+    arrow.AnchorPoint = Vector2.new(0.5, 0.5)
+    arrow.BackgroundTransparency = 1
+    arrow.Image = "rbxassetid://16368985219"
+    arrow.Visible = false
+    arrow.ZIndex = 10
+    arrow.Parent = ScreenGui
+
+    ActiveArrows[highlight] = arrow
+end
+
+local function RemoveArrow(highlight)
+    local arrow = ActiveArrows[highlight]
+    if arrow then
+        arrow:Destroy()
+        ActiveArrows[highlight] = nil
+    end
+end
+
+local function RemoveAllArrows()
+    for highlight, arrow in pairs(ActiveArrows) do
+        if arrow then
+            arrow:Destroy()
+        end
+        ActiveArrows[highlight] = nil
+    end
+
+    table.clear(ActiveArrows)
+end
+
+-- Initial scan (once)
+for _, v in ipairs(CurrentRooms:GetDescendants()) do
+    if v.Name == "_LOLHAXHL" then
+        CreateArrow(v)
+    end
+end
+
+-- Auto detect new
+CurrentRooms.DescendantAdded:Connect(function(v)
+    if v.Name == "_LOLHAXHL" then
+        CreateArrow(v)
+    end
+end)
+
+CurrentRooms.DescendantRemoving:Connect(function(v)
+    if ActiveArrows[v] then
+        RemoveArrow(v)
+    end
+end)
+
+-- ONE render loop for ALL arrows
+ArrowConnection = RunService.RenderStepped:Connect(function()
+    if not Toggles.ESPI_M_Arrows.Value then
+        for _, arrow in pairs(ActiveArrows) do
+            arrow.Visible = false
+        end
+        return
+    end
+
+    local screenSize = Camera.ViewportSize
+    local center = Vector2.new(screenSize.X / 2, screenSize.Y / 2)
+    local offsetValue = Options.ESPI_M_ArrowsOffSet.Value
+    local distance = (offsetValue * 0.001) * screenSize.Y
+
+    for highlight, arrow in pairs(ActiveArrows) do
+        if not highlight:IsDescendantOf(CurrentRooms) then
+            RemoveArrow(highlight)
+            continue
+        end
+
+        local target = highlight.Adornee or highlight.Parent
+        if not target then
+            arrow.Visible = false
+            continue
+        end
+
+        local pos = target:IsA("Model") and target:GetPivot().Position or target.Position
+        local screenPos, onScreen = Camera:WorldToViewportPoint(pos)
+
+        if not onScreen then
+            arrow.Visible = true
+
+            local target2D = Vector2.new(screenPos.X, screenPos.Y)
+            local direction = target2D - center
+
+            local inverted = screenPos.Z <= 0
+            local atan = math.atan2(direction.Y, direction.X)
+
+            arrow.Rotation = math.deg(atan) + 90 + (inverted and 0 or 180)
+
+            local invertMultiplier = inverted and -1 or 1
+
+            arrow.Position = UDim2.fromOffset(
+                center.X + (distance * math.cos(atan) * invertMultiplier),
+                center.Y + (distance * math.sin(atan) * invertMultiplier)
+            )
+
+            if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
+                local speed = Options.ESPI_RAINBOW_SPEED.Value
+                arrow.ImageColor3 = Color3.fromHSV((os.clock() % speed) / speed, 0.8, 1)
+            else
+                arrow.ImageColor3 = highlight.FillColor or Color3.new(1,1,1)
+            end
+        else
+            arrow.Visible = false
+        end
+    end
+end)
 
 function EspUpdate()
     for _, Table in EspTable.Interactables do
@@ -1662,7 +2325,7 @@ local CameraAdded = workspace.CurrentCamera.ChildAdded:Connect(function(v)
 
     if v.Name == "Screech" then
         if Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["Screech"] then
-            Notify("Entity 'Screech' has spawned!", "Look around and look at it quickly!")
+            Library:Notify("Entity 'Screech' has spawned!", "Look around and look at it quickly!")
         end
     elseif v.Name == "LiveSanity" then
         task.delay(0.2, function()
@@ -1840,7 +2503,7 @@ local Connections = {
 
                 elseif v:IsA("Model") then
 
-                    if v.Name == "Sideroom" and v:FindFirstChild("Assets") then 
+                    if v.Name:find("Sideroom") and v:FindFirstChild("Assets") then 
 
                         table.insert(Targets, v.Assets)
                     
@@ -1865,7 +2528,7 @@ local Connections = {
 
                     elseif v.Name == "LiveBreakerPolePickup" then
 
-                        local Prompt
+                        local Prompt = v.ActivateEventPrompt
                         for _, ActivateEventPrompt in v:GetChildren() do
 
                             if ActivateEventPrompt:IsA("ProximityPrompt") and ActivateEventPrompt.RequiresLineOfSight then
@@ -1894,19 +2557,6 @@ local Connections = {
 
                 end
             end
-
-       --// Linoria \\--
-
---// Variables \\--
-shared.Script = {
-    Functions = {},
-    Temp = {
-        UsedBreakers = {}
-    },
-    RemotesFolder = game:GetService("ReplicatedStorage"):WaitForChild("EntityInfo") -- Adjust path if needed
-}
-local Script = shared.Script
-shared.Connections = {}
 
             for _, Assets in Targets do
                 for _, Root in Assets:GetChildren() do
@@ -1941,7 +2591,7 @@ shared.Connections = {}
                             FindLoot(Root)
 
                         end
-               
+
                     elseif Root.Name == "ChestBoxLocked" then
 
                         if Root.ActivateEventPrompt:GetAttribute("Interactions") then
@@ -1954,7 +2604,7 @@ shared.Connections = {}
                             end
                         end
 
-                    elseif Root.Name == "OldWoodenTable" then
+                    elseif Root.Name == "OldWoodenTable" or Root.Name == "DiningTable_TableclothLoot" then
 
                         FindLoot(Root)
 
@@ -2047,13 +2697,7 @@ shared.Connections = {}
                                 fireproximityprompt(Root.ModulePrompt)
                             end
                         end
-                    elseif Root.Name == "LiveHintBook" then
-                        
-                        if not (HasItem("Book")) then
-                            if (Root.Hitbox.Position - LocalPlayer.Character.Collision.Position).Magnitude < Root.ModulePrompt.MaxActivationDistance * Options.GA_AutoInteract_Range.Value then
-                                fireproximityprompt(Root.ModulePrompt)
-                            end
-                        end
+
                     elseif Root.Name == "MinesGenerator" then
                         local Fuse = HasItem("GeneratorFuse")
 
@@ -2095,12 +2739,22 @@ shared.Connections = {}
                             end
                         end
 
-                    elseif Root.Name == "Modular_Bookshelf" and Root:FindFirstChild("LiveHintBook") then
+                    elseif Root.Name == "Bookshelves1" then
+                        for _, Shelf in pairs(Root:GetChildren()) do
+                            if Shelf.Name == "Modular_Bookshelf" then
+                                local LiveHintBook = Shelf:FindFirstChild("LiveHintBook")
+                            
+                            if LiveHintBook and LiveHintBook:FindFirstChild("Base") then
+                                local Prompt = LiveHintBook:FindFirstChild("ActivateEventPrompt")
+                                local dist = (LiveHintBook.Base.Position - LocalPlayer.Character.Collision.Position).Magnitude
 
-                        if (Root.LiveHintBook.Base.Position - LocalPlayer.Character.Collision.Position).Magnitude < Root.LiveHintBook.ActivateEventPrompt.MaxActivationDistance * Options.GA_AutoInteract_Range.Value then
-                            fireproximityprompt(Root.LiveHintBook.ActivateEventPrompt)
+                                if dist < (Prompt.MaxActivationDistance * Options.GA_AutoInteract_Range.Value) then
+                                    fireproximityprompt(Prompt)
+                                end
+                            end
                         end
-
+                    end
+                    
                     elseif Root.Name == "TimerLever" and not Root.ActivateEventPrompt:GetAttribute("Interactions") then
 
                         if (Root.Hitbox.Position - LocalPlayer.Character.Collision.Position).Magnitude < Root.ActivateEventPrompt.MaxActivationDistance * Options.GA_AutoInteract_Range.Value then
@@ -2290,7 +2944,7 @@ shared.Connections = {}
         repeat task.wait() until v:GetAttribute("RawName")
 
         if v:GetAttribute("RawName") == "Mines_HaltHallway" and Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["Halt"] then
-            Notify("Entity 'Halt' spawns in the next room!", "...")
+            Library:Notify("Entity 'Halt' spawns in the next room!", "...")
         end
     end),
 
@@ -2319,9 +2973,33 @@ shared.Connections = {}
                 v:WaitForChild("Door", 9e9)
 
                 local RoomID = v:GetAttribute("RoomID")
+                local LibrarySpecial = {
+                    [50] =  true,
+                    [51] = true
+                }
+                local GreenHouse = {
+                    [90] = true,
+                    [91] = true,
+                    [92] = true,
+                    [93] = true,
+                    [94] = true,
+                    [95] = true,
+                    [96] = true,
+                    [97] = true,
+                    [98] = true,
+                    [99] = true,
+                    [100] = true
+                }
                 
-                if RoomID then
-                    local Adornee = v.Door
+                local Adornee
+                if RoomID and not Script.IsHotel then
+                    Adornee = v.Door
+                elseif LibrarySpecial[RoomID] or GreenHouse[RoomID] or v.Name == "ElevatorCar" then
+                    Adornee = v.Door
+                else
+                    Adornee = ManifestMspaintFrame(v.Door)
+                end
+                
 
                     if Script.IsMines then 
                         RoomID += 100
@@ -2350,8 +3028,9 @@ shared.Connections = {}
                             end)
                         end
                     end)
-                end
+                
 
+            
             elseif v.Name == "FuseObtain" then
 
                 v:WaitForChild("Hitbox", 9e9)
@@ -2377,18 +3056,16 @@ shared.Connections = {}
 
                 local Highlight, TextLabel = Esp(v, v, "Ladder", Color3.new(1, 1, 1))
 
-            elseif v.Name == "WaterPump" then
+            elseif v.Name == "Wheel" then
 
-                v:WaitForChild("Wheel", 9e9)
-
-                local Highlight, TextLabel = Esp(v, v, "Pump", Color3.new(1, 1, 1))
+                local Highlight, TextLabel = Esp(v, v, "Water Pump", Color3.new(1, 1, 1))
         
             elseif v.Name == "KeyObtain" then
 
                 v:WaitForChild("Hitbox", 9e9)
 
                 task.delay(1, function()
-                    local Highlight, TextLabel = Esp(v, v, "Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value)
+                    local Highlight, TextLabel = Esp(v, v, "Door Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value)
                     table.insert(EspTable.Interactables.DoorKeys, {Highlight, TextLabel})
                 end)
                     
@@ -2398,19 +3075,24 @@ shared.Connections = {}
 
                 local Highlight, TextLabel = Esp(v, v, "Gold Pile [ "..v:GetAttribute("GoldValue").." ]", Options.ESPI_C_GoldPiles_F.Value, Options.ESPI_C_GoldPiles_O.Value)
                 table.insert(EspTable.Interactables.GoldPiles, {Highlight, TextLabel})
+ 
+            elseif v.Name == "LeverForGate" and not v:GetAttribute("Interactions") then
 
-            elseif v.Name == "LeverForGate" then
-
-                v:WaitForChild("Main", 1.5)
+                v:WaitForChild("Main", 9e9)
 
                 local Highlight, TextLabel = Esp(v, v.Main, "Gate Lever", Options.ESPI_C_GateLevers_F.Value, Options.ESPI_C_GateLevers_O.Value)
                 table.insert(EspTable.Interactables.GateLevers, {Highlight, TextLabel})
 
+                v:WaitForChild("ActivateEventPrompt", 9e9)
+
+                v.Main.SoundToPlay.Played:Once(function()
+                    RemoveEspSmooth(v)
+                end)
 
             elseif v.Name == "TimerLever" then
 
                 task.delay(1, function()
-                    if not v.Parent then return end
+                    -- rmeoved  
 
                     v:WaitForChild("Hitbox", 9e9)
 
@@ -2534,7 +3216,7 @@ shared.Connections = {}
                         end)
 
                         if Toggles.GN_AnchorCode.Value then
-                            Notify("Anchor code solved.", "The code for Anchor "..NextAnchor.Sign.TextLabel.Text.." is '".. Solved .."'.", 10)
+                            Library:Notify("Anchor code solved.", "The code for Anchor "..NextAnchor.Sign.TextLabel.Text.." is '".. Solved .."'.", 10)
                         end
 
                         local Highlight, TextLabel = Esp(NextAnchor, NextAnchor.AnchorBase, "( ".. Solved .." ) Anchor "..NextAnchor.Sign.TextLabel.Text, Color3.new(0.5, 0.25, 1))
@@ -2561,7 +3243,7 @@ shared.Connections = {}
 
                     table.clear(Anchors)
                 end
-            elseif v.Name == "GrumbleRig" then
+            elseif v.Name == "GrumbleRig" or v.Name == "QueenGrumble" or v.Name == "_QueenGrumble" then
                 v:WaitForChild("Root", 9e9)
                 task.wait(1)
 
@@ -2595,7 +3277,7 @@ shared.Connections = {}
 
                 if v.Name == "Screech" then
                     if Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["Screech"] then
-                        Notify("Entity 'Screech' has spawned!", "Look around and look at it quickly!")
+                        Library:Notify("Entity 'Screech' has spawned!", "Look around and look at it quickly!")
                     end
                 elseif v.Name == "LiveSanity" then
                     task.delay(0.2, function()
@@ -2643,7 +3325,7 @@ shared.Connections = {}
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
                 if Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["Dread"] then
-                    Notify("Entity 'Dread' has spawned!", "Open the next door quickly!")
+                    Library:Notify("Entity 'Dread' has spawned!", "Open the next door quickly!")
                 end
 
             elseif v.Name == "RushMoving" then
@@ -2658,9 +3340,11 @@ shared.Connections = {}
 
                 if Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["Rush"] then
                     print("sdfsdfsdfsdf")
-                    Notify("Entity 'Rush' has spawned!", "Find a hiding spot quickly!")
+                    Library:Notify({
+                        Title = "Entity 'Rush' has spawned!",
+                        Description = "Go find a hiding spot quickly!"
+                    })
                 end
-
             elseif v.Name == "AmbushMoving" then
 
                 v:WaitForChild("RushNew", 9e9)
@@ -2672,9 +3356,8 @@ shared.Connections = {}
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
                 if Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["Ambush"] then
-                    Notify("Entity 'Ambush' has spawned!", "Ambush can rebound 2 - 4 times, find a hiding spot quickly!")
-                end
-           
+                    Library:Notify("Entity 'Ambush' has spawned!", "Ambush can rebound 2 - 4 times, find a hiding spot quickly!")
+            end
 
             elseif v.Name == "A60" then
 
@@ -2687,7 +3370,7 @@ shared.Connections = {}
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
                 if Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["A-60"] then
-                    Notify("Entity 'A-60' has spawned!", "Find a hiding spot quickly!")
+                    Library:Notify("Entity 'A-60' has spawned!", "Find a hiding spot quickly!")
                 end
 
             elseif v.Name == "A120" then
@@ -2701,7 +3384,7 @@ shared.Connections = {}
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
                 if Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["A-120"] then
-                    Notify("Entity 'A-120' has spawned!", "Find a hiding spot quickly!")
+                    Library:Notify("Entity 'A-120' has spawned!", "Find a hiding spot quickly!")
                 end
 
             elseif v.Name == "BackdoorRush" then
@@ -2715,7 +3398,7 @@ shared.Connections = {}
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
                 if Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["Blitz"] then
-                    Notify("Entity 'Blitz' has spawned!", "Blitz can rebound and pause in place at random, Find a hiding spot quickly!", 5)
+                    Library:Notify("Entity 'Blitz' has spawned!", "Blitz can rebound and pause in place at random, Find a hiding spot quickly!", 5)
                 end
 
                 local EnableChanged = v.Main.AttachmentSwitch.ParticleEmitter:GetPropertyChangedSignal("Enabled"):Connect(function()
@@ -2741,7 +3424,7 @@ shared.Connections = {}
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
                 if Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["Eyes"] then
-                    Notify("Entity 'Eyes' has spawned!", "Avoid looking at it!")
+                    Library:Notify("Entity 'Eyes' has spawned!", "Avoid looking at it!")
                 end
 
             elseif v.Name == "BackdoorLookman" then
@@ -2755,7 +3438,7 @@ shared.Connections = {}
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
                 if Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["Lookman"] then
-                    Notify("Entity 'Lookman' has spawned!", "Avoid looking at it!")
+                    Library:Notify("Entity 'Lookman' has spawned!", "Avoid looking at it!")
                 end
 
             end
@@ -2930,18 +3613,18 @@ TimothyHook = hookfunction(require(LocalPlayer.PlayerGui.MainUI.Initiator.Main_G
 end)
 
 
-local HasteLoopActive = false -- Simple boolean flag
+local HasteLoopActive = false -- hehe
 local HasteTimerConnection
 
 Toggles.ES_HASTECLOCK:OnChanged(function(value)
     HasteLoopActive = value
-    print("Toggle changed: " .. tostring(value)) -- DEBUG 1
+    print("Toggle changed: " .. tostring(value))-- debug 111
     
     if value and Script.IsBackdoor then
         task.spawn(function()
             local ReplicatedStorage = game:GetService("ReplicatedStorage")
             
-            -- Use FindFirstChild so we don't hang the script if it's missing
+            --  floorep
             local FloorRep = ReplicatedStorage:FindFirstChild("FloorReplicated")
             print("FloorReplicated found: " .. tostring(FloorRep ~= nil)) -- DEBUG 2
             
@@ -2963,10 +3646,9 @@ Toggles.ES_HASTECLOCK:OnChanged(function(value)
                         end)
                     end
                 else
-                    -- If we can't find the timer, tell the console why
-                    print("Waiting for DigitalTimer...") 
+                    print("GET OUT") 
                 end
-                task.wait(1) 
+                task.wait()
             end
             
             pcall(function()
@@ -2976,7 +3658,6 @@ Toggles.ES_HASTECLOCK:OnChanged(function(value)
     end
 end)
 
-
 local function DoTrans(Value)
     local Char = LocalPlayer.Character
     if not Char then return end
@@ -2984,12 +3665,9 @@ local function DoTrans(Value)
     local isHiding = Char:GetAttribute("Hiding")
     
     if Value and isHiding then
-        -- Instead of searching all rooms, we look for the HiddenPlayer value 
-        -- near the character or within the current room
         task.spawn(function()
             local TargetCloset = nil
-            
-            -- Look for the ObjectValue 'HiddenPlayer' that points to you
+
             for _, v in ipairs(workspace.CurrentRooms:GetDescendants()) do
                 if v.Name == "HiddenPlayer" and v.Value == Char then
                     TargetCloset = v.Parent
@@ -3009,10 +3687,9 @@ local function DoTrans(Value)
                     for _, p in ipairs(parts) do
                         p.Transparency = Options.VV_HidingTransparency.Value
                     end
-                    task.wait(0.1) -- Slow wait to prevent lag
+                    task.wait(0.5)
                 end
 
-                -- Reset
                 for _, p in ipairs(parts) do
                     p.Transparency = 0
                 end
@@ -3029,107 +3706,161 @@ task.spawn(function()
     end
 end)
 
-local ValdVHiddenSpots = {
-    ["Locker_Large"] = "Locker",
-    ["Wardrobe"] = "Closet",
-    ["RetroWardrobe"] = "Closet",
-    ["Bed"] = "Bed",
-    ["Toolshed"] = "Closet",
-    ["Backdoor_Wardrobe"] = "Closet",
-    ["Double_Bed"] = "Bed"
+local RunService = game:GetService("RunService")
+local CurrentRooms = workspace:WaitForChild("CurrentRooms")
+
+local ActiveClosets = {}
+
+local function getRoomModel(obj)
+    local parent = obj
+    while parent and parent.Parent ~= CurrentRooms do
+        parent = parent.Parent
+    end
+    return parent
+end
+
+local function MonitorCloset(v)
+
+    local HiddenSpots = {
+    Locker_Large = "Locker",
+    Wardrobe = "Closet",
+    RetroWardrobe = "Closet",
+    Bed = "Bed",
+    Toolshed = "Closet",
+    Backdoor_Wardrobe = "Closet",
+    Double_Bed = "Bed"
 }
 
-local RunService = game:GetService("RunService")
+    if v:FindFirstChild("VV_MARKER") then return end
 
-task.spawn(function()
-    local ActiveClosets = {}
-    -- 
-    local CurrentRooms = workspace:WaitForChild("CurrentRooms")
-    local tonumber = tonumber
-
-    -- 
-
-    local function MonitorCloset(v)
-        local vName = v.Name -- ngl this vab kind suck but i have to use it
-        
-        
-        if vName:find("Sideroom") then
-            local children = v:GetChildren()
-            for i = 1, #children do
-                MonitorCloset(children[i])
-            end
-            return
+    -- Handle sideroom recursion cleaner
+    if v.Name:find("Sideroom") then
+        for _, child in ipairs(v:GetChildren()) do
+            MonitorCloset(child)
         end
-
-        -- LOOK INTO MY EYES NOW TELL Me (its going down now)
-        local isHidingSpot = ValdVHiddenSpots[vName] or v:GetAttribute("LoadModule") == "Wardrobe"
-
-        if not isHidingSpot or v:FindFirstChild("VV_MARKER") then return end
-
-        -- 3 climb to whatever room model i sifiasduadg qwyeqwe qwueuqwue yqwye daysd uahhu gshugashgsghdytsdytas tuiatui stu
-        local rootRoom = v
-        while rootRoom and rootRoom.Parent ~= CurrentRooms do
-            rootRoom = rootRoom.Parent
-        end
-
-        local roomNum = rootRoom and tonumber(rootRoom.Name)
-        
-        local TargetPart = v:FindFirstChild("Main") or v:FindFirstChildWhichIsA("BasePart")
-
-        if not roomNum or not TargetPart then return end
-
-        -- ??
-        Instance.new("BoolValue", v).Name = "VV_MARKER"
-        
-        ActiveClosets[v] = {
-            roomNum = roomNum,
-            TargetPart = TargetPart,
-            Highlight = nil,
-            TextLabel = nil
-        }
+        return
     end
 
-    -- t
-    RunService.Heartbeat:Connect(function()
-        local current = Script.CurrentRoom or 0
-        
-        for v, data in pairs(ActiveClosets) do
-            
-            if not v or not v.Parent then
-                ActiveClosets[v] = nil
-                continue
-            end
+    local mappedName = HiddenSpots[v.Name]
+    local isWardrobeAttr = v:GetAttribute("LoadModule") == "Wardrobe"
 
-            local isCurrent = (data.roomNum == current)
-            local isOld = (data.roomNum < current - 1)
+    if not mappedName and not isWardrobeAttr then return end
 
-            -- ()
-            if isCurrent and not data.Highlight then
-                data.Highlight, data.TextLabel = Esp(v, data.TargetPart, ValdVHiddenSpots[v.Name], Options.ESPI_C_Closet_F.Value, Options.ESPI_C_Closet_O.Value)
-            end
+    local roomModel = getRoomModel(v)
+    if not roomModel then return end
 
-            -- ()
-            if data.Highlight then data.Highlight.Enabled = isCurrent end
-            if data.TextLabel then data.TextLabel.Visible = isCurrent end
+    local roomNum = tonumber(roomModel.Name)
+    if not roomNum then return end
 
-            -- empty tags? u can see
-            if isOld then
-                pcall(RemoveEspSmooth, v)
-                if v:FindFirstChild("VV_MARKER") then v.VV_MARKER:Destroy() end
-                ActiveClosets[v] = nil
-            end
+    local targetPart = v:FindFirstChild("Main") or v:FindFirstChildWhichIsA("BasePart")
+    if not targetPart then return end
+
+    local displayName = mappedName or "Closet"
+
+    Instance.new("BoolValue", v).Name = "VV_MARKER"
+
+    ActiveClosets[v] = {
+        roomNum = roomNum,
+        targetPart = targetPart,
+        displayName = displayName,
+        highlight = nil,
+        textLabel = nil
+    }
+end
+
+--bal Scan
+if Toggles.ClosetESP.Value then
+    for _, x in ipairs(CurrentRooms:GetDescendants()) do
+        MonitorCloset(x)
+    end
+end
+
+-- 1. Move the scan logic into a named function
+local function CleanupClosets()
+    for v, data in pairs(ActiveClosets) do
+        pcall(RemoveEspSmooth, v)
+        if v:FindFirstChild("VV_MARKER") then
+            v.VV_MARKER:Destroy()
+        end
+    end
+    table.clear(ActiveClosets)
+end
+
+local function RerenderClosets()
+    -- Optional: Clear existing stuff first if you want a true "reset"
+    CleanupClosets()
+
+    -- Scan everything currently in workspace
+    if Toggles.ClosetESP.Value then
+        for _, x in ipairs(CurrentRooms:GetDescendants()) do
+            MonitorCloset(x)
+        end
+    end
+end
+
+-- 2. Hook it up to your toggle listener
+Toggles.ClosetESP:OnChanged(function()
+    if Toggles.ClosetESP.Value then
+        RerenderClosets()
+    else
+        -- Cleanup when turned off
+        CleanupClosets()
+    end
+end)
+
+-- r
+CurrentRooms.DescendantAdded:Connect(function(v)
+    if not Toggles.ClosetESP.Value then return end
+
+    task.delay(0.1, function()
+        if not Toggles.ClosetESP.Value then return end
+        if v and v.Parent then
+            MonitorCloset(v)
         end
     end)
+end)
 
-    --bal Scan
-    for _, x in ipairs(workspace.CurrentRooms:GetDescendants()) do 
-        MonitorCloset(x) 
+RunService.Heartbeat:Connect(function()
+    local current = Script.CurrentRoom or 0
+
+    for v, data in pairs(ActiveClosets) do
+        if not v or not v:IsDescendantOf(workspace) then
+            ActiveClosets[v] = nil
+            continue
+        end
+
+        local isCurrent = (data.roomNum == current)
+        local isOld = (data.roomNum < current - 1)
+
+        if isCurrent and not data.highlight then
+            data.highlight, data.textLabel =
+                Esp(
+                    v,
+                    data.targetPart,
+                    data.displayName,
+                    Options.ESPI_C_Closet_F.Value,
+                    Options.ESPI_C_Closet_O.Value
+                )
+        end
+
+        if data.highlight then
+            data.highlight.Enabled = isCurrent
+        end
+
+        if data.textLabel then
+            data.textLabel.Visible = isCurrent
+        end
+
+        if isOld then
+            pcall(RemoveEspSmooth, v)
+
+            if v:FindFirstChild("VV_MARKER") then
+                v.VV_MARKER:Destroy()
+            end
+
+            ActiveClosets[v] = nil
+        end
     end
-
-    -- r
-    workspace.CurrentRooms.DescendantAdded:Connect(function(v)
-        task.delay(0.1, function() MonitorCloset(v) end)
-    end)
 end)
 
 -- aizo aizo garage
@@ -3158,9 +3889,11 @@ HideTimerConnection = game:GetService("ReplicatedStorage").RemotesFolder.HideMon
                 --
                 local formattedTime = string.format("%.1f", remainingTime)
 
-                -- 
+            if getgenv().UseLib.CurrentNotify ~= "Doors" then
                 Script.Functions.Captions(formattedTime)
-
+            else
+                firesignal(game.ReplicatedStorage.RemotesFolder.Caption.OnClientEvent, string.format("%.1f", remainingTime))
+            end
                 -- 
                 if remainingTime <= 0 then break end
                 task.wait(0.1) 
@@ -3216,7 +3949,7 @@ end)
                 progressPart.Name = "_internal_lhx_acbypassprogress"
             end
 
-            if Library.IsMobile then
+    if Library.IsMobile then
                 Library:Notify({
                     Title = "Anticheat bypass",
                     Description = "To bypass the anticheat, you must interact with a ladder. \nDo not move while on the ladder.",
@@ -3236,13 +3969,15 @@ end)
                     LinoriaMessage = "To bypass the anticheat, you must interact with a ladder. \nDo not move while on the ladder.",
                     Time = progressPart
                 })
-
+            
+            Script.Bypassed = false
             end
         else
-             if workspace:FindFirstChild("_internal_lhx_acbypassprogress") then workspace:FindFirstChild("_internal_lhx_acbypassprogress"):Destroy() end
-            Script.Bypassed = false
+            print("fuck off")
+            if workspace:FindFirstChild("_internal_lhx_acbypassprogress") then workspace:FindFirstChild("_internal_lhx_acbypassprogress"):Destroy() end
         end
     end)
+
 
     if Script.IsMines then
         if LocalPlayer.Character then
@@ -3265,19 +4000,26 @@ end)
 
                    LinoriaMessage = "Bypassed the anticheat successfully! This will only last until the next cutscene"
                 })
-                if workspace:FindFirstChild("_internal_lhx_acbypassprogress") then workspace:FindFirstChild("_internal_lhx_acbypassprogress"):Destroy() end
+                workspace:FindFirstChild("_internal_lhx_acbypassprogress"):Destroy()
             end)
         end
 end
 
-if Toggles.EB_TheMinesAnticheatBypass and Script.Bypassed == "true" and not LocalPlayer:GetAttribute("Climbing") then
-                Library:Notify({
-                    Title = "Anticheat bypass",
-                    Description = "something might have broken Anticheat Bypass, please interact with a ladder to fix it.",
-                    SoundId = "rbxassetid://4590662766",
-                    Time = 60
-                })
-            end
+local currentRoomModel = workspace.CurrentRooms:FindFirstChild(tostring(Script.CurrentRoom))
+if Script.IsMines and Script.Bypassed and currentRoomModel:GetAttribute("RawName") == "Mines_HaltHallway" then
+        Script.Bypassed = false
+        Library:Notify({
+            Title = "Anticheat Bypass",
+            Description = "Halt has broken anticheat bypass, please go on a ladder again to fix it.",
+            Reason = "Please go on a ladder again to fix it.",
+            SoundId = "rbxassetid://4590662766",
+
+            LinoriaMessage = "Halt has broken anticheat bypass, please go on a ladder again to fix it."
+        })
+
+    end
+
+-- Check if your executor actually supports these (most do)
 
 Script.Functions.Minecart = {
     pathfindQueue = {},
@@ -3302,7 +4044,7 @@ Script.Functions.Minecart = {
 
 type tPathfind = {
     esp: boolean,
-    room_number: number, -- the room number
+    room_number: number, -- idunno room number
     real: table,
     fake: table,
     destroyed: boolean -- if the pathfind was destroyed for the Teleport
@@ -3346,23 +4088,23 @@ local function sortNodes(nodes: table, reversed: boolean)
         local Anumber = (a.Name):gsub("[^%d+]", "")
         local Bnumber = (b.Name):gsub("[^%d+]", "")
         
-        -- Convert to numbers once, and use 0 if the name had no numbers (like "Normal")
+        -- 
         local aVal = tonumber(Anumber) or 0
         local bVal = tonumber(Bnumber) or 0
 
         if reversed then
-            -- This uses your match logic for safety
+            
             return (tonumber(Anumber:match("%d+")) or 0) > (tonumber(Bnumber:match("%d+")) or 0)
         end
         
-        -- FIX: Use the safe variables here so it doesn't compare nil
+        -- 
         return aVal < bVal 
     end)
     return nodes
 end
 
 local function HasAlreadyPathfind(nodesFolder: Folder): boolean
-    local hasPathfind = nodesFolder:GetAttribute("_lhx_nodes_pathfind")
+    local hasPathfind = nodesFolder:GetAttribute("_mspaint_nodes_pathfind")
     return hasPathfind
 end
 
@@ -3582,9 +4324,9 @@ end
         fake = sortNodes(fakeNodes, false)
     }
 
-    nodesFolder:SetAttribute("_lhx_nodes_pathfind", true)
-    PathfindSetNodes(nodesList.real, "_lhx_real_node")
-    PathfindSetNodes(nodesList.fake, "_lhx_fake_node")
+    nodesFolder:SetAttribute("_mspaint_nodes_pathfind", true)
+    PathfindSetNodes(nodesList.real, "_mspaint_real_node")
+    PathfindSetNodes(nodesList.fake, "_mspaint_fake_node")
     --Call any feature that requires the pathfind nodes--
 end
 
@@ -3612,10 +4354,10 @@ local function PathfindGetNodes(room: Model): tSortedNodes | nil
     for _, node: Part in ipairs(nodeArray:GetChildren()) do
         --check for real nodes
         
-        local realNumber = node:GetAttribute("_lhx_real_node")
+        local realNumber = node:GetAttribute("_mspaint_real_node")
         if realNumber then table.insert(Nodes.real, node) continue end
         --check for fake nodes
-        local fakeNumber = node:GetAttribute("_lhx_fake_node")
+        local fakeNumber = node:GetAttribute("_mspaint_fake_node")
         if fakeNumber then table.insert(Nodes.fake, node) end
     end
 
@@ -3682,40 +4424,38 @@ end
 
 Toggles.VW_SeekPath:OnChanged(function(value)
     if not Script.IsMines then return end
-    -- 1. Kill any existing watcher first
+    
+    -- ??
     if SeekPathConnection then 
         SeekPathConnection:Disconnect() 
         SeekPathConnection = nil 
     end
 
     if value then
-        -- 2. Define the "Gatekeeper" list
-        local validRooms = {["43"]=true, ["44"]=true, ["45"]=true, ["46"]=true, ["47"]=true, ["48"]=true, ["49"]=true,["50"]=true, ["70"]=true, ["71"]=true, ["72"]=true, ["73"]=true,["74"]=true,["75"]=true}
-
-        -- 3. Function to check and draw
+        -- 
         local function checkAndDraw(room)
-            if validRooms[room.Name] then
-                Script.Functions.Minecart.debug("[Toggle] room " .. room.Name .. " is valid so im drawing +4")
+            -- ()
+            local nodeArray = room:WaitForChild("RunnerNodes", 5.0)
+
+            if nodeArray then
+                Script.Functions.Minecart.debug("[Dynamic] Found RunnerNodes in " .. room.Name .. " | AINT NO WAY im drawing +x444")
                 task.spawn(Script.Functions.Minecart.DrawNodes, room)
             else
-                -- Connection stays alive, but ignores rooms like 141
-                Script.Functions.Minecart.debug("[Toggle] Ignoring room btw: " .. room.Name)
+                Script.Functions.Minecart.debug("[Dynamic] No nodes in " .. room.Name .. " | skipping room lmao")
             end
         end
 
-        -- 4. Initial check for rooms already there
+        -- nil
         for _, room in pairs(workspace.CurrentRooms:GetChildren()) do
             checkAndDraw(room)
         end
 
-        -- 5. THE AUTOMATIC WATCHER
+        -- 4. THE AUTOMATIC WATCHER
         SeekPathConnection = workspace.CurrentRooms.ChildAdded:Connect(function(room)
-            -- Small delay so the Name and Folder have time to exist
-            task.delay(0.1, function()
-                if Toggles.VW_SeekPath.Value then
-                    checkAndDraw(room)
-                end
-            end)
+            -- We don't need a task.delay here because WaitForChild handles the wait
+            if Toggles.VW_SeekPath.Value then
+                checkAndDraw(room)
+            end
         end)
     end
 end)
@@ -3727,7 +4467,7 @@ local function HasAlreadyDestroyed(room: Model): boolean
         Script.Functions.Minecart.debug("[HasAlreadyDestroyed] No node has been found." )
         return
     end
-    local result = nodesFolder:GetAttribute("_lhx_player_teleported") ~= nil
+    local result = nodesFolder:GetAttribute("_mspaint_player_teleported") ~= nil
     Script.Functions.Minecart.debug("[HasAlreadyDestroyed] Destroyed: " .. tostring(result))
     return result
 end
@@ -3766,6 +4506,61 @@ Script.FeatureConnections.Character["Oxygen"] = LocalPlayer.Character:GetAttribu
             if LocalPlayer.Character:GetAttribute("Oxygen") >= 100 then return end
                 Script.Functions.Captions(string.format("Oxygen: %.1f", LocalPlayer.Character:GetAttribute("Oxygen")))
         end)
+
+local ElevatorConnection
+
+Toggles.GA_SkipElevatorBreaker:OnChanged(function(value)
+    if not Script.IsHotel then return end
+    -- 
+    if ElevatorConnection then 
+        ElevatorConnection:Disconnect() 
+        ElevatorConnection = nil 
+    end
+
+    if value then
+        -- ?
+        local function attemptSkip(room)
+    task.spawn(function()
+        Script.Functions.Minecart.debug("[EBF] Monitoring room: " .. room.Name)
+        
+        local breaker = nil
+        --  its lagging me dumbass
+        for i = 1, 20 do
+            breaker = room:FindFirstChild("ElevatorBreakerEmpty", true) or room:FindFirstChild("ElevatorBreaker", true)
+            
+            if breaker then
+                Script.Functions.Minecart.debug("[probably 100 attemps] SUCCESS: Found breaker after " .. i .. " attempts!")
+                game.ReplicatedStorage.RemotesFolder.EBF:FireServer()
+            end
+            
+            -- hell no
+            if i % 5 == 0 then
+                Script.Functions.Minecart.debug("[please] Still searching room " .. room.Name .. "... (Attempt " .. i .. ")")
+            end
+            
+            task.wait(0.5)
+        end
+        
+        Script.Functions.Minecart.debug("[skipelevat] FAILED: Could not find breaker in " .. room.Name .. " after 10s.")
+    end)
+end
+
+        -- somoe checks ask him
+        for _, room in pairs(workspace.CurrentRooms:GetChildren()) do
+            attemptSkip(room)
+        end
+
+        -- 4. s??
+        ElevatorConnection = workspace.CurrentRooms.ChildAdded:Connect(function(room)
+            --  what
+            task.delay(0.5, function()
+                if Toggles.GA_SkipElevatorBreaker.Value then
+                    attemptSkip(room)
+                end
+            end)
+        end)
+    end
+end)
 
 local Connect = {}
 shared.Connections = {}
@@ -3875,12 +4670,12 @@ end
         return workspace.CurrentRooms[Script.LatestRoom.Value].RoomExit
     end
 
-    local _internal_lhx_pathfinding_nodes = Instance.new("Folder", workspace) do
-        _internal_lhx_pathfinding_nodes.Name = "_internal_lhx_pathfinding_nodes"
+    local _internal_mspaint_pathfinding_nodes = Instance.new("Folder", workspace) do
+        _internal_mspaint_pathfinding_nodes.Name = "_internal_mspaint_pathfinding_nodes"
     end
 
-    local _internal_lhx_pathfinding_block = Instance.new("Folder", workspace) do
-        _internal_lhx_pathfinding_block.Name = "_internal_lhx_pathfinding_block"
+    local _internal_mspaint_pathfinding_block = Instance.new("Folder", workspace) do
+        _internal_mspaint_pathfinding_block.Name = "_internal_mspaint_pathfinding_block"
     end
 
 local lastRoom = -1
@@ -3889,11 +4684,12 @@ local lastRoomID = -1
 local isWalking = false
 local lastNotifiedRoom
     Toggles.ES_AutoRooms:OnChanged(function(value)
+        if not value then return end
         local hasResetFailsafe = false
 
         local function nodeCleanup()
-            _internal_lhx_pathfinding_nodes:ClearAllChildren()
-            _internal_lhx_pathfinding_block:ClearAllChildren()
+            _internal_mspaint_pathfinding_nodes:ClearAllChildren()
+            _internal_mspaint_pathfinding_block:ClearAllChildren()
             hasResetFailsafe = true
         end
 
@@ -3910,11 +4706,11 @@ local lastNotifiedRoom
             local lastRoomValue = 0
 
             local function createNewBlockedPoint(point: PathWaypoint)
-                local block = Instance.new("Part", _internal_lhx_pathfinding_block)
+                local block = Instance.new("Part", _internal_mspaint_pathfinding_block)
                 local pathMod = Instance.new("PathfindingModifier", block)
                 pathMod.Label = "_ms_pathBlock"
 
-                block.Name = "_lhx_blocked_path"
+                block.Name = "_mspaint_blocked_path"
                 block.Shape = Enum.PartType.Block
 
                 local sizeY = 10
@@ -3933,18 +4729,25 @@ local lastNotifiedRoom
                 local pathfindingGoal = Script.Functions.GetAutoRoomsPathfindingGoal()
 
                 if Script.LatestRoom.Value ~= lastRoomValue then
-                    _internal_lhx_pathfinding_block:ClearAllChildren()
+                    _internal_mspaint_pathfinding_block:ClearAllChildren()
                     lastRoomValue = Script.LatestRoom.Value
                 end
-            if Script.LatestRoom.Value ~= lastNotifiedRoom and Toggles.ES_AutoRoomsDebug.Value and getgenv().UseLib.CurrentLib == "Obsidian" then
+            if Script.LatestRoom.Value ~= lastNotifiedRoom and Toggles.ES_AutoRoomsDebug.Value and getgenv().UseLib.CurrentNotify == "Obsidian" then
                 lastNotifiedRoom = Script.LatestRoom.Value
                 Library:Notify({
                     Title = "Auto Rooms",
                     Description = "Calculated Objective Successfully Objective: " .. pathfindingGoal.Parent.Name .. "\nCreating path...",
                     SoundId = "rbxassetid://4590662766"
                 })
-            elseif Script.LatestRoom.Value ~= lastNotifiedRoom and Toggles.ES_AutoRoomsDebug.Value and getgenv().UseLib.CurrentLib == "Linoria" then
+            elseif Script.LatestRoom.Value ~= lastNotifiedRoom and Toggles.ES_AutoRoomsDebug.Value and getgenv().UseLib.CurrentNotify == "Linoria" then
                 lastNotifiedRoom = Script.LatestRoom.Value
+                Library:Notify({
+                    Title = "Auto Rooms",
+                    Description = "Calculated Objective Successfully!\nObjective: " .. pathfindingGoal.Parent.Name .. "\nCreating path...",
+                    SoundId = "rbxassetid://4590662766"
+                })
+            elseif Script.LatestRoom.Value ~= lastNotifiedRoom and Toggles.ES_AutoRoomsDebug.Value and getgenv().UseLib.CurrentNotify == "Doors" then
+                                lastNotifiedRoom = Script.LatestRoom.Value
                 Library:Notify({
                     Title = "Auto Rooms",
                     Description = "Calculated Objective Successfully!\nObjective: " .. pathfindingGoal.Parent.Name .. "\nCreating path...",
@@ -3997,10 +4800,10 @@ local lastNotifiedRoom
                         SoundId = "rbxassetid://4590662766"
                     })
                 end
-                    _internal_lhx_pathfinding_nodes:ClearAllChildren()
+                    _internal_mspaint_pathfinding_nodes:ClearAllChildren()
 
                     for i, waypoint in pairs(waypoints) do
-                        local node = Instance.new("Part", _internal_lhx_pathfinding_nodes) do
+                        local node = Instance.new("Part", _internal_mspaint_pathfinding_nodes) do
                             node.Name = "_internal_node_" .. i
                             node.Size = Vector3.new(1, 1, 1)
                             node.Position = waypoint.Position
@@ -4017,7 +4820,7 @@ local lastNotifiedRoom
                         local moveToFinished = false
                         local recalculate = false
                         local waypointConnection = LocalPlayer.Character.Humanoid.MoveToFinished:Connect(function() moveToFinished = true end)
-                        if not moveToFinished or not Toggles.ES_AutoRooms then
+                        if not moveToFinished or not Toggles.ES_AutoRooms.Value then
                             LocalPlayer.Character.Humanoid:MoveTo(waypoint.Position)
                             
                             local entity = (workspace:FindFirstChild("A60") or workspace:FindFirstChild("A120"))
@@ -4030,7 +4833,7 @@ local lastNotifiedRoom
                                     nodeCleanup()
                                     break
                                 else
-                                    if _internal_lhx_pathfinding_nodes:FindFirstChild("_internal_node_" .. i) then
+                                    if _internal_mspaint_pathfinding_nodes:FindFirstChild("_internal_node_" .. i) then
                                         
                                     end
                                 end
@@ -4040,7 +4843,7 @@ local lastNotifiedRoom
 
                             task.delay(0.5, function()
                                 if moveToFinished then return end
-                                if (not Toggles.ES_AutoRooms or Library.Unloaded) then return moveToCleanup() end
+                                if (not Toggles.ES_AutoRooms.Value or Library.Unloaded) then return moveToCleanup() end
 
                                 repeat task.wait(0.25) until (not LocalPlayer.Character:GetAttribute("Hiding") and not LocalPlayer.Character.PrimaryPart.Anchored)
                               
@@ -4064,16 +4867,16 @@ local lastNotifiedRoom
                             end)
                         end
 
-                        repeat task.wait() until moveToFinished or not Toggles.ES_AutoRooms or recalculate or Library.Unloaded
+                        repeat task.wait() until moveToFinished or not Toggles.ES_AutoRooms.Value or recalculate or Library.Unloaded
                         lastWaypoint = waypoint
 
                         waypointConnection:Disconnect()
 
-                        if not Toggles.ES_AutoRooms then
+                        if not Toggles.ES_AutoRooms.Value then
                             nodeCleanup()
                             break
                         else
-                            if _internal_lhx_pathfinding_nodes:FindFirstChild("_internal_node_" .. i) then
+                            if _internal_mspaint_pathfinding_nodes:FindFirstChild("_internal_node_" .. i) then
                                 
                             end
                         end
@@ -4095,7 +4898,7 @@ local lastNotifiedRoom
             end
 
             -- Movement
-            while Toggles.ES_AutoRooms and not Library.Unloaded do
+            while Toggles.ES_AutoRooms.Value and not Library.Unloaded do
                 if Script.LatestRoom.Value == 1000 and Toggles.ES_AutoRoomsDebug.Value then
                     Library:Notify({
                         Title = "Auto Rooms",
@@ -4111,7 +4914,7 @@ local lastNotifiedRoom
         task.spawn(function()
                 isWalking = true
                 doAutoRooms()
-                isWalking = false -- When the function finishes, it allows a retry
+                isWalking = false -- return end
               end)
             end
         task.wait()
@@ -4136,9 +4939,32 @@ for _, v in Rooms:GetDescendants() do
             if v.Name == "Door" and not v:GetAttribute("Opened") then
          
                 local RoomID = v:GetAttribute("RoomID")
-
-                if RoomID then
-                    local Adornee = v.Door
+                local LibraryRoom = {
+                    [51] = true,
+                    [50] = true
+                }
+                local GreenHouseDoors = {
+                    [90] = true,
+                    [91] = true,
+                    [92] = true, 
+                    [93] = true,
+                    [94] = true,
+                    [95] = true,
+                    [96] = true,
+                    [97] = true,
+                    [98] = true,
+                    [99] = true,
+                    [100] = true
+                 }
+                
+                 local Adornee
+                if GreenHouseDoors[RoomID] or LibraryRoom[RoomID] or v.Name == "ElevatorCar" then
+                    Adornee = v.Door
+                elseif not Script.IsHotel then
+                    Adornee = v.Door
+                else
+                    Adornee = ManifestMspaintFrame(v.Door)
+                end
 
                     if Script.IsMines then 
                         RoomID += 100
@@ -4160,7 +4986,6 @@ for _, v in Rooms:GetDescendants() do
                     v.AttributeChanged:Once(function()
                         RemoveEspSmooth(Adornee)
                     end)
-                end
 
             elseif v.Name == "FuseObtain" then
 
@@ -4181,7 +5006,7 @@ for _, v in Rooms:GetDescendants() do
                 end)
             elseif v.Name == "KeyObtain" then
 
-                local Highlight, TextLabel = Esp(v, v, "Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value)
+                local Highlight, TextLabel = Esp(v, v, "Door Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value)
                 table.insert(EspTable.Interactables.DoorKeys, {Highlight, TextLabel})
          
             elseif v.Name == "ElectricalKeyObtain" then
@@ -4274,7 +5099,7 @@ for _, v in Rooms:GetDescendants() do
                         end)
 
                         if Toggles.GN_AnchorCode.Value then
-                            Notify("Anchor code solved.", "The code for Anchor "..NextAnchor.Sign.TextLabel.Text.." is '".. Solved .."'.", 10)
+                            Library:Notify("Anchor code solved.", "The code for Anchor "..NextAnchor.Sign.TextLabel.Text.." is '".. Solved .."'.", 10)
                         end
 
                         local Highlight, TextLabel = Esp(NextAnchor, NextAnchor.AnchorBase, "( ".. Solved .." ) Anchor "..NextAnchor.Sign.TextLabel.Text, Color3.new(0.5, 0.25, 1))
@@ -4301,7 +5126,7 @@ for _, v in Rooms:GetDescendants() do
                     table.clear(Anchors)
                 end
 
-            elseif v.Name == "GrumbleRig" then
+            elseif v.Name == "GrumbleRig" or v.Name == "QueenGrumble" or v.Name == "_QueenGrumble" then
      
                 local Highlight, TextLabel = Esp(v, v, "Grumble", Color3.new(0.85, 0.85, 0.85))
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
@@ -4368,7 +5193,6 @@ Options.VV_FieldOfView:OnChanged(function()
     end
 end)
 
--- Handle existing and future prompts
 Toggles.GA_INSTAINTERACT:OnChanged(function(value)
     for _, prompt in pairs(workspace.CurrentRooms:GetDescendants()) do
         if prompt:IsA("ProximityPrompt") then
@@ -4385,12 +5209,11 @@ end)
 workspace.CurrentRooms.DescendantAdded:Connect(function(child)
     if child:IsA("ProximityPrompt") then
         task.defer(function()
-            -- 1. Always ensure we have the backup first
             if not child:GetAttribute("Hold") then 
                 child:SetAttribute("Hold", child.HoldDuration)
-            end -- Close the Attribute check here!
+            end 
 
-            -- 2. Now apply the current toggle state
+            -- 
             if Toggles.GA_INSTAINTERACT.Value then
                 child.HoldDuration = 0
             else
@@ -4399,10 +5222,10 @@ workspace.CurrentRooms.DescendantAdded:Connect(function(child)
         end)
     end
 end)
--- [[ 2. THE NEW ROOM WATCHDOG ]]
--- This is what fixes the "Secondth time don't work" bug
 
--- [[ TRIGGER ON CHANGE ]]
+Options.ES_MaxSlope:OnChanged(function(value)
+    shared.Humanoid.MaxSlopeAngle = value
+end)
 
 Script.PromptTable = {
     GamePrompts = {},
@@ -4505,28 +5328,22 @@ Toggles.GA_PromptClip:OnChanged(function(value)
         end
     end
 
-    -- Run for current rooms
+    -- 
     for _, p in pairs(workspace.CurrentRooms:GetDescendants()) do apply(p) end
 
-    -- Catch new rooms
+    -- 
     if value then
         PromptConnection = workspace.CurrentRooms.DescendantAdded:Connect(apply)
     end
 end)
 
-local roomName = tostring(Script.LatestRoom.Value)
- if Toggles.GA_DoorReach.Value and workspace.CurrentRooms:FindFirstChild(roomName) then
-            local door = workspace.CurrentRooms[roomName]:FindFirstChild("Door")
+ if Toggles.GA_DoorReach.Value and workspace.CurrentRooms:FindFirstChild(Script.CurrentRoom) then
+            local door = workspace.CurrentRooms[Script.CurrentRoom + 1]:FindFirstChild("Door")
 
             if door and door:FindFirstChild("ClientOpen") then
                 door.ClientOpen:FireServer()
             end
         end
-
--- [[ RE-SYNC THE UI ]]
--- [[ 2. THE SLIDER LOGIC ]]
-
--- [[ 3. THE NEW ROOM WATCHDOG ]]
 
 Toggles.MM_Walkspeed:OnChanged(function()
     task.wait()
@@ -4774,7 +5591,7 @@ task.spawn(function()
                 if #Code == 5 then
                     if Toggles.GN_PadlockCode.Value then
 
-                        Notify("Padlock code found!", "The code is... '".. Code .."', this is also printed in console!", 10)
+                        Library:Notify("Padlock code found!", "The code is... '".. Code .."', this is also printed in console!", 10)
                         print("[LOLHAX] The padlock code is: ".. Code)
 
                         PadlockCode_N = Code
@@ -4843,7 +5660,25 @@ task.spawn(function()
                 v:Destroy()
             end
         end
-
+        if SeekPathConnection then 
+        SeekPathConnection:Disconnect() 
+        SeekPathConnection = nil 
+    end
+        if ElevatorConnection then 
+        ElevatorConnection:Disconnect() 
+        ElevatorConnection = nil 
+    end
+        if TracerConnection then
+        TracerConnection:Disconnect()
+        TracerConnection = nil
+    end
+        if ArrowConnection then
+        ArrowConnection:Disconnect()
+        ArrowConnection = nil
+    end
+        Fly:Disable()
+        RemoveAllTracers()
+        RemoveAllArrows()
         LocalPlayer.Character.HumanoidRootPart.CustomPhysicalProperties = OldAccel
 
         Main_Game.spring.Speed = 8
@@ -4857,7 +5692,6 @@ task.spawn(function()
     end)
  
     MenuProperties:AddLabel("Menu bind"):AddKeyPicker("MenuKeybind", { Default = "RightShift", NoUI = true, Text = "Menu keybind" })
-  if UIConfig.CurrentLib == "Obsidian" then
     MenuProperties:AddDropdown("DPIDropdown", {
 	Values = { "50%", "75%", "100%", "125%", "150%", "175%", "200%" },
 	Default = "100%",   
@@ -4871,7 +5705,6 @@ task.spawn(function()
 		Library:SetDPIScale(DPI)
 	end,
     })
-end
     Library.ShowCustomCursor = false
     MenuProperties:AddToggle("ShowCustomCursor", {
 	Text = "Custom Cursor",
@@ -4893,25 +5726,42 @@ end
         Values = { "Obsidian", "Linoria"},
         Default = getgenv().UseLib.CurrentLib,
         Callback = function(value)
-           getgenv().UseLib.CurrentLib = value
+           SwitchLib(value)
+        if LHXLoadFinish then
            Library:Notify({
-            Title = "UI Library",
+            Title = "[LOLHAX]",
             Description = "Restart lolhax to apply changes.",
             Time = 5
            })
-        end,
+        end
+    end,
+    })
+    MenuProperties:AddDropdown("NotifyStyle", {
+        Text = "Notification Style",
+        Values = { "Linoria", "Doors", "Obsidian", "Default" },
+        Default = getgenv().UseLib.CurrentNotify,
+        Callback = function(value)
+            SwitchNotify(value)
+        if LHXLoadFinish then
+            Library:Notify({
+                Title = "[LOLHAX]",
+                Description = "Notification Style Changed to: " .. value,
+                Time = 5
+            })
+        end
+    end,
     })
     MenuProperties:AddDivider()
     MenuProperties:AddButton("LX Discord Server", function()
      setclipboard("https://discord.gg/3xqFjM4R")
-     Notify("Copied to clipboard!", "El Pasco!")
+     Library:Notify("Copied to clipboard!", "El Pasco!")
      end)
     MenuProperties:AddToggle("keybindmenu", { Text = "Show Keybinds", Default = false })
     MenuProperties:AddLabel("if you find a bug, please report them to the bug report server.")
 
     MenuProperties:AddButton("Bug Report Server", function()
      setclipboard("https://discord.gg/9YgVsGBK")
-     Notify("Copied to clipboard!", "I have no idea!" )
+     Library:Notify("Copied to clipboard!", "I have no idea!" )
      end)
 
     Toggles.keybindmenu:OnChanged(function()
@@ -4925,7 +5775,15 @@ end
     ThemeManager:ApplyToTab(Tabs.Config)
 
     SaveManager:SetLibrary(Library)
+        if Script.IsHotel then
     SaveManager:SetFolder("lolhax/Doors3")
+    elseif Script.IsMines then
+        SaveManager:SetFolder("lolhax/Doors3/Mines")
+    elseif Script.IsBackdoor then
+        SaveManager:SetFolder("lolhax/Doors3/Backdoor")
+    elseif Script.IsRooms then
+        SaveManager:SetFolder("lolhax/Doors3/Rooms")
+    end
     SaveManager:BuildConfigSection(Tabs.Config)
     SaveManager:IgnoreThemeSettings()
     SaveManager:LoadAutoloadConfig()
@@ -4935,7 +5793,7 @@ end
     DebugStuff:AddToggle("DS_BSRPC", { Text = "Bloxstrap RPC", Default = true })
     DebugStuff:AddLabel("Floor: " .. game.ReplicatedStorage.GameData.Floor.Value)
     DebugStuff:AddButton("IdCheck1", function()
-     Notify("lolhax v3 | ID: " .. LocalPlayer.Name, "ID Request")
+     Library:Notify("lolhax v3 | ID: " .. LocalPlayer.Name, "ID Request")
      end)
     DebugStuff:AddButton("IdCheck2", function() 
      Notify(IdCheck, "Id Requested Given.", 2.5)
@@ -4951,6 +5809,10 @@ end
         updateRPC(Toggles.DS_BSRPC.Value)
     end)
 
+    Options.UILib:SetValue(config.CurrentLib)
+
     ErrorMessageOut:Disconnect()
-    Notify("Load successful.", "Loading finished in ".. string.format("%.2f", tick() - Loadtime) .." seconds.", 10 / 3, true)
+    LHXLoadFinish = true
+    Library:Notify("Load successful.", "Loading finished in ".. string.format("%.2f", tick() - Loadtime) .." seconds.", 10 / 3, true)
+    print("[LOLHAX]", "Loading finished in ".. string.format("%.2f", tick() - Loadtime) .." seconds.")
 end)
