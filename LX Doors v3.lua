@@ -66,13 +66,14 @@
 -- credits to lolhax developers for creating and developing lolhax still 
 -- lolhax v2 used to be number 1 doors script on the market it fell off
 local Loadtime = tick()
-local IdCheck = "lolhax v3 | ID: " .. game.Players.LocalPlayer.Name
 local Linoria = loadstring(game:HttpGet('https://raw.githubusercontent.com/mstudio45/LinoriaLib/main/Library.lua'))()
 local Obsidian = loadstring(game:HttpGet('https://raw.githubusercontent.com/deividcomsono/Obsidian/main/Library.lua'))()
 local HttpService = game:GetService("HttpService")
 local foldername = "lolhax"
 local filename = foldername .. "/LibraryConfig.json"
 local LHXLoadFinish = false
+
+if getgenv().UsingLOLHAX then print("[LOLHAX] Already Loaded!!!") return end
 
 if not isfolder(foldername) then
     makefolder(foldername)
@@ -536,7 +537,7 @@ ErrorMessageOut = game:GetService("LogService").MessageOut:Connect(function(Mess
         ErrorMessageOut:Disconnect()
 
         setclipboard("Executor: " .. identifyexecutor() .. "\n\n" .. tostring(Message))
-        Library:Notify(" Lolhax has errored while loading and will now unload. The error has been copied to your clipboard, please report this on the bug report server! the bug report server link is in the Config tab by the way! ", 4.5)
+        Library:Notify("Lolhax has errored while loading and will now unload. The error has been copied to your clipboard, please report this on the bug report server! the bug report server link is in the Config tab by the way! ", 4.5)
 
         task.delay(5, function()
             Library:Unload()
@@ -548,6 +549,7 @@ local friends = {}
 local LocalPlayer = game.Players.LocalPlayer
 local epiklistofpeople = {}
 local LXUser = {}
+getgenv().UsingLOLHAX = true
 local SendChat = game:GetService("TextChatService"):WaitForChild("TextChannels"):WaitForChild("RBXGeneral")
 -- detection thingy
 SendChat:SendAsync("", "Ineedtheepikrespond")
@@ -574,7 +576,8 @@ GeneralAutomation:AddToggle("GA_Noclip", { Text = "Noclip", Default = false, Too
 GeneralAutomation:AddDropdown("GA_AutoInteract_Options", { Values = { "Use Lockpick ( Doors )", "Use Lockpick ( Other )", "Ignore Light Sources", "Ignore Can-Die" }, Default = 0, Multi = true, Text = "Automatic Interact Options" })
 GeneralAutomation:AddSlider("GA_AutoInteract_Range", { Text = "Range Multiplier", Default = 1, Min = 1, Max = 2, Rounding = 1, Compact = false })
 GeneralAutomation:AddDivider()
-GeneralAutomation:AddToggle("GA_SkipElevatorBreaker", { Text = "Skips Elevator Breaker", Default = false, Tooltip = "Skips Door 100 Elevator Breaker", Disabled = not Script.IsHotel, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
+GeneralAutomation:AddToggle("GA_SkipElevatorBreaker", { Text = "Skip Elevator Breaker", Default = false, Tooltip = "Use this at the elevator breaker part only!", Disabled = not Script.IsHotel, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
+GeneralAutomation:AddDivider()
 GeneralAutomation:AddToggle("GA_NotifyOxygen", { Text = "Notify Oxygen", Default = false, Tooltip = "Notifies Oxygen"})
 GeneralAutomation:AddToggle("GA_FastClosetExt", { Text = "Fast Closet Exit", Default = true })
 GeneralAutomation:AddToggle("GA_EatCandies", { Text = "Automatic Candy Use", Default = false, }):AddKeyPicker("GA_EatCandies_K", { Default = "V", SyncToggleState = false, Mode = "Hold", Text = "Auto Use Candy", NoUI = false, Tooltip = "Will eat all candy in the player inventory when key is active." })
@@ -640,6 +643,13 @@ ExploitSelf:AddToggle("ES_AntiSeekArms", { Text = "Anti-Seek Arms", Default = fa
 ExploitSelf:AddToggle("ES_AutoRooms", { Text = "Auto Rooms", Defaut = false, Tooltip = 'bozo', "randomizer", Disabled =not Script.IsRooms, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 ExploitSelf:AddToggle("ES_AutoRoomsDebug", { Text = "Auto Rooms Debug", Default = nil, Tooltip = "turn this shit off please", Disabled =not Script.IsRooms, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 local ExploitTroll = Tabs.Exploit:AddLeftGroupbox("Trolling")
+if Script.IsMines then
+Tabs.Exploit:UpdateWarningBox({
+	Visible = true,
+	Title = "WARNING",
+	Text = "Using AntiRush/AntiAmbush may break seek minecart!"
+})
+end
 if game.ReplicatedStorage.GameData.Floor.Value == "Mines" then 
     ExploitTroll:AddButton({
         Text = "AntiRush/AntiAmbush",
@@ -712,6 +722,7 @@ ESPPlayers:AddToggle("ESPP_Enabled", { Text = "Enabled", Default = false })
 
 local ESPExtras = Tabs.ESP:AddLeftGroupbox("Extras")
 ESPExtras:AddToggle("ClosetESP", { Text = "Closet ESP", Default = true, Tooltip = "Highlights Closets."})
+ESPExtras:AddToggle("DoorNum", { Text = "Door Number", Default = false, Tooltip = "shows door number"})
 
 local ESPInteractables = Tabs.ESP:AddRightTabbox("Interactables")
 
@@ -758,7 +769,7 @@ Fly.FlyGyro.P = 9e4
 Fly.FlyGyro.MaxTorque = Vector3.one * 9e9
 
 -- 
-RunService.RenderStepped:Connect(function()
+local FlyConnection = RunService.RenderStepped:Connect(function()
     if not Fly.Enabled then return end
     
     local char = LocalPlayer.Character
@@ -1137,6 +1148,14 @@ ESPInteractables_Configurate:AddToggle("ESPI_C_Closet", { Text = "Closet", Defau
 :AddColorPicker("ESPI_C_Closet_F", { Default = Color3.new(1, 1, 1), Title = "Fill Color" })
 :AddColorPicker("ESPI_C_Closet_O", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
 
+ESPInteractables_Configurate:AddToggle("ESPI_C_Ladder", { Text = "Ladder", Default = false })
+:AddColorPicker("ESPI_C_Ladder_F", { Default = Color3.new(1, 1, 1), Title = "Fill Color" })
+:AddColorPicker("ESPI_C_Ladder_O", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
+
+ESPInteractables_Configurate:AddToggle("ESPI_C_WaterPumps", { Text = "Water Pumps", Default = false })
+:AddColorPicker("ESPI_C_WaterPumps_F", { Default = Color3.new(1, 1, 1), Title = "Fill Color" })
+:AddColorPicker("ESPI_C_WaterPumps_O", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
+
 local ESPSettings = Tabs.ESP:AddRightGroupbox("ESP Settings")
 ESPSettings:AddDropdown("ESPS_Font", { Values = { "Arial", "SourceSans", "Highway", "Fantasy", "Gotham", "DenkOne", "JosefinSans", "Nunito", "Oswald", "RobotoMono", "Sarpanch", "Ubuntu" }, Default = 9, Multi = false, Text = "Text Font" })
 ESPSettings:AddSlider("ESPS_FontSize", { Text = "Font Size", Default = 20, Min = 10, Max = 32, Rounding = 0, Compact = true })
@@ -1207,6 +1226,13 @@ MiscellaneousOther:AddButton({
     Text = "Play Again",
     Func = function()
         game.ReplicatedStorage.RemotesFolder.PlayAgain:FireServer()
+    end,
+    DoubleClick = true, 
+})
+MiscellaneousOther:AddButton({
+    Text = "Reset",
+    Func = function()
+        LocalPlayer.Character.Humanoid.Health = 0
     end,
     DoubleClick = true, 
 })
@@ -1597,7 +1623,7 @@ function FindLoot(Origin)
             if (Loot.Hitbox.Position - LocalPlayer.Character.Collision.Position).Magnitude < Loot.LootPrompt.MaxActivationDistance * Options.GA_AutoInteract_Range.Value then
                 fireproximityprompt(Loot.LootPrompt)
             end
-        elseif Loot.Parent.Parent.Name == "Bookshelves1" and Loot.Parent.Name == "Modular_Modular_Bookshelf" and Loot.Name == "LiveHintBook" then
+        elseif Loot.Name == "LiveHintBook" or Loot.Name == "LibraryHintPaper" then
 
             if (Loot.Hitbox.Position - LocalPlayer.Character.Collision.Position).Magnitude < Loot.LootPrompt.MaxActivationDistance * Options.GA_AutoInteract_Range.Value then
                 fireproximityprompt(Loot.LiveHintBook.ModulePrompt)
@@ -2754,7 +2780,7 @@ local Connections = {
                             end
                         end
                     end
-                    
+
                     elseif Root.Name == "TimerLever" and not Root.ActivateEventPrompt:GetAttribute("Interactions") then
 
                         if (Root.Hitbox.Position - LocalPlayer.Character.Collision.Position).Magnitude < Root.ActivateEventPrompt.MaxActivationDistance * Options.GA_AutoInteract_Range.Value then
@@ -2994,7 +3020,7 @@ local Connections = {
                 local Adornee
                 if RoomID and not Script.IsHotel then
                     Adornee = v.Door
-                elseif LibrarySpecial[RoomID] or GreenHouse[RoomID] or v.Name == "ElevatorCar" then
+                elseif LibrarySpecial[RoomID] or GreenHouse[RoomID] or v.Parent.Name == "ElevatorCar" then
                     Adornee = v.Door
                 else
                     Adornee = ManifestMspaintFrame(v.Door)
@@ -3014,10 +3040,12 @@ local Connections = {
                         	Adornee = v
                         end
                     end
-
+                if Toggles.DoorNum.Value then
                     local Highlight, TextLabel = Esp(Adornee, Adornee, "Door " .. RoomID, Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value)
+                else
+                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door", Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value)
                     table.insert(EspTable.Interactables.Doors, {Highlight, TextLabel})
-                    
+                end
 
                     task.delay(1, function()
                         if v:GetAttribute("Opened") then
@@ -3052,13 +3080,30 @@ local Connections = {
                 v.Lever.Sound.Played:Once(function()
                     RemoveEspSmooth(v)
                 end)
+            elseif v.Name == "MinesGateButton" then
+
+                v:WaitForChild("Button", 9e9)
+
+                local Highlight, TextLabel = Esp(v, v, "Gate Button", Options.ESPI_C_GateLevers_F.Value, Options.ESPI_C_GateLevers_O.Value)
+                 table.insert(EspTable.Interactables, {Highlight, TextLabel})
+
+                v.Button.SoundWork.Played:Once(function()
+                    RemoveEspSmooth(v)
+                end)
+
             elseif v.Name == "Ladder" then
+                if not Toggles.EB_TheMinesAnticheatBypass.Value then return end
+                
+                if Script.Bypassed then return end
 
-                local Highlight, TextLabel = Esp(v, v, "Ladder", Color3.new(1, 1, 1))
+                local Highlight, TextLabel = Esp(v, v, "Ladder", Options.ESPI_C_Ladder_F.Value, Options.ESPI_C_Ladder_O.Value)
+                table.insert(EspTable.Interactables, {Highlight, TextLabel})
 
-            elseif v.Name == "Wheel" then
+            elseif v.Name == "WaterPump" then
 
-                local Highlight, TextLabel = Esp(v, v, "Water Pump", Color3.new(1, 1, 1))
+                v.WaitForChild("Wheel", 9e9)
+                
+                local Highlight, TextLabel = Esp(v.Wheel, v.Wheel, "Water Pump", Options.ESPI_C_WaterPumps_F.Value, Options.ESPI_C_WaterPumps_O.Value)
         
             elseif v.Name == "KeyObtain" then
 
@@ -3068,7 +3113,11 @@ local Connections = {
                     local Highlight, TextLabel = Esp(v, v, "Door Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value)
                     table.insert(EspTable.Interactables.DoorKeys, {Highlight, TextLabel})
                 end)
-                    
+
+            elseif v.Name == "ElectricalKeyObtain" then
+
+                local Highlight, TextLabel = Esp(v, v, "Electric Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value)
+                table.insert(EspTable.Interactables.DoorKeys, {Highlight, TextLabel})
 
             elseif v.Name == "GoldPile" then
                 v:WaitForChild("Hitbox", 9e9)
@@ -3076,7 +3125,7 @@ local Connections = {
                 local Highlight, TextLabel = Esp(v, v, "Gold Pile [ "..v:GetAttribute("GoldValue").." ]", Options.ESPI_C_GoldPiles_F.Value, Options.ESPI_C_GoldPiles_O.Value)
                 table.insert(EspTable.Interactables.GoldPiles, {Highlight, TextLabel})
  
-            elseif v.Name == "LeverForGate" and not v:GetAttribute("Interactions") then
+            elseif v.Name == "LeverForGate" then
 
                 v:WaitForChild("Main", 9e9)
 
@@ -3820,7 +3869,7 @@ CurrentRooms.DescendantAdded:Connect(function(v)
     end)
 end)
 
-RunService.Heartbeat:Connect(function()
+local ClosetConnection = RunService.Heartbeat:Connect(function()
     local current = Script.CurrentRoom or 0
 
     for v, data in pairs(ActiveClosets) do
@@ -4521,7 +4570,7 @@ Toggles.GA_SkipElevatorBreaker:OnChanged(function(value)
         -- ?
         local function attemptSkip(room)
     task.spawn(function()
-        Script.Functions.Minecart.debug("[EBF] Monitoring room: " .. room.Name)
+        Script.Functions.Minecart.debug("[eb] Monitoring room: " .. room.Name)
         
         local breaker = nil
         --  its lagging me dumbass
@@ -4958,7 +5007,7 @@ for _, v in Rooms:GetDescendants() do
                  }
                 
                  local Adornee
-                if GreenHouseDoors[RoomID] or LibraryRoom[RoomID] or v.Name == "ElevatorCar" then
+                if GreenHouseDoors[RoomID] or LibraryRoom[RoomID] or v.Parent.Name == "ElevatorCar" then
                     Adornee = v.Door
                 elseif not Script.IsHotel then
                     Adornee = v.Door
@@ -4979,10 +5028,13 @@ for _, v in Rooms:GetDescendants() do
                         	Adornee = v
                         end
                     end
-
+                if Toggles.DoorNum.Value then
                     local Highlight, TextLabel = Esp(Adornee, Adornee, "Door " .. RoomID, Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value)
+                else
+                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door", Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value)
                     table.insert(EspTable.Interactables.Doors, {Highlight, TextLabel})
-
+                end
+                
                     v.AttributeChanged:Once(function()
                         RemoveEspSmooth(Adornee)
                     end)
@@ -5004,6 +5056,16 @@ for _, v in Rooms:GetDescendants() do
                 v.Lever.Sound.Played:Once(function()
                     RemoveEspSmooth(v)
                 end)
+                
+            elseif v.Name == "MinesGateButton" then
+
+                local Highlight, TextLabel = Esp(v, v, "Gate Button", Options.ESPI_C_GateLevers_F.Value, Options.ESPI_C_GateLevers_O.Value)
+                table.insert(EspTable.Interactables.Generators, {Highlight, TextLabel})
+
+                v.SoundWork.Played:Once(function()
+                    RemoveeEspSmooth(v)
+                end)
+                
             elseif v.Name == "KeyObtain" then
 
                 local Highlight, TextLabel = Esp(v, v, "Door Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value)
@@ -5676,9 +5738,19 @@ task.spawn(function()
         ArrowConnection:Disconnect()
         ArrowConnection = nil
     end
+        if ClosetConnection then
+        ClosetConnection:Disconnect()
+        ClosetConnection = nil
+    end
+        if FlyConnection then
+        FlyConnection:Disconnect()
+        FlyConnection = nil
+    end
         Fly:Disable()
         RemoveAllTracers()
         RemoveAllArrows()
+        getgenv().UsingLOLHAX = false
+        LocalPlayer.Character:SetAttribute("CanJump", false)
         LocalPlayer.Character.HumanoidRootPart.CustomPhysicalProperties = OldAccel
 
         Main_Game.spring.Speed = 8
@@ -5792,15 +5864,6 @@ task.spawn(function()
     DebugStuff:AddToggle("DS_Debug", { Text = "Enable Debug Mode", Default = false, })
     DebugStuff:AddToggle("DS_BSRPC", { Text = "Bloxstrap RPC", Default = true })
     DebugStuff:AddLabel("Floor: " .. game.ReplicatedStorage.GameData.Floor.Value)
-    DebugStuff:AddButton("IdCheck1", function()
-     Library:Notify("lolhax v3 | ID: " .. LocalPlayer.Name, "ID Request")
-     end)
-    DebugStuff:AddButton("IdCheck2", function() 
-     Notify(IdCheck, "Id Requested Given.", 2.5)
-    end)
-    DebugStuff:AddButton("IdCheck3", function()
-    Notify(IdCheck, game.ReplicatedStorage.GameData.Floor.value)
-    end)
 
     local RPCRoomChange = game.ReplicatedStorage.GameData.LatestRoom:GetPropertyChangedSignal("Value"):Connect(function() updateRPC(Toggles.DS_BSRPC.Value) end)
     table.insert(Connections, RPCRoomChange)
@@ -5810,6 +5873,7 @@ task.spawn(function()
     end)
 
     Options.UILib:SetValue(config.CurrentLib)
+    Options.NotifyStyle:SetValue(config.CurrentNotify)
 
     ErrorMessageOut:Disconnect()
     LHXLoadFinish = true
