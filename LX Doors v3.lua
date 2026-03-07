@@ -136,7 +136,7 @@ end
 local function SwitchNotify(notifyName)
     -- 1. The Startup Gate (using your specific variable)
     if not LHXLoadFinish then 
-        print("ignoring: " ..  notifyName .. "sinc, its a config overwtie")
+        print("ignoring: " ..   notifyName ..  " sinc, its a config overwtie")
         return 
     end
 
@@ -629,6 +629,7 @@ task.spawn(function()
 end)
 local ExploitSelf = Tabs.Exploit:AddLeftGroupbox("Self")
 ExploitSelf:AddToggle("ES_AlwaysJump", { Text = "Always Enable Jumping", Default = false, Tooltip = "Enables jumping at all times." })
+ExploitSelf:AddToggle("ES_AlwaysSlide", { Text = "Always Enable Sliding", Deafult = false, Tooltip = "Enables sliding at all times."})
 ExploitSelf:AddDivider()
 ExploitSelf:AddToggle("ES_HASTECLOCK", { Text = "Haste Clock", Default = false, ToolTip = "Shows The Backdoor timer.", Disabled = not Script.IsBackdoor, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 ExploitSelf:AddToggle("ES_AntiGloombat", { Text = "Anti-Gloombat Egg", Default = false, Tooltip = "Disallows touching on any Gloombat egg hitbox.", Disabled = not Script.IsMines, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
@@ -1107,7 +1108,7 @@ ESPInteractables_Configurate:AddToggle("ESPI_C_DoorKeys", { Text = "Door Key", D
 :AddColorPicker("ESPI_C_DoorKeys_F", { Default = Color3.new(1, 1, 1), Title = "Fill Color" })
 :AddColorPicker("ESPI_C_DoorKeys_O", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
 
-ESPInteractables_Configurate:AddToggle("ESPI_C_GoldPiles", { Text = "Door", Default = false })
+ESPInteractables_Configurate:AddToggle("ESPI_C_GoldPiles", { Text = "Gold Piles", Default = false })
 :AddColorPicker("ESPI_C_GoldPiles_F", { Default = Color3.new(1, 1, 1), Title = "Fill Color" })
 :AddColorPicker("ESPI_C_GoldPiles_O", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
 
@@ -1143,7 +1144,6 @@ ESPInteractables_Configurate:AddToggle("ESPI_C_MiscPickups", { Text = "Misc Item
 :AddColorPicker("ESPI_C_MiscPickups_F", { Default = Color3.new(1, 1, 1), Title = "Fill Color" })
 :AddColorPicker("ESPI_C_MiscPickups_O", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
 
-
 ESPInteractables_Configurate:AddToggle("ESPI_C_Closet", { Text = "Closet", Default = false })
 :AddColorPicker("ESPI_C_Closet_F", { Default = Color3.new(1, 1, 1), Title = "Fill Color" })
 :AddColorPicker("ESPI_C_Closet_O", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
@@ -1155,6 +1155,14 @@ ESPInteractables_Configurate:AddToggle("ESPI_C_Ladder", { Text = "Ladder", Defau
 ESPInteractables_Configurate:AddToggle("ESPI_C_WaterPumps", { Text = "Water Pumps", Default = false })
 :AddColorPicker("ESPI_C_WaterPumps_F", { Default = Color3.new(1, 1, 1), Title = "Fill Color" })
 :AddColorPicker("ESPI_C_WaterPumps_O", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
+
+ESPInteractables_Configurate:AddToggle("ESPI_C_Toolsheds", { Text = "Toolsheds", Default = false })
+:AddColorPicker("ESPI_C_Toolsheds_F", { Default = Color3.new(1, 1, 1), Title = "Fill Color" })
+:AddColorPicker("ESPI_C_Toolsheds_O", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
+
+ESPInteractables_Configurate:AddToggle("ESPI_C_Chests", { Text = "Chests", Default = false })
+:AddColorPicker("ESPI_C_Chests_F", { Default = Color3.new(1, 1, 1), Title = "Fill Color" })
+:AddColorPicker("ESPI_C_Chests_O", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
 
 local ESPSettings = Tabs.ESP:AddRightGroupbox("ESP Settings")
 ESPSettings:AddDropdown("ESPS_Font", { Values = { "Arial", "SourceSans", "Highway", "Fantasy", "Gotham", "DenkOne", "JosefinSans", "Nunito", "Oswald", "RobotoMono", "Sarpanch", "Ubuntu" }, Default = 9, Multi = false, Text = "Text Font" })
@@ -2901,6 +2909,14 @@ local Connections = {
         end
     end),
 
+    LocalPlayer.Character:GetAttributeChangedSignal("CanSlide"):Connect(function()
+        LocalPlayer.Character:SetAttribute("CanSlide", Toggles.ES_AlwaysSlide.Value or CanJump)     
+
+        if not Toggles.ES_AlwaysSlide.Value then
+            CanJump = LocalPlayer.Character:GetAttribute("CanSlide")
+        end
+    end),
+
     LocalPlayer.CharacterAdded:Connect(function(v)
         v:WaitForChild("Collision", 9e9)
 
@@ -3080,6 +3096,28 @@ local Connections = {
                 v.Lever.Sound.Played:Once(function()
                     RemoveEspSmooth(v)
                 end)
+                
+            elseif v.Name == "Toolshed_Small" then
+
+                local Highlight, TextLabel = Esp(v, v, "Toolshed", Options.ESPI_C_Toolsheds_F.Value, Options.ESPI_C_Toolsheds_O.Value)
+                table.insert(EspTable.Interactables, {Highlight, TextLabel})
+                
+                v.Main.Open.Played:Once(function()
+                    RemoveEspSmooth(v)
+                end)
+
+            elseif v.Name == "ChestBox" or v.Name == "ChestBoxLocked" then
+                
+                local Locked = v:GetAttribute("Locked")
+                local State = if Locked then "[LOCKED]" else ""
+
+                local Highlight, TextLabel = Esp(v, v, "Chest " .. State, Options.ESPI_C_Chests_F.Value, Options.ESPI_C_Chests_O.Value)
+                table.insert(EspTable.Interactables, {Highlight, TextLabel})
+
+                v.Main.Open.Played:Once(function()
+                    RemoveEspSmooth(v)
+                end)
+
             elseif v.Name == "MinesGateButton" then
 
                 v:WaitForChild("Button", 9e9)
@@ -3292,12 +3330,14 @@ local Connections = {
 
                     table.clear(Anchors)
                 end
-            elseif v.Name == "GrumbleRig" or v.Name == "QueenGrumble" or v.Name == "_QueenGrumble" then
+                
+            elseif v.Name == "GrumbleRig" or v.Name == "QueenGrumble" or v.Name == "_QueenGrumbleNest" or v.Name == "_QueenGrumble" then
                 v:WaitForChild("Root", 9e9)
                 task.wait(1)
 
                 local Highlight, TextLabel = Esp(v, v, "Grumble", Color3.new(0.85, 0.85, 0.85))
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
+
             elseif v.Name == "GloomEgg" then
                 v:WaitForChild("Egg", 9e9)
 
@@ -4687,7 +4727,7 @@ function Script.Functions.GetNearestAssetWithCondition(condition: () -> ())
 end
 
     Connect:GiveSignal(RunService.Heartbeat:Connect(function()
-        if not Toggles.ES_AutoRooms then return end
+        if not Toggles.ES_AutoRooms.Value then return end
 
         local entity = (workspace:FindFirstChild("A60") or workspace:FindFirstChild("A120"))
         local isEntitySpawned = (entity and entity.PrimaryPart.Position.Y > -10)
@@ -5057,13 +5097,34 @@ for _, v in Rooms:GetDescendants() do
                     RemoveEspSmooth(v)
                 end)
                 
+            elseif v.Name == "Toolshed_Small" then
+
+                local Highlight, TextLabel = Esp(v, v, "Toolshed", Options.ESPI_C_Toolsheds_F.Value, Options.ESPI_C_Toolsheds_O.Value)
+                table.insert(EspTable.Interactables, {Highlight, TextLabel})
+
+                v.Main.Open.Played:Once(function()
+                    RemoveEspSmooth(v)
+                end)
+
+            elseif v.Name == "ChestBox" or v.Name == "ChestBoxLocked" then
+
+                local Locked = v:GetAttribute("Locked")
+                local State = if Locked then "[LOCKED]" else "" 
+
+                local Highlight, TextLabel = Esp(v, v, "Chest " .. State, Options.ESPI_C_Chests_F.Value, Options.ESPI_C_Chests_O.Value)
+                table.insert(EspTable.Interactables, {Highlight, TextLabel})
+
+                v.Main.Open.Played:Once(function()
+                    RemoveEspSmooth(v)
+                end)
+                
             elseif v.Name == "MinesGateButton" then
 
                 local Highlight, TextLabel = Esp(v, v, "Gate Button", Options.ESPI_C_GateLevers_F.Value, Options.ESPI_C_GateLevers_O.Value)
-                table.insert(EspTable.Interactables.Generators, {Highlight, TextLabel})
+                table.insert(EspTable.Interactables, {Highlight, TextLabel})
 
-                v.SoundWork.Played:Once(function()
-                    RemoveeEspSmooth(v)
+                v.Button.SoundWork.Played:Once(function()
+                    RemoveEspSmooth(v)
                 end)
                 
             elseif v.Name == "KeyObtain" then
@@ -5188,7 +5249,7 @@ for _, v in Rooms:GetDescendants() do
                     table.clear(Anchors)
                 end
 
-            elseif v.Name == "GrumbleRig" or v.Name == "QueenGrumble" or v.Name == "_QueenGrumble" then
+            elseif v.Name == "GrumbleRig" or v.Name == "QueenGrumble" or v.Name == "_QueenGrumbleNest" or v.Name == "_QueenGrumble" then
      
                 local Highlight, TextLabel = Esp(v, v, "Grumble", Color3.new(0.85, 0.85, 0.85))
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
@@ -5223,6 +5284,14 @@ Toggles.ES_AlwaysJump:OnChanged(function()
 
     if not Toggles.ES_AlwaysJump.Value then
         CanJump = LocalPlayer.Character:GetAttribute("CanJump")
+    end
+end)
+
+Toggles.ES_AlwaysSlide:OnChanged(function()
+    LocalPlayer.Character:SetAttribute("CanSlide", Toggles.ES_AlwaysSlide.Value or CanSlide)    
+
+    if not Toggles.ES_AlwaysSlide.Value then
+        CanSlide = LocalPlayer.Character:GetAttribute("CanSlide")
     end
 end)
 
@@ -5750,7 +5819,11 @@ task.spawn(function()
         RemoveAllTracers()
         RemoveAllArrows()
         getgenv().UsingLOLHAX = false
+        game.ReplicatedStorage.RemotesFolder.ClimbLadder:FireServer()
+        Script.IsBypassed = false
         LocalPlayer.Character:SetAttribute("CanJump", false)
+        LocalPlayer.Character:SetAttribute("CanSlide", false)
+        print("[LOLHAX] Unloaded!!")
         LocalPlayer.Character.HumanoidRootPart.CustomPhysicalProperties = OldAccel
 
         Main_Game.spring.Speed = 8
