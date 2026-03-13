@@ -1094,7 +1094,8 @@ local ESPInteractables_Configurate = ESPInteractables:AddTab("Configurate")
 ESPInteractables_Configurate:AddDropdown("ESPI_C_Style", {
     Text = "ESP Style",
     Values = { "Classic", "New", "Custom" }, -- what
-    Default = "Custom"
+    Default = nil,
+    AllowNull = true
 })
 
 local CustomColors = {}
