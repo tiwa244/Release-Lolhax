@@ -2002,7 +2002,7 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
     TextLabel.TextStrokeTransparency = 0
     TextLabel.Font = Enum.Font[Options.ESPS_Font.Value]
     TextLabel.TextSize = Options.ESPS_FontSize.Value
-    TextLabel.TextColor3 = TextLabelColor
+    TextLabel.TextColor3 = TextLabelColor or Color
     TextLabel.BackgroundTransparency = 1
 
     Highlight.Adornee = Parent
