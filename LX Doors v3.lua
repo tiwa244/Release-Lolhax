@@ -10,7 +10,7 @@
              ░░░▒▒▒░░▒░░░░░░░░░░░░░░░░░░░░░░░░░░░▒░░░░░
            ░▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒░░░
          ▒▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒░░░
-        ▒▒░░░░░░░░░░░░░░░░░░░▒░░░░░░▒░░░░░░░▓██▒░░░░░░░░▒░░░
+        ▒▒/░░░░░░░░░░░░░░░░░░░▒░░░░░░▒░░░░░░░▓██▒░░░░░░░░▒░░░
        ▒░░░░░░░░░░▒███████▒░░░▒░░░░▒░░░░░███████▓▓░░░░░░░▒░░░
      ▒▒░▒░░░░░░░░███████▓▓▓▓░░▒░░░░░░░░▓███████▓▓▓█░░░░░░▒░░░░
      ▒░▒▒░░░░░░░▓████████▓▓█░░▒░░░░░░░░████████████░░░░░░▒░░░░
@@ -60,6 +60,7 @@
 -- r\\\\///\\||/\/\/\ also dont contact not_xcode if u wanna do a fork just do it cuz i cant accetp mesagwes 
 -- credits2 (placeholder) 
 -- FAH
+-- tbh idk
 -- credits2 upio for creating mspaint (yes hes the goddamn owner) and credits to mspaint devs for making mspaint its awesome 
 -- mspaint is awesome btw
 -- vynixius is an awesome doors script
@@ -176,7 +177,7 @@ if UIConfig.CurrentLib == "Linoria" then
     SaveManager =  loadstring(game:HttpGet(Repository .. "addons/SaveManager.lua"))()
     
     Window = Library:CreateWindow({ 
-        Title = " LOLHAX | ".. game.Players.LocalPlayer.Name, 
+        Title = "lolhax v3 | ID: " .. game.Players.LocalPlayer.Name,
         Center = true, 
         AutoShow = true, 
         TabPadding = 3,     
@@ -432,23 +433,12 @@ Script.MainGame = Script.MainUI:WaitForChild("Initiator"):WaitForChild("Main_Gam
 Script.FloorReplicated = game.ReplicatedStorage.FloorReplicated
 Script.IsMines = Script.FloorVal.Value == "Mines"
 Script.IsBackdoor = Script.FloorVal.Value == "Backdoor"
+Script.IsRetro = Script.FloorVal.Value == "Retro"
 Script.IsRooms = Script.FloorVal.Value == "Rooms"
 Script.IsHotel = Script.FloorVal.Value == "Hotel"
+Script.IsBattle = Script.FloorVal.Value == "Party"
 Script.Bypassed = false
 Script.LatestRoom = Script.GameData:WaitForChild("LatestRoom")
-
-Script.DisallowedDoors = {
-    "50",
-    "90",
-    "91",
-    "92",
-    "93",
-    "94",
-    "95",
-    "96",
-    "97",
-    "98"
-}
 
 Script.CutsceneExclude = {
     "FigureHotelChase",
@@ -537,10 +527,11 @@ ErrorMessageOut = game:GetService("LogService").MessageOut:Connect(function(Mess
         ErrorMessageOut:Disconnect()
 
         setclipboard("Executor: " .. identifyexecutor() .. "\n\n" .. tostring(Message))
-        Library:Notify("Lolhax has errored while loading and will now unload. The error has been copied to your clipboard, please report this on the bug report server! the bug report server link is in the Config tab by the way! ", 4.5)
+        Library:Notify("Lolhax has errored while loading and will now unload. The error has been copied to your clipboard, please report this to the bug report server!")
 
         task.delay(5, function()
             Library:Unload()
+            getgenv().UsingLOLHAX = nil
         end)
     end
 
@@ -568,8 +559,8 @@ end)
 -- UI vvv
 
 local GeneralAutomation = Tabs.General:AddLeftGroupbox("Automation")
-GeneralAutomation:AddToggle("GA_AutoInteract", { Text = "Automatic Interact", Default = false, }):AddKeyPicker("GA_AutoInteract_K", { Default = "R", SyncToggleState = false, Mode = "Hold", Text = "Auto Interact", NoUI = false, Tooltip = "Will activate any nearby interactables when key is active." })
-GeneralAutomation:AddSlider("GA_FlySpeed", { Text = "Fly Speed", Default = 15, Min = 0, Max = 50, Tooltip = "Flying Speed.", Rounding = 2, Compact = true})
+GeneralAutomation:AddToggle("GA_AutoInteract", { Text = "Automatic Interact", Default = false, }):AddKeyPicker("GA_AutoInteract_K", { Default = "R", SyncToggleState = false, Mode = "Toggle", Text = "Auto Interact", NoUI = false, Tooltip = "Will activate any nearby interactables when key is active." })
+GeneralAutomation:AddSlider("GA_FlySpeed", { Text = "Fly Speed", Default = 15, Min = 0, Max = 75, Tooltip = "Flying Speed.", Rounding = 2, Compact = true})
 GeneralAutomation:AddDivider()
 GeneralAutomation:AddToggle("GA_Fly", { Text = "Fly", Default = false, Tooltip = "Enables flying in-game."}):AddKeyPicker("GA_FlyingF", { Default = "F", SyncToggleState = true, Mode = "Toggle", Text = "Fly", NoUI = false, Tooltip = "Enables Flying" })
 GeneralAutomation:AddToggle("GA_Noclip", { Text = "Noclip", Default = false, Tooltip = "Disables Collision BETA."}):AddKeyPicker("GA_NN", { Default = "N", SyncToggleState = true, Mode = "Toggle", Text = "Noclip", NoUI = false, Tooltip = "Disables Collision." })
@@ -631,14 +622,14 @@ local ExploitSelf = Tabs.Exploit:AddLeftGroupbox("Self")
 ExploitSelf:AddToggle("ES_AlwaysJump", { Text = "Always Enable Jumping", Default = false, Tooltip = "Enables jumping at all times." })
 ExploitSelf:AddToggle("ES_AlwaysSlide", { Text = "Always Enable Sliding", Deafult = false, Tooltip = "Enables sliding at all times."})
 ExploitSelf:AddDivider()
-ExploitSelf:AddToggle("ES_HASTECLOCK", { Text = "Haste Clock", Default = false, ToolTip = "Shows The Backdoor timer.", Disabled = not Script.IsBackdoor, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
-ExploitSelf:AddToggle("ES_AntiGloombat", { Text = "Anti-Gloombat Egg", Default = false, Tooltip = "Disallows touching on any Gloombat egg hitbox.", Disabled = not Script.IsMines, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
-ExploitSelf:AddToggle("ES_AntiGiggle", { Text = "Anti-Giggle", Default = false, Tooltip = "Disallows touching on the entity 'Giggle' hitbox.", Disabled = not Script.IsMines, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
+ExploitSelf:AddToggle("ES_HASTECLOCK", { Text = "Haste Clock", Default = false, ToolTip = "Shows The Backdoor timer.", Disabled = false, Visible = game.ReplicatedStorage.LiveModifiers:FindFirstChild("BackdoorHaste") or Script.IsBackdoor, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
+ExploitSelf:AddToggle("ES_AntiGloombat", { Text = "Anti-Gloombat Egg", Default = false, Tooltip = "Disallows touching on any Gloombat egg hitbox.", Disabled = false, Visible = game.ReplicatedStorage.LiveModifiers:FindFirstChild("Gloombat") or Script.IsMines, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
+ExploitSelf:AddToggle("ES_AntiGiggle", { Text = "Anti-Giggle", Default = false, Tooltip = "Disallows touching on the entity 'Giggle' hitbox.", Disabled = false, Visible = game.ReplicatedStorage.LiveModifiers:FindFirstChild("GiggleMore") or game.ReplicatedStorage.LiveModifiers:FindFirstChild("Giggle") or Script.IsMines, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 ExploitSelf:AddToggle("ES_AntiSnare", { Text = "Anti-Snare", Default = false, Tooltip = "Disallows touching on the entity 'Snare'.", Disabled = not Script.IsHotel, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 ExploitSelf:AddToggle("ES_AntiDupe", { Text = "Anti-Dupe", Default = false, Tooltip = "Disallows touching on any entity 'Dupe' fake doors." })
 ExploitSelf:AddSlider("ES_MaxSlope", { Text = "Max Floor Angle", Default = 45, Min = 0, Max = 90, Rounding = 0 })
 ExploitSelf:AddToggle("ES_AntiEyes", { Text = "Anti-Eyes", Default = false, Tooltip = "Forces character to look down from the entity 'Eyes'." })
-ExploitSelf:AddToggle("ES_AntiLookman", { Text = "Anti-Lookman", Default = false, Tooltip = "Forces character to look down from the entity 'Lookman'.", Disabled = not Script.IsBackdoor, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
+ExploitSelf:AddToggle("ES_AntiLookman", { Text = "Anti-Lookman", Default = false, Tooltip = "Forces character to look down from the entity 'Lookman'.", Disabled = false, Visible = game.ReplicatedStorage.LiveModifiers:FindFirstChild("BackdoorLookman") or Script.IsBackdoor, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 ExploitSelf:AddToggle("ES_AntiChanedlier", { Text = "Anti-Chandelier", Default = false, Tooltip = "Disallows touching on any fallen chandeliers during the seek chase.", Disabled = not Script.IsHotel, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 ExploitSelf:AddToggle("ES_AntiSeekArms", { Text = "Anti-Seek Arms", Default = false, Tooltip = "Disallows touching on any seek arms during the seek chase.", Disabled = not Script.IsHotel, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 ExploitSelf:AddToggle("ES_AutoRooms", { Text = "Auto Rooms", Defaut = false, Tooltip = 'bozo', "randomizer", Disabled =not Script.IsRooms, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
@@ -691,7 +682,7 @@ ExploitBypass:AddToggle("EB_ACManipulate", { Text = "Anti-Cheat Manipulation", D
 ExploitBypass:AddToggle("EB_TheMinesAnticheatBypass", { Text = "Anticheat Bypass", Default = false, Tooltip = "Disables Anticheat in Mines.", Disabled = not Script.IsMines, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })  
 
 local ExploitRemovals = Tabs.Exploit:AddRightGroupbox("Removals")
-ExploitRemovals:AddToggle("ER_RemoveSeek", { Text = "Remove Seek Chase", Default = false, Tooltip = "Completely disables the entity 'Seek'.", Disabled = true, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
+ExploitRemovals:AddToggle("ER_RemoveSeek", { Text = "Remove Seek Chase", Default = false, Tooltip = "Completely disables the entity 'Seek'.", Disabled = not Script.IsRetro, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 ExploitRemovals:AddToggle("ER_NoScreech", { Text = "No Screech", Default = false, Tooltip = "Completely disables the entity 'Screech'." })
 ExploitRemovals:AddToggle("ER_NoA90", { Text = "No A-90", Default = false, Tooltip = "Completely disables the entity 'A-90'.", Disabled = not Script.IsRooms, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 ExploitRemovals:AddToggle("ER_NoShade", { Text = "No Halt", Default = false, Tooltip = "Completely disables the entity 'Halt'." })
@@ -728,12 +719,12 @@ ESPExtras:AddToggle("DoorNum", { Text = "Door Number", Default = false, Tooltip 
 local ESPInteractables = Tabs.ESP:AddRightTabbox("Interactables")
 
 local ESPInteractables_Main = ESPInteractables:AddTab("Main")
-ESPInteractables_Main:AddToggle("ESPI_M_Enabled", { Text = "Enabled", Default = false })
+ESPInteractables_Main:AddToggle("ESPI_M_Enabled", { Text = "Enabled", Default = true })
 ESPInteractables_Main:AddDivider()
 ESPInteractables_Main:AddToggle("ESPI_M_Name", { Text = "Name", Default = false })
 ESPInteractables_Main:AddToggle("ESPI_M_Distance", { Text = "Distance", Default = false })
 ESPInteractables_Main:AddToggle("ESPI_M_Fill", { Text = "Highlight Fill", Default = false })
-ESPInteractables_Main:AddToggle("ESPI_M_Enabled", { Text = "Highlight Outline", Default = false })
+ESPInteractables_Main:AddToggle("ESPI_HO_Enabled", { Text = "Highlight Outline", Default = false })
 ESPInteractables_Main:AddToggle("ESPI_M_Tracers", { Text = "Tracers", Default = false, Tooltip = "Tracers."})
 ESPInteractables_Main:AddDropdown("ESPI_V_TracerPos", {
     Text = "Tracer Position",
@@ -1100,70 +1091,91 @@ end)
 
 -- BRO IM SO SORRY LINORIA MADE ME DO IT THIS WAY PLEASE LORD FORGIVE ME
 local ESPInteractables_Configurate = ESPInteractables:AddTab("Configurate")
-ESPInteractables_Configurate:AddToggle("ESPI_C_Doors", { Text = "Door", Default = false })
-:AddColorPicker("ESPI_C_Doors_F", { Default = Color3.new(1, 1, 1), Title = "Fill Color" })
-:AddColorPicker("ESPI_C_Doors_O", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
+ESPInteractables_Configurate:AddDropdown("ESPI_C_Style", {
+    Text = "ESP Style",
+    Values = { "Classic", "New", "Custom" }, -- what
+    Default = "Custom"
+})
 
-ESPInteractables_Configurate:AddToggle("ESPI_C_DoorKeys", { Text = "Door Key", Default = false })
-:AddColorPicker("ESPI_C_DoorKeys_F", { Default = Color3.new(1, 1, 1), Title = "Fill Color" })
-:AddColorPicker("ESPI_C_DoorKeys_O", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
+local CustomColors = {}
+local Items = {
+    {Tag="Doors", Text="Door", Color=Color3.fromRGB(0,255,150), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
+    {Tag="DoorKeys", Text="Door Key", Color=Color3.fromRGB(255,174,0), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
+    {Tag="GoldPiles", Text="Gold Piles", Color=Color3.new(1,1,1), NoText=false, Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
+    {Tag="GeneratorFuses", Text="Generator Fuse", Color=Color3.fromRGB(0,255,150), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1), NewColor=Color3.fromRGB(0,255,150), NewColor2=Color3.fromRGB(0, 255, 155), NewColor3=Color3.fromRGB(0,255,155)},
+    {Tag="Generators", Text="Generator", Color=Color3.fromRGB(0,255,150), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1), NewColor=Color3.fromRGB(0,255,150), NewColor2=Color3.fromRGB(0, 255, 155), NewColor3=Color3.fromRGB(0,255,155)},
+    {Tag="GateLevers", Text="Gate Lever", Color=Color3.new(1,1,1), NoText=false, Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
+    {Tag="LibraryBooks", Text="Library Book", Color=Color3.fromRGB(0,255,150), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
+    {Tag="GateButtons", Text="Gate Buttons", Color=Color3.new(1,1,1), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
+    {Tag="BreakerPoles", Text="Breaker Pole", Color=Color3.fromRGB(81,81,81), NoText=false, Color2=Color3.fromRGB(81,81,81), Color4=Color3.new(1,1,1)},
+    {Tag="Anchors", Text="Anchor", Color=Color3.new(0.5,0.25,1), NoText=false, Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
+    {Tag="BackroomsLevers", Text="Timer Lever", Color=Color3.fromRGB(82,82,82), Color2=Color3.fromRGB(82,82,82), Color4=Color3.new(1,1,1)},
+    {Tag="MiscPickups", Text="Misc Items", Color=Color3.new(1,1,1), NoText=false, Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
+    {Tag="Closet", Text="Closet", Color=Color3.fromRGB(0,255,150), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
+    {Tag="Ladder", Text="Ladder", Color=Color3.new(1,1,1), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
+    {Tag="WaterPumps", Text="Water Pumps", Color=Color3.new(1,1,1), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
+    {Tag="Toolsheds", Text="Toolsheds", Color=Color3.new(1,1,1), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
+    {Tag="Chests", Text="Chests", Color=Color3.new(1,1,1), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
+    {Tag="Toolbox", Text="Toolbox", Color=Color3.new(1,1,1), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)}
+}
+local IsSwitching = false
 
-ESPInteractables_Configurate:AddToggle("ESPI_C_GoldPiles", { Text = "Gold Piles", Default = false })
-:AddColorPicker("ESPI_C_GoldPiles_F", { Default = Color3.new(1, 1, 1), Title = "Fill Color" })
-:AddColorPicker("ESPI_C_GoldPiles_O", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
+for _, item in ipairs(Items) do
+    local Toggle = ESPInteractables_Configurate:AddToggle("ESPI_C_"..item.Tag, { Text = item.Text, Default = false })
+    
+    CustomColors[item.Tag] = {
+        Fill = item.Color, 
+        Outline = Color3.new(1, 1, 1), 
+        Text = Color3.new(1, 1, 1)
+    }
 
-ESPInteractables_Configurate:AddToggle("ESPI_C_GeneratorFuses", { Text = "Generator Fuse", Default = false })
-:AddColorPicker("ESPI_C_GeneratorFuses_F", { Default = Color3.new(1, 1, 1), Title = "Fill Color" })
-:AddColorPicker("ESPI_C_GeneratorFuses_O", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
+    Toggle:AddColorPicker("ESPI_C_"..item.Tag.."_F", { Default = item.Color, Title = "Fill Color" })
+    Options["ESPI_C_"..item.Tag.."_F"]:OnChanged(function(v)
+        if not IsSwitching and Options.ESPI_C_Style.Value == "Custom" then 
+            CustomColors[item.Tag].Fill = v 
+        end
+    end)
+    
+    Toggle:AddColorPicker("ESPI_C_"..item.Tag.."_O", { Default = item.Color4, Title = "Outline Color" })
+    Options["ESPI_C_"..item.Tag.."_O"]:OnChanged(function(v)
+        if not IsSwitching and Options.ESPI_C_Style.Value == "Custom" then 
+            CustomColors[item.Tag].Outline = v 
+        end
+    end)
+    
+    if not item.NoText then
+        Toggle:AddColorPicker("ESPI_C_"..item.Tag.."_TC", { Default = item.Color2, Title = "TextLabel Color" })
+        Options["ESPI_C_"..item.Tag.."_TC"]:OnChanged(function(v)
+            if not IsSwitching and Options.ESPI_C_Style.Value == "Custom" then 
+                CustomColors[item.Tag].Text = v 
+            end
+        end)
+    end
+end
+Options.ESPI_C_Style:OnChanged(function(Value)
+    IsSwitching = true 
+    
+    for _, item in ipairs(Items) do
+        local F, O, TC
+        
+        if Value == "New" then
+            F, O, TC = item.NewColor or Color3.new(1, 1, 1), item.NewColor2 or Color3.new(1, 1, 1), item.NewColor3 or Color3.new(1, 1, 1)
+        elseif Value == "Classic" then
+            F, O, TC = item.Color, item.Color2, item.Color4
+        elseif Value == "Custom" then
+            F, O, TC = CustomColors[item.Tag].Fill, CustomColors[item.Tag].Outline, CustomColors[item.Tag].Text
+        end
 
-ESPInteractables_Configurate:AddToggle("ESPI_C_Generators", { Text = "Generator", Default = false })
-:AddColorPicker("ESPI_C_Generators_F", { Default = Color3.new(1, 1, 1), Title = "Fill Color" })
-:AddColorPicker("ESPI_C_Generators_O", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
-
-ESPInteractables_Configurate:AddToggle("ESPI_C_GateLevers", { Text = "Gate Lever", Default = false })
-:AddColorPicker("ESPI_C_GateLevers_F", { Default = Color3.new(1, 1, 1), Title = "Fill Color" })
-:AddColorPicker("ESPI_C_GateLevers_O", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
-
-ESPInteractables_Configurate:AddToggle("ESPI_C_LibraryBooks", { Text = "Library Book", Default = false })
-:AddColorPicker("ESPI_C_LibraryBooks_F", { Default = Color3.new(1, 1, 1), Title = "Fill Color" })
-:AddColorPicker("ESPI_C_LibraryBooks_O", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
-
-ESPInteractables_Configurate:AddToggle("ESPI_C_BreakerPoles", { Text = "Breaker Pole", Default = false })
-:AddColorPicker("ESPI_C_BreakerPoles_F", { Default = Color3.new(1, 1, 1), Title = "Fill Color" })
-:AddColorPicker("ESPI_C_BreakerPoles_O", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
-
-ESPInteractables_Configurate:AddToggle("ESPI_C_Anchors", { Text = "Anchor", Default = false })
-:AddColorPicker("ESPI_C_Anchors_F", { Default = Color3.new(1, 1, 1), Title = "Fill Color" })
-:AddColorPicker("ESPI_C_Anchors_O", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
-
-ESPInteractables_Configurate:AddToggle("ESPI_C_BackroomsLevers", { Text = "Timer Lever", Default = false })
-:AddColorPicker("ESPI_C_BackroomsLevers_F", { Default = Color3.new(1, 1, 1), Title = "Fill Color" })
-:AddColorPicker("ESPI_C_BackroomsLevers_O", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
-
-ESPInteractables_Configurate:AddToggle("ESPI_C_MiscPickups", { Text = "Misc Items", Default = false })
-:AddColorPicker("ESPI_C_MiscPickups_F", { Default = Color3.new(1, 1, 1), Title = "Fill Color" })
-:AddColorPicker("ESPI_C_MiscPickups_O", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
-
-ESPInteractables_Configurate:AddToggle("ESPI_C_Closet", { Text = "Closet", Default = false })
-:AddColorPicker("ESPI_C_Closet_F", { Default = Color3.new(1, 1, 1), Title = "Fill Color" })
-:AddColorPicker("ESPI_C_Closet_O", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
-
-ESPInteractables_Configurate:AddToggle("ESPI_C_Ladder", { Text = "Ladder", Default = false })
-:AddColorPicker("ESPI_C_Ladder_F", { Default = Color3.new(1, 1, 1), Title = "Fill Color" })
-:AddColorPicker("ESPI_C_Ladder_O", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
-
-ESPInteractables_Configurate:AddToggle("ESPI_C_WaterPumps", { Text = "Water Pumps", Default = false })
-:AddColorPicker("ESPI_C_WaterPumps_F", { Default = Color3.new(1, 1, 1), Title = "Fill Color" })
-:AddColorPicker("ESPI_C_WaterPumps_O", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
-
-ESPInteractables_Configurate:AddToggle("ESPI_C_Toolsheds", { Text = "Toolsheds", Default = false })
-:AddColorPicker("ESPI_C_Toolsheds_F", { Default = Color3.new(1, 1, 1), Title = "Fill Color" })
-:AddColorPicker("ESPI_C_Toolsheds_O", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
-
-ESPInteractables_Configurate:AddToggle("ESPI_C_Chests", { Text = "Chests", Default = false })
-:AddColorPicker("ESPI_C_Chests_F", { Default = Color3.new(1, 1, 1), Title = "Fill Color" })
-:AddColorPicker("ESPI_C_Chests_O", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
-
+        Options["ESPI_C_"..item.Tag.."_F"]:SetValue(F)
+        Options["ESPI_C_"..item.Tag.."_O"]:SetValue(O)
+        if not item.NoText then
+            Options["ESPI_C_"..item.Tag.."_TC"]:SetValue(TC)
+        end
+    end
+    
+    -- very cool switcher 
+    IsSwitching = false 
+end)
 local ESPSettings = Tabs.ESP:AddRightGroupbox("ESP Settings")
 ESPSettings:AddDropdown("ESPS_Font", { Values = { "Arial", "SourceSans", "Highway", "Fantasy", "Gotham", "DenkOne", "JosefinSans", "Nunito", "Oswald", "RobotoMono", "Sarpanch", "Ubuntu" }, Default = 9, Multi = false, Text = "Text Font" })
 ESPSettings:AddSlider("ESPS_FontSize", { Text = "Font Size", Default = 20, Min = 10, Max = 32, Rounding = 0, Compact = true })
@@ -1213,7 +1225,7 @@ VisualsRemovals:AddToggle("VR_NoSeekEffects", { Text = "Remove Seek Room Effects
 
 local MiscMovement = Tabs.Misc:AddLeftGroupbox("Movement")
 MiscMovement:AddToggle("MM_Walkspeed", { Text = "Enable Speed Modifier", Default = false, Tooltip = "Sets player speed according to value set." })
-MiscMovement:AddSlider("MM_Walkspeed_S", { Text = "Walkspeed Amount", Default = 20, Min = 10, Max = 50, Rounding = 0, Compact = true, Tooltip = "Controls the player walkspeed amount." })
+MiscMovement:AddSlider("MM_Walkspeed_S", { Text = "Walkspeed Amount", Default = 20, Min = 10, Max = 75, Rounding = 0, Compact = true, Tooltip = "Controls the player walkspeed amount." })
 MiscMovement:AddSlider("MM_Walkspeed_Boost", { Text = "Ladder Speed Boost", Default = 0, Min = 0, Max = 50, Rounding = 0, Compact = true, Tooltip = "Speed boost for climbing up ladders. High values may become unstable." })
 MiscMovement:AddDivider()
 MiscMovement:AddToggle("MM_NoAcceleration", { Text = "No Acceleration", Default = false, Tooltip = "Removes acceleration while moving or switching direction." })
@@ -1631,11 +1643,7 @@ function FindLoot(Origin)
             if (Loot.Hitbox.Position - LocalPlayer.Character.Collision.Position).Magnitude < Loot.LootPrompt.MaxActivationDistance * Options.GA_AutoInteract_Range.Value then
                 fireproximityprompt(Loot.LootPrompt)
             end
-        elseif Loot.Name == "LiveHintBook" or Loot.Name == "LibraryHintPaper" then
 
-            if (Loot.Hitbox.Position - LocalPlayer.Character.Collision.Position).Magnitude < Loot.LootPrompt.MaxActivationDistance * Options.GA_AutoInteract_Range.Value then
-                fireproximityprompt(Loot.LiveHintBook.ModulePrompt)
-            end
         elseif Loot.Name == "Bandage" then
 
             if (LocalPlayer.Character.Humanoid.Health < 100 or (BandagePack and BandagePack:GetAttribute("Durability") < BandagePack:GetAttribute("DurabilityMax"))) then
@@ -1845,31 +1853,41 @@ end
 
 function Library:Notify(options, description, duration, force)
     -- Normalize input
-    local data = type(options) == "table" and options or {
-        Title = options,
-        Description = description,
-        Time = duration,
-        Force = force
-    }
-
-    -- Safety defaults
-    data.Title = tostring(data.Title or "Notification")
-    data.Description = tostring(data.Description or "")
-    data.Time = data.Time or 5
-
-    local style = getgenv().UseLib and getgenv().UseLib.CurrentNotify
-
-    local function PlayNotifySound()
-        local sound = Instance.new("Sound")
-        sound.SoundId = "rbxassetid://4590662766"
-        sound.Volume = 1
-        sound.Parent = game:GetService("SoundService")
-        sound:Play()
-        game:GetService("Debris"):AddItem(sound, 2)
+    local data
+    if type(options) == "table" then
+        data = options
+    else
+        data = {
+            Title = options,
+            Description = description,
+            Time = duration,
+            Force = force
+        }
     end
 
+    -- Defaults
+    data.Title = tostring(data.Title or "Notification")
+    data.Description = tostring(data.Description or "")
+    data.Time = tonumber(data.Time) or 5
+
+    local style = (getgenv().UseLib and getgenv().UseLib.CurrentNotify) or "Default"
+
+    local SoundService = game:GetService("SoundService")
+    local Debris = game:GetService("Debris")
+
+    local function PlayNotifySound(id)
+        local sound = Instance.new("Sound")
+        sound.SoundId = id or "rbxassetid://4590662766"
+        sound.Volume = Options.GN_NotificationSound_Volume.Value
+        sound.Parent = SoundService
+        sound:Play()
+        Debris:AddItem(sound, 2)
+    end
+
+    -- Notification routing
     if style == "Linoria" or data.ForceLinoria then
         PlayNotifySound()
+
         local message = data.LinoriaMessage or (data.Title .. " " .. data.Description)
         return Linoria:Notify(message, data.Time)
 
@@ -1877,19 +1895,21 @@ function Library:Notify(options, description, duration, force)
         return Doors:Notify({
             Title = data.Title,
             Description = data.Description,
-            Time = data.Time
+            Time = data.Time,
+            Reason = data.Reason
         })
 
     elseif style == "Obsidian" then
         return Obsidian:Notify({
             Title = data.Title,
             Description = data.Description,
-            Force = data.Force,
             Reason = data.Reason,
+            Force = data.Force,
             SoundId = "rbxassetid://4590662766"
         })
 
     else
+        -- Fallback system
         return Notify(data.Title, data.Description, data.Time, data.Force)
     end
 end
@@ -1963,7 +1983,8 @@ local function ManifestMspaintFrame(target)
     return frame
 end
 
-function Esp(Parent, TextAdornee, Text, Color, OutlineColor)
+function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
+    if not Toggles.ESPI_M_Enabled.Value then return end
     local BillboardGui = Instance.new("BillboardGui", Parent)
     local TextLabel = Instance.new("TextLabel", BillboardGui)
     local Highlight = Instance.new("Highlight", Parent)
@@ -1980,7 +2001,7 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor)
     TextLabel.TextStrokeTransparency = 0
     TextLabel.Font = Enum.Font[Options.ESPS_Font.Value]
     TextLabel.TextSize = Options.ESPS_FontSize.Value
-    TextLabel.TextColor3 = Color
+    TextLabel.TextColor3 = TextLabelColor or Color
     TextLabel.BackgroundTransparency = 1
 
     Highlight.Adornee = Parent
@@ -2063,21 +2084,21 @@ local function RemoveAllTracers()
 end
 
 -- Initial scan (ONLY ONCE)
-for _, v in ipairs(CurrentRooms:GetDescendants()) do
+for _, v in ipairs(workspace:GetDescendants()) do
     if v.Name == "_LOLHAXHL" then
         CreateTracer(v)
     end
 end
 
 -- Auto detect new highlights
-CurrentRooms.DescendantAdded:Connect(function(v)
+workspace.DescendantAdded:Connect(function(v)
     if v.Name == "_LOLHAXHL" then
         CreateTracer(v)
     end
 end)
 
 -- Auto cleanup when removed
-CurrentRooms.DescendantRemoving:Connect(function(v)
+workspace.DescendantRemoving:Connect(function(v)
     if ActiveTracers[v] then
         RemoveTracer(v)
     end
@@ -2109,7 +2130,7 @@ TracerConnection = RunService.RenderStepped:Connect(function()
 
     for highlight, tracer in pairs(ActiveTracers) do
         -- Remove if no longer valid
-        if not highlight:IsDescendantOf(CurrentRooms) then
+        if not highlight:IsDescendantOf(workspace) then
             RemoveTracer(highlight)
             continue
         end
@@ -2205,20 +2226,20 @@ local function RemoveAllArrows()
 end
 
 -- Initial scan (once)
-for _, v in ipairs(CurrentRooms:GetDescendants()) do
+for _, v in ipairs(workspace:GetDescendants()) do
     if v.Name == "_LOLHAXHL" then
         CreateArrow(v)
     end
 end
 
 -- Auto detect new
-CurrentRooms.DescendantAdded:Connect(function(v)
+workspace.DescendantAdded:Connect(function(v)
     if v.Name == "_LOLHAXHL" then
         CreateArrow(v)
     end
 end)
 
-CurrentRooms.DescendantRemoving:Connect(function(v)
+workspace.DescendantRemoving:Connect(function(v)
     if ActiveArrows[v] then
         RemoveArrow(v)
     end
@@ -2307,6 +2328,7 @@ function RemoveEspSmoothNoanim(Parent)
         end
     end
 end
+
 function RemoveEspSmooth(Parent)
     for _, x in Parent:GetChildren() do
         if x.Name == "_LOLHAXBG" then
@@ -2549,27 +2571,24 @@ local Connections = {
                                 fireproximityprompt(v.Lock.UnlockPrompt)
                             end
                         end
+                        
                     elseif v.Name == "AlarmClock" then
 
                         if (v.Main.Position - LocalPlayer.Character.Collision.Position).Magnitude < v.ModulePrompt.MaxActivationDistance * Options.GA_AutoInteract_Range.Value then
                             fireproximityprompt(v.ModulePrompt)
                         end
+                        
                     elseif v.Name == "PickupItem" and not HasItem("LibraryHintPaper") then
 
                         if (v.Handle.Position - LocalPlayer.Character.Collision.Position).Magnitude < v.ModulePrompt.MaxActivationDistance * Options.GA_AutoInteract_Range.Value then
                             fireproximityprompt(v.ModulePrompt)
                         end
+ 
+                    elseif v.Name == "LiveBreakerPolePickup" and v:FindFirstChild("ActivateEventPrompt") then
 
-                    elseif v.Name == "LiveBreakerPolePickup" then
+                        v:WaitForChild("ActivateEventPrompt")      
 
                         local Prompt = v.ActivateEventPrompt
-                        for _, ActivateEventPrompt in v:GetChildren() do
-
-                            if ActivateEventPrompt:IsA("ProximityPrompt") and ActivateEventPrompt.RequiresLineOfSight then
-                                Prompt = ActivateEventPrompt
-                            end
-
-                        end
 
                         if (v.Base.Position - LocalPlayer.Character.Collision.Position).Magnitude < Prompt.MaxActivationDistance * Options.GA_AutoInteract_Range.Value then
                             fireproximityprompt(Prompt)
@@ -2580,7 +2599,19 @@ local Connections = {
                     	if v.SkullLock.SkullPrompt.Enabled and (v.SkullLock.Position - LocalPlayer.Character.Collision.Position).Magnitude < v.SkullLock.SkullPrompt.MaxActivationDistance * Options.GA_AutoInteract_Range.Value then
                             fireproximityprompt(v.SkullLock.SkullPrompt)
                         end
+                        
+                    elseif v.Name == "TimerLever" then
 
+                        if (v.Hitbox.Position - LocalPlayer.Character.Collision.Position).Magnitude < v.ActivateEventPrompt.MaxActivationDistance * Options.GA_AutoInteract_Range.Value then
+                            fireproximityprompt(v.ActivateEventPrompt)
+                        end
+
+                    elseif v.Name == "LibraryHintPaper" then 
+
+                        if (v.Handle.Position - LocalPlayer.Character.Collision.Position).Magnitude < v.ModulePrompt.MaxActivationDistance * Options.GA_AutoInteract_Range.Value then
+                            fireproximityprompt(v.ModulePrompt)
+                        end
+                        
                     elseif v.Name == "Green_Herb" and not LocalPlayer.Character:GetAttribute("HerbGreenEffect") then
                   
                     	if (v.Plant.Position - LocalPlayer.Character.Collision.Position).Magnitude < v.Plant.HerbPrompt.MaxActivationDistance * Options.GA_AutoInteract_Range.Value then
@@ -2656,7 +2687,7 @@ local Connections = {
                             end
                         end
 
-                    elseif Root.Name == "Dresser_Single" or Root.Name == "Dresser" or Root.Name == "Table" or Root.Name == "Library_Desk" then
+                    elseif Root.Name == "Dresser_Single" or Root.Name == "Dresser" or Root.Name == "Table" or Root.Name == "Tables1" or Root.Name == "Tables2" or Root.Name == "Library_Desk" then
 
                         FindLoot(Root)
 
@@ -2673,7 +2704,27 @@ local Connections = {
                                 end
                             end
                         end
-
+                    
+                    elseif Root.Name:find("Checkout") and Root:FindFirstChild("Library_Desk") then 
+                        
+                        -- rmv
+                        
+                        for _, Desks in Root:GetChildren() do 
+                            if Desks.Name == "Library_Desk" then
+                              for _, v in Desks:GetChildren() do 
+                                  if v.Name == "DrawerContainer" then
+                                     if not v.Knobs.ActivateEventPrompt:GetAttribute("Interactions") then
+                                       if (v.Knobs.Position - LocalPlayer.Character.Collision.Position).Magnitude < v.Knobs.ActivateEventPrompt.MaxActivationDistance * Options.GA_AutoInteract_Range.Value then
+                                        fireproximityprompt(v.Knobs.ActivateEventPrompt)
+                                       else
+                                        FindLoot(v)
+                                    end
+                                end
+                            end 
+                        end
+                    end
+                end
+      
                     elseif Root.Name == "Backdoor_Table" then
 
                         FindLoot(Root)
@@ -2788,12 +2839,6 @@ local Connections = {
                             end
                         end
                     end
-
-                    elseif Root.Name == "TimerLever" and not Root.ActivateEventPrompt:GetAttribute("Interactions") then
-
-                        if (Root.Hitbox.Position - LocalPlayer.Character.Collision.Position).Magnitude < Root.ActivateEventPrompt.MaxActivationDistance * Options.GA_AutoInteract_Range.Value then
-                            fireproximityprompt(Root.ActivateEventPrompt)
-                        end
 
                     elseif Root.Name == "RoomsLootItem" or Root.Name == "CrucifixOnTheWall" then
 
@@ -3042,7 +3087,6 @@ local Connections = {
                     Adornee = ManifestMspaintFrame(v.Door)
                 end
                 
-
                     if Script.IsMines then 
                         RoomID += 100
                     end
@@ -3056,10 +3100,11 @@ local Connections = {
                         	Adornee = v
                         end
                     end
+                    
                 if Toggles.DoorNum.Value then
-                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door " .. RoomID, Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value)
+                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door " .. RoomID, Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value, Options.ESPI_C_Doors_TC.Value)
                 else
-                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door", Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value)
+                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door", Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value, Options.ESPI_C_Doors_TC.Value)
                     table.insert(EspTable.Interactables.Doors, {Highlight, TextLabel})
                 end
 
@@ -3072,14 +3117,12 @@ local Connections = {
                             end)
                         end
                     end)
-                
-
             
             elseif v.Name == "FuseObtain" then
 
                 v:WaitForChild("Hitbox", 9e9)
 
-                local Highlight, TextLabel = Esp(v, v, "Generator Fuse", Options.ESPI_C_GeneratorFuses_F.Value, Options.ESPI_C_GeneratorFuses_O.Value)
+                local Highlight, TextLabel = Esp(v, v, "Generator Fuse", Options.ESPI_C_GeneratorFuses_F.Value, Options.ESPI_C_GeneratorFuses_O.Value, Options.ESPI_C_GeneratorFuses_TC.Value)
                 table.insert(EspTable.Interactables.GeneratorFuses, {Highlight, TextLabel})
 
                 v.Hitbox.FuseModel.Changed:Once(function()
@@ -3090,7 +3133,7 @@ local Connections = {
 
                 v:WaitForChild("GeneratorMain", 9e9)
 
-                local Highlight, TextLabel = Esp(v, v, "Generator", Options.ESPI_C_Generators_F.Value, Options.ESPI_C_Generators_O.Value)
+                local Highlight, TextLabel = Esp(v, v, "Generator", Options.ESPI_C_Generators_F.Value, Options.ESPI_C_Generators_O.Value, Options.ESPI_C_Generators_TC.Value)
                 table.insert(EspTable.Interactables.Generators, {Highlight, TextLabel})
 
                 v.Lever.Sound.Played:Once(function()
@@ -3099,7 +3142,11 @@ local Connections = {
                 
             elseif v.Name == "Toolshed_Small" then
 
-                local Highlight, TextLabel = Esp(v, v, "Toolshed", Options.ESPI_C_Toolsheds_F.Value, Options.ESPI_C_Toolsheds_O.Value)
+                v:WaitForChild("Main", 9e9)
+                
+                v.Main:WaitForChild("Open", 9e9)
+
+                local Highlight, TextLabel = Esp(v, v, "Toolshed", Options.ESPI_C_Toolsheds_F.Value, Options.ESPI_C_Toolsheds_O.Value, Options.ESPI_C_Toolsheds_TC.Value)
                 table.insert(EspTable.Interactables, {Highlight, TextLabel})
                 
                 v.Main.Open.Played:Once(function()
@@ -3107,11 +3154,15 @@ local Connections = {
                 end)
 
             elseif v.Name == "ChestBox" or v.Name == "ChestBoxLocked" then
+
+                v:WaitForChild("Main", 9e9)
+                
+                v.Main:WaitForChild("Open", 9e9)
                 
                 local Locked = v:GetAttribute("Locked")
-                local State = if Locked then "[LOCKED]" else ""
+                local State = if Locked then "[Locked]" else ""
 
-                local Highlight, TextLabel = Esp(v, v, "Chest " .. State, Options.ESPI_C_Chests_F.Value, Options.ESPI_C_Chests_O.Value)
+                local Highlight, TextLabel = Esp(v, v, "Chest " .. State, Options.ESPI_C_Chests_F.Value, Options.ESPI_C_Chests_O.Value, Options.ESPI_C_Chests_TC.Value)
                 table.insert(EspTable.Interactables, {Highlight, TextLabel})
 
                 v.Main.Open.Played:Once(function()
@@ -3122,7 +3173,7 @@ local Connections = {
 
                 v:WaitForChild("Button", 9e9)
 
-                local Highlight, TextLabel = Esp(v, v, "Gate Button", Options.ESPI_C_GateLevers_F.Value, Options.ESPI_C_GateLevers_O.Value)
+                local Highlight, TextLabel = Esp(v, v, "Gate Button", Options.ESPI_C_GateButtons_F.Value, Options.ESPI_C_GateButtons_O.Value, Options.ESPI_C_GateButtons_TC.Value)
                  table.insert(EspTable.Interactables, {Highlight, TextLabel})
 
                 v.Button.SoundWork.Played:Once(function()
@@ -3130,31 +3181,53 @@ local Connections = {
                 end)
 
             elseif v.Name == "Ladder" then
-                if not Toggles.EB_TheMinesAnticheatBypass.Value then return end
                 
-                if Script.Bypassed then return end
+                if not Toggles.EB_TheMinesAnticheatBypass.Value then RemoveEspSmooth(v) return end
+                
+                if Script.Bypassed then RemoveEspSmooth(v) return end
 
-                local Highlight, TextLabel = Esp(v, v, "Ladder", Options.ESPI_C_Ladder_F.Value, Options.ESPI_C_Ladder_O.Value)
+                local Highlight, TextLabel = Esp(v, v, "Ladder", Options.ESPI_C_Ladder_F.Value, Options.ESPI_C_Ladder_O.Value, Options.ESPI_C_Ladder_TC.Value)
                 table.insert(EspTable.Interactables, {Highlight, TextLabel})
 
             elseif v.Name == "WaterPump" then
 
-                v.WaitForChild("Wheel", 9e9)
+                v:WaitForChild("Wheel", 9e9)
                 
-                local Highlight, TextLabel = Esp(v.Wheel, v.Wheel, "Water Pump", Options.ESPI_C_WaterPumps_F.Value, Options.ESPI_C_WaterPumps_O.Value)
+                local Highlight, TextLabel = Esp(v.Wheel, v.Wheel, "Water Pump", Options.ESPI_C_WaterPumps_F.Value, Options.ESPI_C_WaterPumps_O.Value, Options.ESPI_C_WaterPumps_TC.Value)
+                table.insert(EspTable.Interactables, {Highlight, TextLabel})
+                
+                v.Wheel.Sound.Played:Once(function()
+                    RemoveEspSmooth(v.Wheel)
+                end)
+            
+            elseif v.Name == "Toolbox" or v.Name == "Toolbox_Locked" then 
+                
+                v:WaitForChild("Main", 9e9)
+                
+                v.Main:WaitForChild("Open", 9e9)
+                
+                local Locked = v:GetAttribute("Locked")
+                local State = if Locked then "[Locked]" else ""
+                
+                local Highlight, TextLabel = Esp(v, v, "Toolbox " .. State, Options.ESPI_C_Toolbox_F.Value, Options.ESPI_C_Toolbox_O.Value, Options.ESPI_C_Toolbox_TC.Value)
+                table.insert(EspTable.Interactables, {Highlight, TextLabel})
+                
+                v.Main.Open.Played:Once(function()
+                    RemoveEspSmooth(v)
+                end)
         
             elseif v.Name == "KeyObtain" then
 
                 v:WaitForChild("Hitbox", 9e9)
 
                 task.delay(1, function()
-                    local Highlight, TextLabel = Esp(v, v, "Door Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value)
+                    local Highlight, TextLabel = Esp(v, v, "Door Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value, Options.ESPI_C_DoorKeys_TC.Value)
                     table.insert(EspTable.Interactables.DoorKeys, {Highlight, TextLabel})
                 end)
 
             elseif v.Name == "ElectricalKeyObtain" then
 
-                local Highlight, TextLabel = Esp(v, v, "Electric Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value)
+                local Highlight, TextLabel = Esp(v, v, "Electric Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value, Options.ESPI_C_DoorKeys_TC.Value)
                 table.insert(EspTable.Interactables.DoorKeys, {Highlight, TextLabel})
 
             elseif v.Name == "GoldPile" then
@@ -3183,7 +3256,7 @@ local Connections = {
 
                     v:WaitForChild("Hitbox", 9e9)
 
-                    local Highlight, TextLabel = Esp(v, v.Hitbox, "Timer Lever", Options.ESPI_C_BackroomsLevers_F.Value, Options.ESPI_C_BackroomsLevers_O.Value)
+                    local Highlight, TextLabel = Esp(v, v.Hitbox, "Timer Lever", Options.ESPI_C_BackroomsLevers_F.Value, Options.ESPI_C_BackroomsLevers_O.Value, Options.ESPI_C_BackroomsLevers_TC.Value)
                     table.insert(EspTable.Interactables.BackroomsLevers, {Highlight, TextLabel})
 
                     v:WaitForChild("ActivateEventPrompt", 9e9)
@@ -3191,7 +3264,7 @@ local Connections = {
                     if v.ActivateEventPrompt:GetAttribute("Interactions") then
                         RemoveEspSmooth(v)
                     else
-                        v.ActivateEventPrompt.AttributeChanged:Once(function()
+                        v.Main.SoundToPlay.Played:Once(function()
                             RemoveEspSmooth(v)
                         end)
                     end
@@ -3201,14 +3274,14 @@ local Connections = {
 
                 v:WaitForChild("Base", 9e9)
 
-                local Highlight, TextLabel = Esp(v, v, "Book", Options.ESPI_C_LibraryBooks_F.Value, Options.ESPI_C_LibraryBooks_O.Value)
+                local Highlight, TextLabel = Esp(v, v, "Book", Options.ESPI_C_LibraryBooks_F.Value, Options.ESPI_C_LibraryBooks_O.Value, Options.ESPI_C_LibraryBooks_TC.Value)
                 table.insert(EspTable.Interactables.LibraryBooks, {Highlight, TextLabel})
 
            elseif v.Name == "LibraryHintPaper" then
             
               v:WaitForChild("Handle", 9e9)
 
-              local Highlight, TextLabel = Esp(v, v, "Hint Paper", Options.ESPI_C_LibraryBooks_F.Value, Options.ESPI_C_LibraryBooks_O.Value)
+              local Highlight, TextLabel = Esp(v, v, "Hint Paper", Options.ESPI_C_LibraryBooks_F.Value, Options.ESPI_C_LibraryBooks_O.Value, Options.ESPI_C_LibraryBooks_TC.Value)
               table.insert(EspTable.Interactables, {Highlight, TextLabel})
 
             elseif v.Name == "LiveBreakerPolePickup" then
@@ -3256,15 +3329,20 @@ local Connections = {
                 v:WaitForChild("Hidden", 9e9)
                 v.Hidden.CanTouch = not Toggles.ES_AntiDupe.Value
 
-                v:WaitForChild("LockPart", 2):WaitForChild("UnlockPrompt")
-                if v:FindFirstChild("LockPart") then
-                    v.LockPart.UnlockPrompt.Enabled = not Toggles.ES_AntiDupe.Value
+                v:FindFirstChild("Lock"):FindFirstChild("UnlockPrompt")
+                if v:FindFirstChild("Lock") then
+                    v.Lock.UnlockPrompt.Enabled = not Toggles.ES_AntiDupe.Value
                 end
 
             elseif v.Name == "FigureRig" then
 
                 v:WaitForChild("Torso", 9e9)
                 local Highlight, TextLabel = Esp(v, v.Torso, "Figure", Color3.new(0.75, 0, 0))
+                table.insert(EspTable.Entities, {Highlight, TextLabel})
+
+            elseif v.Name == "Groundskeeper" then
+
+                local Highlight, TextLabel = Esp(v, v.Torso, "Groundskepper", Color3.new(0.75, 0, 0))
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
             elseif v.Name == "_NestHandler" then
@@ -3331,9 +3409,16 @@ local Connections = {
                     table.clear(Anchors)
                 end
                 
-            elseif v.Name == "GrumbleRig" or v.Name == "QueenGrumble" or v.Name == "_QueenGrumbleNest" or v.Name == "_QueenGrumble" then
+            elseif v.Name == "GrumbleRig" or v.Name == "QueenGrumble" or v.Name == "_QueenGrumbleNest" or v.Name == "_QueenGrumble" and v.AnimationController:FindFirstChild("Animator"):GetPlayingAnimationTracks() then
                 v:WaitForChild("Root", 9e9)
                 task.wait(1)
+
+                local AnimController = v:WaitForChild("AnimationController", 9e9)
+                local Animator = AnimController:FindFirstChild("Animator")
+                if not Animator:GetPlayingAnimationTracks() then 
+                    return
+                    print(false)
+                end
 
                 local Highlight, TextLabel = Esp(v, v, "Grumble", Color3.new(0.85, 0.85, 0.85))
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
@@ -3343,15 +3428,14 @@ local Connections = {
 
                 v.Egg.CanTouch = not Toggles.ES_AntiGloombat.Value
 
-            elseif v.Name == "TriggerEventCollision" then
-                while task.wait() and v and #v:GetChildren() > 0 do
-                    local Part = v:FindFirstChildWhichIsA("BasePart")
+            elseif v.Name == "ScaryWall" then
+                --while task.wait() and v and #v:GetChildren() > 0 do
+                    --local Part = v:FindFirstChildWhichIsA("BasePart")
 
-                    if Part and Toggles.ER_RemoveSeek.Value then
-                        firetouchinterest(LocalPlayer.Character.Collision, Part, true and false)
+                    if Toggles.ER_RemoveSeek.Value then
+                        v:Destroy()
                     end
                 end
-            end
 
         elseif v.Parent and v.Parent.Name == "PathfindNodes" then
             v.Transparency = Toggles.VW_RushNodes.Value and 0 or 1
@@ -3434,6 +3518,7 @@ local Connections = {
                         Description = "Go find a hiding spot quickly!"
                     })
                 end
+                
             elseif v.Name == "AmbushMoving" then
 
                 v:WaitForChild("RushNew", 9e9)
@@ -3709,9 +3794,9 @@ Toggles.ES_HASTECLOCK:OnChanged(function(value)
     HasteLoopActive = value
     print("Toggle changed: " .. tostring(value))-- debug 111
     
-    if value and Script.IsBackdoor then
+    if value then
         task.spawn(function()
-            local ReplicatedStorage = game:GetService("ReplicatedStorage")
+            local ReplicatedStorage = game:GetService("ReplicatedStorage")  
             
             --  floorep
             local FloorRep = ReplicatedStorage:FindFirstChild("FloorReplicated")
@@ -3808,8 +3893,6 @@ local function getRoomModel(obj)
     return parent
 end
 
-local function MonitorCloset(v)
-
     local HiddenSpots = {
     Locker_Large = "Locker",
     Wardrobe = "Closet",
@@ -3817,8 +3900,12 @@ local function MonitorCloset(v)
     Bed = "Bed",
     Toolshed = "Closet",
     Backdoor_Wardrobe = "Closet",
-    Double_Bed = "Bed"
+    Double_Bed = "Bed",
+    Rooms_Locker = "Locker",
+    Rooms_Locker_Fridge = "Locker"
 }
+
+local function MonitorCloset(v)
 
     if v:FindFirstChild("VV_MARKER") then return end
 
@@ -3928,7 +4015,8 @@ local ClosetConnection = RunService.Heartbeat:Connect(function()
                     data.targetPart,
                     data.displayName,
                     Options.ESPI_C_Closet_F.Value,
-                    Options.ESPI_C_Closet_O.Value
+                    Options.ESPI_C_Closet_O.Value,
+                    Options.ESPI_C_Closet_TC.Value
                 )
         end
 
@@ -4102,13 +4190,14 @@ if Script.IsMines and Script.Bypassed and currentRoomModel:GetAttribute("RawName
             Description = "Halt has broken anticheat bypass, please go on a ladder again to fix it.",
             Reason = "Please go on a ladder again to fix it.",
             SoundId = "rbxassetid://4590662766",
+            Time = 5,
 
             LinoriaMessage = "Halt has broken anticheat bypass, please go on a ladder again to fix it."
         })
 
     end
 
--- Check if your executor actually supports these (most do)
+-- my brain fried vo -- v
 
 Script.Functions.Minecart = {
     pathfindQueue = {},
@@ -4728,6 +4817,7 @@ end
 
     Connect:GiveSignal(RunService.Heartbeat:Connect(function()
         if not Toggles.ES_AutoRooms.Value then return end
+        if not LocalPlayer.Character:GetAttribute("Alive") then return end
 
         local entity = (workspace:FindFirstChild("A60") or workspace:FindFirstChild("A120"))
         local isEntitySpawned = (entity and entity.PrimaryPart.Position.Y > -10)
@@ -4847,7 +4937,7 @@ local lastNotifiedRoom
                     local path = PathfindingService:CreatePath({
                     AgentCanJump = false,
                     AgentCanClimb = false,
-                    WaypointSpacing = 8,
+                    WaypointSpacing = 2,
                     AgentRadius = 2,
                     Costs = {
                         _ms_pathBlock = 5 --cost will increase the more stuck you get.
@@ -4862,6 +4952,7 @@ local lastNotifiedRoom
             end
 
                 path:ComputeAsync(LocalPlayer.Character.HumanoidRootPart.Position - Vector3.new(0, 2.5, 0), pathfindingGoal.Position)
+                if not LocalPlayer.Character:GetAttribute("Alive") then return end
                 local waypoints = path:GetWaypoints()
                 local waypointAmount = #waypoints
 
@@ -4899,7 +4990,8 @@ local lastNotifiedRoom
                             node.Anchored = true
                             node.CanCollide = false
                             node.Shape = Enum.PartType.Ball
-                            node.Color = Color3.new(1, 0, 0)
+                            node.Material = Enum.Material.ForceField
+                            node.Color = Color3.new(1, 1, 1)
                             node.Transparency = 0
                         end
                     end
@@ -4944,7 +5036,7 @@ local lastNotifiedRoom
                                     SoundId = "rbxassetid://4590662766"
                                 })
                             end
-
+                                
                                 recalculate = true
                                 if lastWaypoint == nil and waypointAmount > 1 then
                                     waypoint = waypoints[i+1]
@@ -5069,9 +5161,9 @@ for _, v in Rooms:GetDescendants() do
                         end
                     end
                 if Toggles.DoorNum.Value then
-                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door " .. RoomID, Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value)
+                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door " .. RoomID, Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value, Options.ESPI_C_Doors_TC.Value)
                 else
-                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door", Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value)
+                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door", Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value, Options.ESPI_C_Doors_TC.Value)
                     table.insert(EspTable.Interactables.Doors, {Highlight, TextLabel})
                 end
                 
@@ -5081,7 +5173,7 @@ for _, v in Rooms:GetDescendants() do
 
             elseif v.Name == "FuseObtain" then
 
-                local Highlight, TextLabel = Esp(v, v, "Generator Fuse", Options.ESPI_C_GeneratorFuses_F.Value, Options.ESPI_C_GeneratorFuses_O.Value)
+                local Highlight, TextLabel = Esp(v, v, "Generator Fuse", Options.ESPI_C_GeneratorFuses_F.Value, Options.ESPI_C_GeneratorFuses_O.Value, Options.ESPI_C_GeneratorFuses_TC.Value)
                 table.insert(EspTable.Interactables.GeneratorFuses, {Highlight, TextLabel})
 
                 v.Hitbox.FuseModel.Changed:Once(function()
@@ -5090,7 +5182,7 @@ for _, v in Rooms:GetDescendants() do
 
             elseif v.Name == "MinesGenerator" then
 
-                local Highlight, TextLabel = Esp(v, v, "Generator", Options.ESPI_C_Generators_F.Value, Options.ESPI_C_Generators_O.Value)
+                local Highlight, TextLabel = Esp(v, v, "Generator", Options.ESPI_C_Generators_F.Value, Options.ESPI_C_Generators_O.Value, Options.ESPI_C_Generators_TC.Value)
                 table.insert(EspTable.Interactables.Generators, {Highlight, TextLabel})
 
                 v.Lever.Sound.Played:Once(function()
@@ -5099,7 +5191,7 @@ for _, v in Rooms:GetDescendants() do
                 
             elseif v.Name == "Toolshed_Small" then
 
-                local Highlight, TextLabel = Esp(v, v, "Toolshed", Options.ESPI_C_Toolsheds_F.Value, Options.ESPI_C_Toolsheds_O.Value)
+                local Highlight, TextLabel = Esp(v, v, "Toolshed", Options.ESPI_C_Toolsheds_F.Value, Options.ESPI_C_Toolsheds_O.Value, Options.ESPI_C_Toolsheds_TC.Value)
                 table.insert(EspTable.Interactables, {Highlight, TextLabel})
 
                 v.Main.Open.Played:Once(function()
@@ -5109,18 +5201,30 @@ for _, v in Rooms:GetDescendants() do
             elseif v.Name == "ChestBox" or v.Name == "ChestBoxLocked" then
 
                 local Locked = v:GetAttribute("Locked")
-                local State = if Locked then "[LOCKED]" else "" 
+                local State = if Locked then "[Locked]" else "" 
 
-                local Highlight, TextLabel = Esp(v, v, "Chest " .. State, Options.ESPI_C_Chests_F.Value, Options.ESPI_C_Chests_O.Value)
+                local Highlight, TextLabel = Esp(v, v, "Chest " .. State, Options.ESPI_C_Chests_F.Value, Options.ESPI_C_Chests_O.Value, Options.ESPI_C_Chests_TC.Value)
                 table.insert(EspTable.Interactables, {Highlight, TextLabel})
 
                 v.Main.Open.Played:Once(function()
                     RemoveEspSmooth(v)
                 end)
                 
+            elseif v.Name == "Toolbox" or v.Name == "Toolbox_Locked" then 
+                
+                local Locked = v:GetAttribute("Locked")
+                local State = if Locked then "[Locked]" else ""
+                
+                local Highlight, TextLabel = Esp(v, v, "Toolbox " .. State, Options.ESPI_C_Toolbox_F.Value, Options.ESPI_C_Toolbox_O.Value, Options.ESPI_C_Toolbox_TC.Value)
+                table.insert(EspTable.Interactables, {Highlight, TextLabel})
+                
+                v.Main.Open.Played:Once(function()
+                    RemoveEspSmooth(v)
+                end)
+                
             elseif v.Name == "MinesGateButton" then
 
-                local Highlight, TextLabel = Esp(v, v, "Gate Button", Options.ESPI_C_GateLevers_F.Value, Options.ESPI_C_GateLevers_O.Value)
+                local Highlight, TextLabel = Esp(v, v, "Gate Button", Options.ESPI_C_GateButtons_F.Value, Options.ESPI_C_GateButtons_O.Value, Options.ESPI_C_GateButtons_TC.Value)
                 table.insert(EspTable.Interactables, {Highlight, TextLabel})
 
                 v.Button.SoundWork.Played:Once(function()
@@ -5129,12 +5233,12 @@ for _, v in Rooms:GetDescendants() do
                 
             elseif v.Name == "KeyObtain" then
 
-                local Highlight, TextLabel = Esp(v, v, "Door Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value)
+                local Highlight, TextLabel = Esp(v, v, "Door Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value, Options.ESPI_C_DoorKeys_TC.Value)
                 table.insert(EspTable.Interactables.DoorKeys, {Highlight, TextLabel})
          
             elseif v.Name == "ElectricalKeyObtain" then
                 
-                local Highlight, TextLabel = Esp(v, v, "Electric Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value)
+                local Highlight, TextLabel = Esp(v, v, "Electric Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value, Options.ESPI_C_DoorKeys_TC.Value)
                 table.insert(EspTable.Interactables.DoorKeys, {Highlight, TextLabel})
 
             elseif v.Name == "GoldPile" then
@@ -5154,16 +5258,16 @@ for _, v in Rooms:GetDescendants() do
 
             elseif v.Name == "TimerLever" and not v.ActivateEventPrompt:GetAttribute("Interactions") then
 
-                local Highlight, TextLabel = Esp(v, v.Hitbox, "Timer Lever", Options.ESPI_C_BackroomsLevers_F.Value, Options.ESPI_C_BackroomsLevers_O.Value)
+                local Highlight, TextLabel = Esp(v, v.Hitbox, "Timer Lever", Options.ESPI_C_BackroomsLevers_F.Value, Options.ESPI_C_BackroomsLevers_O.Value, Options.ESPI_C_BackroomsLevers_TC.Value)
                 table.insert(EspTable.Interactables.BackroomsLevers, {Highlight, TextLabel})
 
-                v.ActivateEventPrompt.AttributeChanged:Once(function()
+                v.Main.SoundToPlay.Played:Once(function()
                     RemoveEspSmooth(v)
                 end)
 
             elseif v.Name == "LiveHintBook" then
 
-                local Highlight, TextLabel = Esp(v, v, "Book", Options.ESPI_C_LibraryBooks_F.Value, Options.ESPI_C_LibraryBooks_O.Value)
+                local Highlight, TextLabel = Esp(v, v, "Book", Options.ESPI_C_LibraryBooks_F.Value, Options.ESPI_C_LibraryBooks_O.Value, Options.ESPI_C_LibraryBooks_TC.Value)
                 table.insert(EspTable.Interactables.LibraryBooks, {Highlight, TextLabel})
 
             elseif v.Name == "LiveBreakerPolePickup" then
@@ -5184,6 +5288,11 @@ for _, v in Rooms:GetDescendants() do
             elseif v.Name == "FigureRig" then
 
                 local Highlight, TextLabel = Esp(v, v.Torso, "Figure", Color3.new(0.75, 0, 0))
+                table.insert(EspTable.Entities, {Highlight, TextLabel})
+
+            elseif v.Name == "Groundskeeper" then
+
+                local Highlight, TextLabel = Esp(v, v, "Groundskepper", Color3.new(0.75, 0, 0))
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
             elseif v.Name == "_NestHandler" then
@@ -5249,7 +5358,14 @@ for _, v in Rooms:GetDescendants() do
                     table.clear(Anchors)
                 end
 
-            elseif v.Name == "GrumbleRig" or v.Name == "QueenGrumble" or v.Name == "_QueenGrumbleNest" or v.Name == "_QueenGrumble" then
+            elseif v.Name == "GrumbleRig" or v.Name == "QueenGrumble" or v.Name == "_QueenGrumbleNest" or v.Name == "_QueenGrumble" and v.AnimationController:FindFirstChild("Animator"):GetPlayingAnimationTracks() then
+
+                local AnimController = v:WaitForChild("AnimationController", 9e9)
+                local Animator = AnimController:FindFirstChild("Animator")
+                if not Animator:GetPlayingAnimationTracks() then
+                    return 
+                    print(nil)
+                end
      
                 local Highlight, TextLabel = Esp(v, v, "Grumble", Color3.new(0.85, 0.85, 0.85))
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
@@ -5505,8 +5621,8 @@ Toggles.ES_AntiDupe:OnChanged(function()
         if v.Name == "DoorFake" and v:IsA("Model") then
             v.Hidden.CanTouch = not Toggles.ES_AntiDupe.Value
 
-            if v:FindFirstChild("LockPart") and v.LockPart:FindFirstChild("UnlockPrompt") then
-                v.LockPart.UnlockPrompt.Enabled = not Toggles.ES_AntiDupe.Value
+            if v:FindFirstChild("Lock") and v.Lock:FindFirstChild("UnlockPrompt") then
+                v.Lock.UnlockPrompt.Enabled = not Toggles.ES_AntiDupe.Value
             end
         end
 
@@ -5773,10 +5889,12 @@ task.spawn(function()
     MenuProperties:AddButton("Unload", function()
         Library:Unload()
         Library.Unloaded = true
+        print("[LOLHAX] Unloading!!")
 
         for _, Connection in Connections do
             Connection:Disconnect()
         end
+
         Detection:Disconnect()
         ThirdpersonParts:Destroy()
         LXNotifications:Destroy()
@@ -5819,6 +5937,8 @@ task.spawn(function()
         RemoveAllTracers()
         RemoveAllArrows()
         getgenv().UsingLOLHAX = false
+        Linoria:Unload()
+        Obsidian:Unload()
         game.ReplicatedStorage.RemotesFolder.ClimbLadder:FireServer()
         Script.IsBypassed = false
         LocalPlayer.Character:SetAttribute("CanJump", false)
@@ -5928,6 +6048,10 @@ task.spawn(function()
         SaveManager:SetFolder("lolhax/Doors3/Backdoor")
     elseif Script.IsRooms then
         SaveManager:SetFolder("lolhax/Doors3/Rooms")
+    elseif Script.IsBattle then
+        SaveManager:SetFolder("lolhax/Doors3/BattleRank")
+    elseif Script.FloorVal.Value == "Garden" then 
+        SaveManager:SetFolder("lolhax/Doors3/OutDoors")
     end
     SaveManager:BuildConfigSection(Tabs.Config)
     SaveManager:IgnoreThemeSettings()
@@ -5937,6 +6061,7 @@ task.spawn(function()
     DebugStuff:AddToggle("DS_Debug", { Text = "Enable Debug Mode", Default = false, })
     DebugStuff:AddToggle("DS_BSRPC", { Text = "Bloxstrap RPC", Default = true })
     DebugStuff:AddLabel("Floor: " .. game.ReplicatedStorage.GameData.Floor.Value)
+    DebugStuff:AddLabel("lolhax version: 3.0.2.2b")
 
     local RPCRoomChange = game.ReplicatedStorage.GameData.LatestRoom:GetPropertyChangedSignal("Value"):Connect(function() updateRPC(Toggles.DS_BSRPC.Value) end)
     table.insert(Connections, RPCRoomChange)
@@ -5951,5 +6076,5 @@ task.spawn(function()
     ErrorMessageOut:Disconnect()
     LHXLoadFinish = true
     Library:Notify("Load successful.", "Loading finished in ".. string.format("%.2f", tick() - Loadtime) .." seconds.", 10 / 3, true)
-    print("[LOLHAX]", "Loading finished in ".. string.format("%.2f", tick() - Loadtime) .." seconds.")
+    print("[LOLHAX] Load successful.", "Loading finished in ".. string.format("%.2f", tick() - Loadtime) .." seconds.")
 end)
