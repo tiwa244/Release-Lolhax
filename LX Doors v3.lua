@@ -1988,7 +1988,8 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
 		else
 			TextLabel.Text = Text
         end
-    end)
+    end
+end)
 
     game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { FillTransparency = Options.ESPS_FillTransparency.Value } ):Play()
     game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { OutlineTransparency = Options.ESPS_OutlineTransparency.Value } ):Play()
