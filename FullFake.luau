@@ -349,10 +349,10 @@ local OldFogEnd = game.Lighting.FogEnd
 
 local Main_Game = require(LocalPlayer.PlayerGui.MainUI.Initiator.Main_Game)
 
-local ShadeModule = require(game.ReplicatedStorage.ClientModules.EntityModules.Shade)
-local GlitchModule = require(game.ReplicatedStorage.ClientModules.EntityModules.Glitch)
-local VoidModule = require(game.ReplicatedStorage.ClientModules.EntityModules.Void)
-local SeekModule = require(game.ReplicatedStorage.ClientModules.EntityModules.Seek)
+local ShadeModule = require(game.ReplicatedStorage.ModulesClient.EntityModules.Shade)
+local GlitchModule = require(game.ReplicatedStorage.ModulesClient.EntityModules.Glitch)
+local VoidModule = require(game.ReplicatedStorage.ModulesClient.EntityModules.Void)
+local SeekModule = require(game.ReplicatedStorage.ModulesClient.EntityModules.Seek)
 
 local ShadeFunction = ShadeModule.stuff
 local GlitchFunction = GlitchModule.stuff
