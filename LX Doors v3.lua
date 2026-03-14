@@ -5115,7 +5115,65 @@ local ReviveHook; ReviveHook = hookfunction(require(game.ReplicatedStorage.Modul
 
     return ReviveHook(...)
 end)
+for _, v in Rooms:GetChildren() do
 
+    if game.ReplicatedStorage.GameData.Floor.Value == "Hotel" and v.Name == "100" then
+        local BreakerAdded = v.ChildAdded:Connect(function(ElevatorBreaker)
+
+            if ElevatorBreaker.Name == "ElevatorBreaker" then
+                local TextChanged = ElevatorBreaker.SurfaceGui.Frame.Code:GetPropertyChangedSignal("Text"):Connect(function()
+                    task.wait()
+
+                    if Toggles.GA_BreakerAutoSolve.Value then
+                        local State = ElevatorBreaker.SurfaceGui.Frame.Code.Frame.BackgroundTransparency == 0
+
+                        if ElevatorBreaker.SurfaceGui.Frame.Code.Text == "..." then
+
+                            BreakerAlreadyDone = {}
+
+                        elseif ElevatorBreaker.SurfaceGui.Frame.Code.Text == "??" then
+
+                            for _, v in ElevatorBreaker:GetChildren() do
+                                if v.Name == "BreakerSwitch" and v:GetAttribute("ID") == MissingNumber(BreakerAlreadyDone, #BreakerAlreadyDone) then
+
+                                    if State ~= v:GetAttribute("Enabled") then
+                                        BreakerThing(v, State)
+                                    end
+
+                                    table.insert(BreakerAlreadyDone, MissingNumber(BreakerAlreadyDone, #BreakerAlreadyDone))
+                                
+                                end
+                            end
+
+                        else
+
+                            for _, v in ElevatorBreaker:GetChildren() do
+                                if v.Name == "BreakerSwitch" and tonumber(ElevatorBreaker.SurfaceGui.Frame.Code.Text) and v:GetAttribute("ID") == tonumber(ElevatorBreaker.SurfaceGui.Frame.Code.Text) then
+
+                                    if State ~= v:GetAttribute("Enabled") then
+                                        BreakerThing(v, State)
+                                    end
+
+                                    table.insert(BreakerAlreadyDone, tonumber(ElevatorBreaker.SurfaceGui.Frame.Code.Text))
+
+                                end
+                            end
+
+                        end
+                    end
+                end)
+
+                table.insert(Connections, ElevatorBreaker.Destroying:Once(function()
+                    TextChanged:Disconnect()
+                end))
+            end
+
+        end)
+
+        table.insert(Connections, BreakerAdded)
+    end
+
+end					
 for _, v in Rooms:GetDescendants() do
     task.spawn(function()
 
