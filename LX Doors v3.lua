@@ -718,7 +718,7 @@ ExploitRemovals:AddToggle("ER_NoA90Damage", { Text = "No A-90 Damage", Default =
 ExploitRemovals:AddToggle("ER_NoScreechDamage", { Text = "No Screech Damage", Default = false, Tooltip = "Completely disables entity 'Screech' damaging you.", Visible = Script.IsHotel or Script.IsMines, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 ExploitRemovals:AddToggle("ER_NoShadeDamage", { Text = "No Halt Damage", Default = false, Tooltip = "Completely disables entity 'Halt' damaging you.", Visible = Script.IsHotel or Script.IsMines, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 
---[[local ESPEntities = Tabs.ESP:AddLeftGroupbox("Entities")
+local ESPEntities = Tabs.ESP:AddLeftGroupbox("Entities")
 ESPEntities:AddToggle("ESPE_Enabled", { Text = "Enabled", Default = false })
 ESPEntities:AddDivider()
 ESPEntities:AddToggle("ESPE_Name", { Text = "Name", Default = false })
