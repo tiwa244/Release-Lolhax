@@ -2040,7 +2040,6 @@ local function ManifestMspaintFrame(target)
 end
 
 function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
-    if not Toggles.ESPI_M_Enabled.Value then return end
     local BillboardGui = Instance.new("BillboardGui", Parent)
     local TextLabel = Instance.new("TextLabel", BillboardGui)
     local Highlight = Instance.new("Highlight", Parent)
@@ -2082,6 +2081,8 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
             TextLabel.Text = Text.."\n[ "..string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance).." ]"
 		else
 			TextLabel.Text = Text
+            TextLabel.Visible = Toggles.ESPI_M_Enabled.Value
+            Higlight.Enabled = Toggles.ESPI_M_Enabled.Value
         end
     end
 end)
