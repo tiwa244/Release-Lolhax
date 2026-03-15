@@ -2440,7 +2440,7 @@ task.spawn(function()
                 end
 
                 -- 😭😭😭 wtf
-                TextLabel.Visible = Toggles.ESPI_M_Enabled.Value and Toggles["ESPI_C_" .. Name].Value
+                TextLabel.Visible = Toggles.ESPI_M_Enabled.Value
                 TextLabel.Text = String
             end
 		end
