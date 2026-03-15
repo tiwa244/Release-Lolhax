@@ -3115,10 +3115,15 @@ local Connections = {
                         if Toggles.GA_BreakerAutoSolve.Value then
                             local State = ElevatorBreaker.SurfaceGui.Frame.Code.Frame.BackgroundTransparency == 0
 
+					   if Options.GA_BreakerAutoSolveOption.Value == "Exploit" then
+                               game.ReplicatedStorage.RemotesFolder.EBF:FireServer()
+                               return
+						end	
+											
                             if ElevatorBreaker.SurfaceGui.Frame.Code.Text == "..." then
 
                                 BreakerAlreadyDone = {}
-
+											
                             elseif ElevatorBreaker.SurfaceGui.Frame.Code.Text == "??" then
 
                                 for _, v in ElevatorBreaker:GetChildren() do
@@ -3143,7 +3148,6 @@ local Connections = {
                                         end
 
                                         table.insert(BreakerAlreadyDone, tonumber(ElevatorBreaker.SurfaceGui.Frame.Code.Text))
-
                                     end
                                 end
 
