@@ -2103,7 +2103,7 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
             end
 		end
 
-        for _, v in EspTable.Entities do
+        for _, v in pairs(EspTable.Entities) do
             local TextLabel = v[2]
             local String = ""
 
@@ -2122,7 +2122,7 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
             TextLabel.Text = String
 		end
 
-        for _, v in EspTable.Players do
+       for _, v in pairs(EspTable.Players) do
             local TextLabel = v[2]
             local String = ""
 
