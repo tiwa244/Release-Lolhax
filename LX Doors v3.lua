@@ -1425,10 +1425,6 @@ local EspTable = {
         LibraryBooks = {},
         BreakerPoles = {},
         Anchors = {},
-        None = {
-            Ladder = {}
-        },
-
         MiscPickups = {}
     },
 
