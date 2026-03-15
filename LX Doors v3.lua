@@ -2039,8 +2039,7 @@ local function ManifestMspaintFrame(target)
     return frame
 end
 
-function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
-    if not Toggles.ESPI_M_Enabled.Value then return end
+function Esp(Parent, TextAdornee, Text, Color, OutlineColor, Type)
     local BillboardGui = Instance.new("BillboardGui", Parent)
     local TextLabel = Instance.new("TextLabel", BillboardGui)
     local Highlight = Instance.new("Highlight", Parent)
@@ -2057,17 +2056,13 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
     TextLabel.TextStrokeTransparency = 0
     TextLabel.Font = Enum.Font[Options.ESPS_Font.Value]
     TextLabel.TextSize = Options.ESPS_FontSize.Value
-    TextLabel.TextColor3 = TextLabelColor or Color
+    TextLabel.TextColor3 = Color
     TextLabel.BackgroundTransparency = 1
 
     Highlight.Adornee = Parent
 
     Highlight.FillColor = Color
-    Highlight.OutlineColor = OutlineColor or Color
-    
-    if Toggles.ESPI_RAINBOW_HIGHLIGHT and Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
-        Highlight.OutlineColor = Color
-    end
+    Highlight.OutlineColor = (OutlineColor and typeof(OutlineColor) == "Color3") and OutlineColor or Color
 
     TextLabel.TextTransparency = 1
     Highlight.FillTransparency = 1
@@ -2075,24 +2070,28 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
 
     TextLabel:SetAttribute("Text", Text)
 
-    task.spawn(function()
-        while Parent and not Library.Unloaded and task.wait() do
-            local Distance = (workspace.CurrentCamera.CFrame.Position - Parent:GetPivot().Position).Magnitude
-        if Toggles.ESPI_M_Distance.Value then
-            TextLabel.Text = Text.."\n[ "..string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance).." ]"
-		else
-			TextLabel.Text = Text
-        end
-    end
-end)
+    Type = Type or OutlineColor -- WEIRD AS SHIT trust the process tho
+    if not Type then
+		error("TYPE DOESNT FUCKING EXISTTTTT OH MY FUCKING GOD YOU DUMB FUCKKK HOLY SHIT :)")
+	end
 
-    game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { FillTransparency = Options.ESPS_FillTransparency.Value } ):Play()
-    game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { OutlineTransparency = Options.ESPS_OutlineTransparency.Value } ):Play()
-    game:GetService("TweenService"):Create( TextLabel, TweenInfo.new( Options.ESPS_FadeTime.Value ), { TextTransparency = 0 } ):Play()
+    if Type == "Entities" then
+        game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { FillTransparency = (Toggles.ESPE_Enabled.Value and Toggles.ESPE_Fill.Value) and Options.ESPS_FillTransparency.Value or 1 } ):Play()
+        game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { OutlineTransparency = (Toggles.ESPE_Enabled.Value and Toggles.ESPE_Outline.Value) and Options.ESPS_OutlineTransparency.Value or 1 } ):Play()
+        game:GetService("TweenService"):Create( TextLabel, TweenInfo.new( Options.ESPS_FadeTime.Value ), { TextTransparency = 0 } ):Play()
+    elseif Type == "Players" then
+        game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { FillTransparency = (Toggles.ESPP_Enabled.Value and Toggles.ESPP_Fill.Value) and Options.ESPS_FillTransparency.Value or 1 } ):Play()
+        game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { OutlineTransparency = (Toggles.ESPP_Enabled.Value and Toggles.ESPP_Outline.Value) and Options.ESPS_OutlineTransparency.Value or 1 } ):Play()
+        game:GetService("TweenService"):Create( TextLabel, TweenInfo.new( Options.ESPS_FadeTime.Value ), { TextTransparency = 0 } ):Play()
+    else
+        game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { FillTransparency = (Toggles.ESPI_M_Enabled.Value and Toggles.ESPI_M_Fill.Value and Toggles["ESPI_C_" .. Type].Value) and Options.ESPS_FillTransparency.Value or 1 } ):Play()
+        game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { OutlineTransparency = (Toggles.ESPI_M_Enabled.Value and Toggles.ESPI_M_Outline.Value and Toggles["ESPI_C_" .. Type].Value) and Options.ESPS_OutlineTransparency.Value or 1 } ):Play()
+        game:GetService("TweenService"):Create( TextLabel, TweenInfo.new( Options.ESPS_FadeTime.Value ), { TextTransparency = 0 } ):Play()
+    end
 
     return Highlight, TextLabel
 end
-
+	
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
