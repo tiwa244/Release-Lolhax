@@ -2062,12 +2062,13 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, Type)
     Highlight.OutlineTransparency = 1
 
     TextLabel:SetAttribute("Text", Text)
-	if Toggles.ESPI_M_Distance.Value then
-		local Distance = (workspace.CurrentCamera.CFrame.Position - TextAdornee:GetPivot().Position).Magnitude
-		TextLabel.Text = Text .. "\n[ " .. string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance) .. " ]"
-	else
-		TextLabel.Text = Text
-	end
+if Toggles.ESPI_M_Distance.Value then
+    local pos = TextAdornee:IsA("Model") and TextAdornee:GetPivot().Position or TextAdornee.Position
+    local Distance = (workspace.CurrentCamera.CFrame.Position - pos).Magnitude
+    TextLabel.Text = Text .. "\n[ " .. string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance) .. " ]"
+else
+    TextLabel.Text = Text
+end
 
     game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { FillTransparency = Options.ESPS_FillTransparency.Value } ):Play()
     game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { OutlineTransparency = Options.ESPS_OutlineTransparency.Value } ):Play()
