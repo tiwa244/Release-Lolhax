@@ -3640,7 +3640,7 @@ local Connections = {
                 Instance.new("Humanoid", v)
                 Part.Transparency = 0.999
 
-                local Highlight, TextLabel = Esp(v, v, "Rush", Color3.new(0.5, 0.55, 0.6), "Entities")
+                local Highlight, TextLabel = Esp(v, v, "Rush", Color3.new(0.5, 0.55, 0.6))
 
                 local Table = {Highlight, TextLabel}
                 table.insert(EspTable.Entities, Table)
