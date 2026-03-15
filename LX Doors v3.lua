@@ -2076,22 +2076,74 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
     TextLabel:SetAttribute("Text", Text)
 
     task.spawn(function()
-        while Parent and not Library.Unloaded and task.wait() do
-            local Distance = (workspace.CurrentCamera.CFrame.Position - Parent:GetPivot().Position).Magnitude
-        if Toggles.ESPI_M_Distance.Value then
-            TextLabel.Text = Text.."\n[ "..string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance).." ]"
-		else
-			TextLabel.Text = Text
-        end
-    end
-end)
+    while task.wait() and not Library.Unloaded do
+
+		for Name, Table in EspTable.Interactables do
+			for _, v in Table do
+                local TextLabel = v[2]
+                local String = ""
+
+                if Toggles.ESPI_M_Name.Value then
+                    String = TextLabel:GetAttribute("Text")
+                end
+
+                if Toggles.ESPI_M_Distance.Value then
+                    local Distance = (workspace.CurrentCamera.CFrame.Position - v[1].Adornee:GetPivot().Position).Magnitude
+
+                    String = String .. "\n[ " .. string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance) .. " ]"
+                end
+
+                -- 😭😭😭 wtf
+                TextLabel.Visible = Toggles.ESPI_M_Enabled.Value and Toggles["ESPI_C_" .. Name].Value
+                TextLabel.Text = String
+            end
+		end
+
+        for _, v in EspTable.Entities do
+            local TextLabel = v[2]
+            local String = ""
+
+            if Toggles.ESPE_Name.Value then
+                String = TextLabel:GetAttribute("Text")
+            end
+
+			if Toggles.ESPE_Distance.Value then
+                local Distance = (workspace.CurrentCamera.CFrame.Position - v[1].Adornee:GetPivot().Position).Magnitude
+
+                String = String .. "\n[ " .. string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance) .. " ]"
+            end
+
+            -- 😭😭😭 wtf
+            TextLabel.Visible = Toggles.ESPE_Enabled.Value
+            TextLabel.Text = String
+		end
+
+        for _, v in EspTable.Players do
+            local TextLabel = v[2]
+            local String = ""
+
+            if Toggles.ESPP_Name.Value then
+                String = TextLabel:GetAttribute("Text")
+            end
+
+			if Toggles.ESPP_Distance.Value then
+                local Distance = (workspace.CurrentCamera.CFrame.Position - v[1].Adornee:GetPivot().Position).Magnitude
+
+                String = String .. "\n[ " .. string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance) .. " ]"
+            end
+
+            -- 😭😭😭 wtf
+            TextLabel.Visible = Toggles.ESPP_Enabled.Value
+            TextLabel.Text = String
+		end
+	end)
 
     game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { FillTransparency = Options.ESPS_FillTransparency.Value } ):Play()
     game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { OutlineTransparency = Options.ESPS_OutlineTransparency.Value } ):Play()
     game:GetService("TweenService"):Create( TextLabel, TweenInfo.new( Options.ESPS_FadeTime.Value ), { TextTransparency = 0 } ):Play()
 
     return Highlight, TextLabel
-end
+end)
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
