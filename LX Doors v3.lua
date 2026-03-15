@@ -3322,10 +3322,15 @@ local Connections = {
                     end
                     
                 if Toggles.DoorNum.Value then
-                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door " .. RoomID, Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value, Options.ESPI_C_Doors_TC.Value)
-                else
-                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door", Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value, Options.ESPI_C_Doors_TC.Value)
-                    table.insert(EspTable.Interactables.Doors, {Highlight, TextLabel})
+                   local Highlight, TextLabel = Esp(Adornee, Adornee, "Door " .. RoomID, Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value, "Doors")
+
+                    local Table = {Highlight, TextLabel}
+                    table.insert(EspTable.Interactables.Doors, Table)
+				else
+                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door", Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value, "Doors")
+
+                    local Table = {Highlight, TextLabel}
+                    table.insert(EspTable.Interactables.Doors, Table)
                 end
 
                     task.delay(1, function()
