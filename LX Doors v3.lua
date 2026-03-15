@@ -2091,71 +2091,6 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, Type)
 
     return Highlight, TextLabel
 end
-	
-task.spawn(function()
-    while task.wait() and not Library.Unloaded do
-
-		for Name, Table in EspTable.Interactables do
-			for _, v in Table do
-                local TextLabel = v[2]
-                local String = ""
-
-                if Toggles.ESPI_M_Name.Value then
-                    String = TextLabel:GetAttribute("Text")
-                end
-
-                if Toggles.ESPI_M_Distance.Value then
-                    local Distance = (workspace.CurrentCamera.CFrame.Position - v[1].Adornee:GetPivot().Position).Magnitude
-
-                    String = String .. "\n[ " .. string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance) .. " ]"
-                end
-
-                -- 😭😭😭 wtf
-                TextLabel.Visible = Toggles.ESPI_M_Enabled.Value and Toggles["ESPI_C_" .. Name].Value
-                TextLabel.Text = String
-            end
-		end
-
-        for _, v in EspTable.Entities do
-            local TextLabel = v[2]
-            local String = ""
-
-            if Toggles.ESPE_Name.Value then
-                String = TextLabel:GetAttribute("Text")
-            end
-
-			if Toggles.ESPE_Distance.Value then
-                local Distance = (workspace.CurrentCamera.CFrame.Position - v[1].Adornee:GetPivot().Position).Magnitude
-
-                String = String .. "\n[ " .. string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance) .. " ]"
-            end
-
-            -- 😭😭😭 wtf
-            TextLabel.Visible = Toggles.ESPE_Enabled.Value
-            TextLabel.Text = String
-		end
-
-        for _, v in EspTable.Players do
-            local TextLabel = v[2]
-            local String = ""
-
-            if Toggles.ESPP_Name.Value then
-                String = TextLabel:GetAttribute("Text")
-            end
-
-			if Toggles.ESPP_Distance.Value then
-                local Distance = (workspace.CurrentCamera.CFrame.Position - v[1].Adornee:GetPivot().Position).Magnitude
-
-                String = String .. "\n[ " .. string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance) .. " ]"
-            end
-
-            -- 😭😭😭 wtf
-            TextLabel.Visible = Toggles.ESPP_Enabled.Value
-            TextLabel.Text = String
-		end
-
-	end
-end)
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -2499,7 +2434,71 @@ function SolveAnchor(Code, Offset)
 end
 
 -- Code vvv
+task.spawn(function()
+    while task.wait() and not Library.Unloaded do
 
+		for Name, Table in EspTable.Interactables do
+			for _, v in Table do
+                local TextLabel = v[2]
+                local String = ""
+
+                if Toggles.ESPI_M_Name.Value then
+                    String = TextLabel:GetAttribute("Text")
+                end
+
+                if Toggles.ESPI_M_Distance.Value then
+                    local Distance = (workspace.CurrentCamera.CFrame.Position - v[1].Adornee:GetPivot().Position).Magnitude
+
+                    String = String .. "\n[ " .. string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance) .. " ]"
+                end
+
+                -- 😭😭😭 wtf
+                TextLabel.Visible = Toggles.ESPI_M_Enabled.Value and Toggles["ESPI_C_" .. Name].Value
+                TextLabel.Text = String
+            end
+		end
+
+        for _, v in EspTable.Entities do
+            local TextLabel = v[2]
+            local String = ""
+
+            if Toggles.ESPE_Name.Value then
+                String = TextLabel:GetAttribute("Text")
+            end
+
+			if Toggles.ESPE_Distance.Value then
+                local Distance = (workspace.CurrentCamera.CFrame.Position - v[1].Adornee:GetPivot().Position).Magnitude
+
+                String = String .. "\n[ " .. string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance) .. " ]"
+            end
+
+            -- 😭😭😭 wtf
+            TextLabel.Visible = Toggles.ESPE_Enabled.Value
+            TextLabel.Text = String
+		end
+
+        for _, v in EspTable.Players do
+            local TextLabel = v[2]
+            local String = ""
+
+            if Toggles.ESPP_Name.Value then
+                String = TextLabel:GetAttribute("Text")
+            end
+
+			if Toggles.ESPP_Distance.Value then
+                local Distance = (workspace.CurrentCamera.CFrame.Position - v[1].Adornee:GetPivot().Position).Magnitude
+
+                String = String .. "\n[ " .. string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance) .. " ]"
+            end
+
+            -- 😭😭😭 wtf
+            TextLabel.Visible = Toggles.ESPP_Enabled.Value
+            TextLabel.Text = String
+		end
+
+	end
+end)
+	
 local CameraAdded = workspace.CurrentCamera.ChildAdded:Connect(function(v)
 
     if v.Name == "Screech" then
