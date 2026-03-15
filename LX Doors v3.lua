@@ -2420,7 +2420,10 @@ task.spawn(function()
 
 		for Name, Table in EspTable.Interactables do
 			for _, v in Table do
-				print("v:", v, typeof(v))
+				if typeof(v) ~= "table" then
+                warn("BAD ENTRY:", v, v.ClassName)
+                continue
+			end
                 local TextLabel = v[2]
                 local String = ""
 
