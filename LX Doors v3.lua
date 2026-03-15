@@ -2084,6 +2084,7 @@ task.spawn(function()
         for Name, Table in EspTable.Interactables do
 			for _, v in Table do
                 local TextLabel = v[2]
+				local Highlight = v[1]
                 local String = ""
 
                 if Toggles.ESPI_M_Name.Value then
@@ -2099,6 +2100,7 @@ task.spawn(function()
                 -- 😭😭😭 wtf
                 TextLabel.Visible = Toggles.ESPI_M_Enabled.Value and Toggles["ESPI_C_" .. Name].Value
                 TextLabel.Text = String
+				Highlight.Enabled = Toggles.ESPI_M_Enabled.Value and Toggles["ESPI_C_" .. Name].Value
             end
 		end
 			
