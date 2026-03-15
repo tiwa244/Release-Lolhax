@@ -2076,10 +2076,7 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
 
     return Highlight, TextLabel
 end
-
-task.spawn(function()
-    while task.wait() and not Library.Unloaded do
-
+ESPConnection = RunService.RenderStepped:Connect(function()		
         -- INTERACTABLES
         for Name, Table in EspTable.Interactables do
 			for _, v in Table do
@@ -6181,6 +6178,10 @@ task.spawn(function()
         FlyConnection:Disconnect()
         FlyConnection = nil
     end
+        if ESPConnection then
+	    ESPConnection:Disconnect()
+        ESPConnection = nil
+	end
         Fly:Disable()
         RemoveAllTracers()
         RemoveAllArrows()
