@@ -2588,10 +2588,31 @@ local Connections = {
                         if v:FindFirstChild("Blockage") then
                             table.insert(Targets, v.Blockage)
                         end
+								
+                        if v:FindFirstChild("Blockade") then
+                            table.insert(Targets, v.Blockade)
+                        end
+								
+                        if v:FindFirstChild("Checkout Desk") then
+                            table.insert(Targets, v["Checkout Desk"])
+                        end
+								
+                        if v:FindFirstChild("Bookshelves1") then
+                            table.insert(Targets, v.Bookshelves1)
+                        end
+								
+                        if v:FindFirstChild("Tables1") then
+                            table.insert(Targets, v.Tables1)
+                        end
+								
+                        if v:FindFirstChild("ClockSpawn") then
+                            table.insert(Targets, v.ClockSpawn)
+                        end
+								
                         if v:FindFirstChild("Decor") and v.Decor:FindFirstChild("Folder") then
                             table.insert(Targets, v.Decor.Folder)
-                        end
-
+						end
+								
                         for _, Assets in v:GetChildren() do
                             if Assets.Name == "Alternate" and Assets:FindFirstChild("Keys") then
 
