@@ -2094,6 +2094,7 @@ game:GetService("TweenService"):Create(
     TweenInfo.new(Options.ESPS_FadeTime.Value),
     { TextTransparency = 0 }
 ):Play()
+		end	
     return Highlight, TextLabel
 end
 
