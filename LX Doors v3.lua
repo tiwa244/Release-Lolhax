@@ -445,7 +445,35 @@ Script.CutsceneExclude = {
     "Elevator1",
     "MinesFinale"
 }
-
+	
+local LoremIpsumNonsense = { -- idk copied lmao
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
+    "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore.",
+    "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia.",
+    "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.",
+    "Consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt.",
+    "Aliquam quaerat voluptatem ut enim ad minima veniam, quis nostrum exercitationem.",
+    "Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil.",
+    "Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus.",
+    "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis.",
+    "Praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias.",
+    "Et harum quidem rerum facilis est et expedita distinctio.",
+    "Ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus.",
+    "Maiores alias consequatur aut perferendis doloribus asperiores repellat.",
+    "Tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.",
+    "Quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur.",
+    "Magnam aliquam quaerat voluptatem ut enim ad minima veniam.",
+    "Nostrum exercitationem ullam corporis suscipit laboriosam nisi ut aliquid.",
+    "Quis nostrum exercitationem ullam corporis suscipit laboriosam.",
+    "Fugiat quo voluptas nulla pariatur at vero eos et accusamus.",
+    "Iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti.",
+    "Corrupti quos dolores et quas molestias excepturi sint occaecati.",
+    "Sapiente delectus, ut aut reiciendis voluptatibus maiores alias.",
+    "Ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti."
+}
+	
 local lhxnxt_custom_captions = Instance.new("ScreenGui")
 do
     local Frame = Instance.new("Frame", lhxnxt_custom_captions)
