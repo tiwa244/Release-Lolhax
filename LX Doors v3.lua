@@ -2032,56 +2032,7 @@ local function ManifestMspaintFrame(target)
     return frame
 end
 
-local TweenService = game:GetService("TweenService")
-function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
-    if not Toggles.ESPI_M_Enabled.Value then return end
-
-    local BillboardGui = Instance.new("BillboardGui", Parent)
-    local TextLabel = Instance.new("TextLabel", BillboardGui)
-    local Highlight = Instance.new("Highlight", Parent)
-
-    BillboardGui.Adornee = TextAdornee
-    BillboardGui.AlwaysOnTop = true
-    BillboardGui.Name = "_LOLHAXBG"
-    BillboardGui.Size = UDim2.fromScale(1,1)
-    BillboardGui.Enabled = true
-
-    Highlight.Name = "_LOLHAXHL"
-    Highlight.Adornee = Parent
-    Highlight.FillColor = Color
-    Highlight.OutlineColor = OutlineColor or Color
-
-    if Toggles.ESPI_RAINBOW_HIGHLIGHT and Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
-        Highlight.OutlineColor = Color
-    end
-
-    TextLabel.Size = UDim2.fromScale(1,1)
-    TextLabel.TextStrokeTransparency = 0
-    TextLabel.Font = Enum.Font[Options.ESPS_Font.Value]
-    TextLabel.TextSize = Options.ESPS_FontSize.Value
-    TextLabel.TextColor3 = TextLabelColor or Color
-    TextLabel.BackgroundTransparency = 1
-    TextLabel.TextTransparency = 1
-
-    Highlight.FillTransparency = 1
-    Highlight.OutlineTransparency = 1
-
-    TextLabel:SetAttribute("Text", Text)
-
-    task.spawn(function()
-        while Parent and Parent.Parent and not Library.Unloaded and task.wait() do
-
-            -- INTERACTABLES
-            for Name, Category in pairs(EspTable.Interactables) do
-                for _, v in pairs(Category) do
-                    local Highlight = v[1]
-                    local TextLabel = v[2]
-
-                    if not Highlight or not TextLabel then continue end
-
-                    local String = ""
-
-                    if Toggles.ESPI_M_Name.Value then
+.Value then
                         String = TextLabel:GetAttribute("Text") or ""
                     end
 
@@ -2155,6 +2106,41 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
         FillTransparency = Options.ESPS_FillTransparency.Value
     }):Play()
 
+local TweenService = game:GetService("TweenService")
+
+function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
+    local BillboardGui = Instance.new("BillboardGui", Parent)
+    local TextLabel = Instance.new("TextLabel", BillboardGui)
+    local Highlight = Instance.new("Highlight", Parent)
+
+    BillboardGui.Adornee = TextAdornee
+    BillboardGui.AlwaysOnTop = true
+    BillboardGui.Name = "_LOLHAXBG"
+    BillboardGui.Size = UDim2.fromScale(1,1)
+
+    Highlight.Name = "_LOLHAXHL"
+    Highlight.Adornee = Parent
+    Highlight.FillColor = Color
+    Highlight.OutlineColor = OutlineColor or Color
+
+    TextLabel.Size = UDim2.fromScale(1,1)
+    TextLabel.TextStrokeTransparency = 0
+    TextLabel.Font = Enum.Font[Options.ESPS_Font.Value]
+    TextLabel.TextSize = Options.ESPS_FontSize.Value
+    TextLabel.TextColor3 = TextLabelColor or Color
+    TextLabel.BackgroundTransparency = 1
+    TextLabel.TextTransparency = 1
+
+    Highlight.FillTransparency = 1
+    Highlight.OutlineTransparency = 1
+
+    TextLabel:SetAttribute("Text", Text or "")
+    TextLabel.Text = Text or ""
+
+    TweenService:Create(Highlight, TweenInfo.new(Options.ESPS_FadeTime.Value), {
+        FillTransparency = Options.ESPS_FillTransparency.Value
+    }):Play()
+
     TweenService:Create(Highlight, TweenInfo.new(Options.ESPS_FadeTime.Value), {
         OutlineTransparency = Options.ESPS_OutlineTransparency.Value
     }):Play()
@@ -2165,6 +2151,121 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
 
     return Highlight, TextLabel
 end
+
+task.spawn(function()
+    while task.wait() and not Library.Unloaded do
+
+        -- INTERACTABLES
+        for Name, Category in pairs(EspTable.Interactables) do
+            for _, v in pairs(Category) do
+                local Highlight = v[1]
+                local TextLabel = v[2]
+
+                if not Highlight or not TextLabel then continue end
+
+                local String = ""
+
+                if Toggles.ESPI_M_Name.Value then
+                    String = TextLabel:GetAttribute("Text") or ""
+                end
+
+                if Toggles.ESPI_M_Distance.Value then
+                    local adornee = Highlight.Adornee
+                    if adornee then
+                        local pos
+
+                        if adornee:IsA("Model") then
+                            pos = adornee:GetPivot().Position
+                        elseif adornee:IsA("BasePart") then
+                            pos = adornee.Position
+                        end
+
+                        if pos then
+                            local Distance = (workspace.CurrentCamera.CFrame.Position - pos).Magnitude
+                            String = String .. "\n[ " .. string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance) .. " ]"
+                        end
+                    end
+                end
+
+                TextLabel.Visible = Toggles.ESPI_M_Enabled.Value
+                TextLabel.Text = String
+            end
+        end
+
+
+        -- ENTITIES
+        for _, v in pairs(EspTable.Entities) do
+            local Highlight = v[1]
+            local TextLabel = v[2]
+
+            if not Highlight or not TextLabel then continue end
+
+            local String = ""
+
+            if Toggles.ESPE_Name.Value then
+                String = TextLabel:GetAttribute("Text") or ""
+            end
+
+            if Toggles.ESPE_Distance.Value then
+                local adornee = Highlight.Adornee
+                if adornee then
+                    local pos
+
+                    if adornee:IsA("Model") then
+                        pos = adornee:GetPivot().Position
+                    elseif adornee:IsA("BasePart") then
+                        pos = adornee.Position
+                    end
+
+                    if pos then
+                        local Distance = (workspace.CurrentCamera.CFrame.Position - pos).Magnitude
+                        String = String .. "\n[ " .. string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance) .. " ]"
+                    end
+                end
+            end
+
+            TextLabel.Visible = Toggles.ESPE_Enabled.Value
+            TextLabel.Text = String
+        end
+
+
+        -- PLAYERS
+        for _, v in pairs(EspTable.Players) do
+            local Highlight = v[1]
+            local TextLabel = v[2]
+
+            if not Highlight or not TextLabel then continue end
+
+            local String = ""
+
+            if Toggles.ESPP_Name.Value then
+                String = TextLabel:GetAttribute("Text") or ""
+            end
+
+            if Toggles.ESPP_Distance.Value then
+                local adornee = Highlight.Adornee
+                if adornee then
+                    local pos
+
+                    if adornee:IsA("Model") then
+                        pos = adornee:GetPivot().Position
+                    elseif adornee:IsA("BasePart") then
+                        pos = adornee.Position
+                    end
+
+                    if pos then
+                        local Distance = (workspace.CurrentCamera.CFrame.Position - pos).Magnitude
+                        String = String .. "\n[ " .. string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance) .. " ]"
+                    end
+                end
+            end
+
+            TextLabel.Visible = Toggles.ESPP_Enabled.Value
+            TextLabel.Text = String
+        end
+
+    end
+end)
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
