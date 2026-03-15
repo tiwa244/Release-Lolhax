@@ -2063,7 +2063,7 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, Type)
     Highlight.OutlineTransparency = 1
 
     TextLabel:SetAttribute("Text", Text)
-	TextLabel.Text = TextLabel:GetAttribute("Text", true)
+	TextLabel.Text = TextLabel:GetAttribute("Text")
 
     game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { FillTransparency = Options.ESPS_FillTransparency.Value } ):Play()
     game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { OutlineTransparency = Options.ESPS_OutlineTransparency.Value } ):Play()
