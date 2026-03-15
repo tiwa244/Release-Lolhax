@@ -595,8 +595,6 @@ GeneralAutomation:AddToggle("GA_Noclip", { Text = "Noclip", Default = false, Too
 GeneralAutomation:AddDropdown("GA_AutoInteract_Options", { Values = { "Use Lockpick ( Doors )", "Use Lockpick ( Other )", "Ignore Light Sources", "Ignore Can-Die" }, Default = 0, Multi = true, Text = "Automatic Interact Options" })
 GeneralAutomation:AddSlider("GA_AutoInteract_Range", { Text = "Range Multiplier", Default = 1, Min = 1, Max = 2, Rounding = 1, Compact = false })
 GeneralAutomation:AddDivider()
-GeneralAutomation:AddToggle("GA_SkipElevatorBreaker", { Text = "Skip Elevator Breaker", Default = false, Tooltip = "Use this at the elevator breaker part only!", Disabled = not Script.IsHotel, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
-GeneralAutomation:AddDivider()
 GeneralAutomation:AddToggle("GA_NotifyOxygen", { Text = "Notify Oxygen", Default = false, Tooltip = "Notifies Oxygen"})
 GeneralAutomation:AddToggle("GA_FastClosetExt", { Text = "Fast Closet Exit", Default = true })
 GeneralAutomation:AddToggle("GA_EatCandies", { Text = "Automatic Candy Use", Default = false, }):AddKeyPicker("GA_EatCandies_K", { Default = "V", SyncToggleState = false, Mode = "Hold", Text = "Auto Use Candy", NoUI = false, Tooltip = "Will eat all candy in the player inventory when key is active." })
@@ -614,7 +612,7 @@ GeneralAutomation:AddToggle("GA_DoorReach", { Text = "Door Reach", Default = fal
 GeneralAutomation:AddDivider()
 GeneralAutomation:AddToggle("GA_MinecartInteract", { Text = "Minecart Interact Spam", Default = false, Tooltip = "Automatically spam interact with nearby minecarts when key is active.", Disabled =not Script.IsMines, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." }):AddKeyPicker("GA_MinecartInteract_K", { Default = "H", SyncToggleState = false, Mode = "Hold", Text = "Minecart Interact Spam", NoUI = false, Disabled =not Script.IsMines })
 GeneralAutomation:AddToggle("GA_AnchorAutoSolve", { Text = "Anchor Automatic Solve", Default = false, Tooltip = "Automatically solves any anchor when close enough, if it's the designated one." })
-GeneralAutomation:AddToggle("GA_BreakerAutoSolve", { Text = "Automatic Breaker Solve", Default = false, Tooltip = "Automatically solves the hotel door 100 breaker minigame." })
+GeneralAutomation:AddToggle("GA_BreakerAutoSolve", { Text = "Automatic Breaker Solve", Default = false, Tooltip = "Automatically solves the hotel door 100 breaker minigame.", Disabled = not Script.IsHotel, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 GeneralAutomation:AddDivider()
 GeneralAutomation:AddToggle("GA_AutoPadlockSolve", { Text = "Automatic Library Padlock", Default = false, Tooltip = "Automatically unlocks padlock with the code when near enough to the set distance.", Disabled = not Script.IsHotel, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 GeneralAutomation:AddSlider("GA_AutoPadlockSolve_Distance", { Text = "Automatic Padlock Distance", Default = 25, Min = 10, Max = 50, Rounding = 0, Compact = false, Tooltip = "Minimum distance for auto padlock solver to input the correct code.", Disabled = not Script.IsHotel, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
@@ -4794,67 +4792,11 @@ local function NodeDestroy(nodesList: tSortedNodes)
     Script.Functions.Minecart.debug(string.format("[NodeDestroy] Task completed, remaining: Real nodes: %d | Fake nodes %s", #nodesList.real, #nodesList.fake))
 end
 
-
 Script.FeatureConnections.Character["Oxygen"] = LocalPlayer.Character:GetAttributeChangedSignal("Oxygen"):Connect(function()
-            if not Toggles.GA_NotifyOxygen then return end
-            if not Toggles.GA_NotifyOxygen.Value then return end
-            if LocalPlayer.Character:GetAttribute("Oxygen") >= 100 then return end
-                Script.Functions.Captions(string.format("Oxygen: %.1f", LocalPlayer.Character:GetAttribute("Oxygen")))
-        end)
-
-local ElevatorConnection
-
-Toggles.GA_SkipElevatorBreaker:OnChanged(function(value)
-    if not Script.IsHotel then return end
-    -- 
-    if ElevatorConnection then 
-        ElevatorConnection:Disconnect() 
-        ElevatorConnection = nil 
-    end
-
-    if value then
-        -- ?
-        local function attemptSkip(room)
-    task.spawn(function()
-        Script.Functions.Minecart.debug("[eb] Monitoring room: " .. room.Name)
-        
-        local breaker = nil
-        --  its lagging me dumbass
-        for i = 1, 20 do
-            breaker = room:FindFirstChild("ElevatorBreakerEmpty", true) or room:FindFirstChild("ElevatorBreaker", true)
-            
-            if breaker then
-                Script.Functions.Minecart.debug("[probably 100 attemps] SUCCESS: Found breaker after " .. i .. " attempts!")
-                game.ReplicatedStorage.RemotesFolder.EBF:FireServer()
-            end
-            
-            -- hell no
-            if i % 5 == 0 then
-                Script.Functions.Minecart.debug("[please] Still searching room " .. room.Name .. "... (Attempt " .. i .. ")")
-            end
-            
-            task.wait(0.5)
-        end
-        
-        Script.Functions.Minecart.debug("[skipelevat] FAILED: Could not find breaker in " .. room.Name .. " after 10s.")
-    end)
-end
-
-        -- somoe checks ask him
-        for _, room in pairs(workspace.CurrentRooms:GetChildren()) do
-            attemptSkip(room)
-        end
-
-        -- 4. s??
-        ElevatorConnection = workspace.CurrentRooms.ChildAdded:Connect(function(room)
-            --  what
-            task.delay(0.5, function()
-                if Toggles.GA_SkipElevatorBreaker.Value then
-                    attemptSkip(room)
-                end
-            end)
-        end)
-    end
+    if not Toggles.GA_NotifyOxygen then return end
+    if not Toggles.GA_NotifyOxygen.Value then return end
+    if LocalPlayer.Character:GetAttribute("Oxygen") >= 100 then return end
+    Script.Functions.Captions(string.format("Oxygen: %.1f", LocalPlayer.Character:GetAttribute("Oxygen")))
 end)
 
 local Connect = {}
