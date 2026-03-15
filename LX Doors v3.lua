@@ -1425,18 +1425,12 @@ local EspTable = {
         LibraryBooks = {},
         BreakerPoles = {},
         Anchors = {},
-        None = {
-            Ladder = {}
-        },
-
+        None = {},
         MiscPickups = {}
     },
 
     Entities = {},
-    HidingSpots = {
-        "Locker",
-        "Wardrobe"
-    }, 
+    HidingSpots = {}, 
     Players = {}
 }
 
