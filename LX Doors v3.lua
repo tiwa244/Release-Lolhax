@@ -2033,57 +2033,6 @@ local function ManifestMspaintFrame(target)
 end
 
 local TweenService = game:GetService("TweenService")
-
-function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
-    if not Toggles.ESPI_M_Enabled.Value then return end
-
-    local BillboardGui = Instance.new("BillboardGui", Parent)
-    local TextLabel = Instance.new("TextLabel", BillboardGui)
-    local Highlight = Instance.new("Highlight", Parent)
-
-    BillboardGui.Adornee = TextAdornee
-    BillboardGui.AlwaysOnTop = true
-    BillboardGui.Name = "_LOLHAXBG"
-    BillboardGui.Size = UDim2.fromScale(1,1)
-    BillboardGui.Enabled = true
-
-    Highlight.Name = "_LOLHAXHL"
-    Highlight.Adornee = Parent
-    Highlight.FillColor = Color
-    Highlight.OutlineColor = OutlineColor or Color
-
-    if Toggles.ESPI_RAINBOW_HIGHLIGHT and Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
-        Highlight.OutlineColor = Color
-    end
-
-    TextLabel.Size = UDim2.fromScale(1,1)
-    TextLabel.TextStrokeTransparency = 0
-    TextLabel.Font = Enum.Font[Options.ESPS_Font.Value]
-    TextLabel.TextSize = Options.ESPS_FontSize.Value
-    TextLabel.TextColor3 = TextLabelColor or Color
-    TextLabel.BackgroundTransparency = 1
-    TextLabel.TextTransparency = 1
-
-    Highlight.FillTransparency = 1
-    Highlight.OutlineTransparency = 1
-
-    TextLabel:SetAttribute("Text", Text)
-
-    task.spawn(function()
-        while Parent and Parent.Parent and not Library.Unloaded and task.wait() do
-            local String = ""
-
-            if Toggles.ESPI_M_Name.Value then
-                String = TextLabel:GetAttribute("Text") or ""
-            end
-
-            if Toggles.ESPI_M_Distance.Value then
-                local Distance = (workspace.CurrentCamera.CFrame.Position - TextAdornee:GetPivot().Position).Magnitude
-                String = String .. "\n[ " .. string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance) .. " ]"
-            end
-
-local TweenService = game:GetService("TweenService")
-
 function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
     if not Toggles.ESPI_M_Enabled.Value then return end
 
