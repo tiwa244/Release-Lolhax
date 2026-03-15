@@ -625,7 +625,7 @@ GeneralNotifying:AddDivider()
 GeneralNotifying:AddToggle("GN_AnchorCode", { Text = "Anchor Code", Default = false, Tooltip = "Will notify upon any anchor code being confirmed.", Disabled = not Script.IsMines, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 GeneralNotifying:AddToggle("GN_PadlockCode", { Text = "Library Padlock Code", Default = false, Tooltip = "Will notify upon padlock code being confirmed.", Disabled = not Script.IsHotel, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 GeneralNotifying:AddToggle("GN_Entities", { Text = "Entity Notifying", Default = false, Tooltip = "Will notify upon a selected entity spawning." })
-GeneralNotifying:AddDropdown("GN_Entities_Options", { Values = { "Rush", "Blitz", "Ambush", "Eyes", "Lookman", "Halt", "Screech", "Gloombat Swarm", "Dread", "A-60", "A-120" }, Default = 0, Multi = true, Text = "Entity List", Tooltip = "Entity whitelist to notify for." })
+GeneralNotifying:AddDropdown("GN_Entities_Options", { Values = { "Rush", "Custom Rush", "Blitz", "Ambush", "Eyes", "Lookman", "Halt", "Screech", "Gloombat Swarm", "Dread", "A-60", "A-120" }, Default = 0, Multi = true, Text = "Entity List", Tooltip = "Entity whitelist to notify for." })
 GeneralNotifying:AddDivider()
 GeneralNotifying:AddDropdown("GN_NotificationAlignment", { Values = { "Left", "Center", "Right" }, Default = 2, Multi = false, Text = "Horizontal Alignment" })
 GeneralNotifying:AddSlider("GN_NotificationOffset_X", { Text = "X Offset", Default = 0, Min = -1, Max = 1, Rounding = 2, Compact = true })
@@ -3626,6 +3626,41 @@ local Connections = {
                 if Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["Dread"] then
                     Library:Notify("Entity 'Dread' has spawned!", "Open the next door quickly!")
                 end
+
+			elseif v.Name == "CustomEntity" then
+
+                local Part
+
+                -- name can be censored sometimes... 😐
+                repeat
+                    task.wait()
+                    Part = v:FindFirstChildWhichIsA("Part")
+                until Part
+
+                Instance.new("Humanoid", v)
+                Part.Transparency = 0.999
+
+                local Highlight, TextLabel = Esp(v, v, "Rush", Color3.new(0.5, 0.55, 0.6), "Entities")
+
+                local Table = {Highlight, TextLabel}
+                table.insert(EspTable.Entities, Table)
+
+                v.Destroying:Once(function()
+                    table.remove(EspTable.Entities, table.find(EspTable.Entities, Table))
+                end)
+
+                if Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["Custom Rush"] then
+					local String = "Find a hiding spot quickly!"
+
+                    if v:GetAttribute("iterations") > 0 then
+						String = "Entity will rebound " .. v:GetAttribute("iterations") .. " times," .. String
+					end
+                    if v:GetAttribute("damageAmount") <= 0 then
+						String = "Entity will not do damage."
+                    end
+
+                    Library:Notify("Entity 'Custom Rush' has spawned!", String)
+			   end
 
             elseif v.Name == "RushMoving" then
 
