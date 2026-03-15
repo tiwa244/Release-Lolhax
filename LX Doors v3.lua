@@ -2069,25 +2069,11 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, Type)
     Highlight.OutlineTransparency = 1
 
     TextLabel:SetAttribute("Text", Text)
+	TextLabel.Text = TextLabel:GetAttribute("Text", true)
 
-    Type = Type or OutlineColor -- WEIRD AS SHIT trust the process tho
-    if not Type then
-		error("TYPE DOESNT FUCKING EXISTTTTT OH MY FUCKING GOD YOU DUMB FUCKKK HOLY SHIT :)")
-	end
-
-    if Type == "Entities" then
-        game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { FillTransparency = (Toggles.ESPE_Enabled.Value and Toggles.ESPE_Fill.Value) and Options.ESPS_FillTransparency.Value or 1 } ):Play()
-        game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { OutlineTransparency = (Toggles.ESPE_Enabled.Value and Toggles.ESPE_Outline.Value) and Options.ESPS_OutlineTransparency.Value or 1 } ):Play()
-        game:GetService("TweenService"):Create( TextLabel, TweenInfo.new( Options.ESPS_FadeTime.Value ), { TextTransparency = 0 } ):Play()
-    elseif Type == "Players" then
-        game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { FillTransparency = (Toggles.ESPP_Enabled.Value and Toggles.ESPP_Fill.Value) and Options.ESPS_FillTransparency.Value or 1 } ):Play()
-        game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { OutlineTransparency = (Toggles.ESPP_Enabled.Value and Toggles.ESPP_Outline.Value) and Options.ESPS_OutlineTransparency.Value or 1 } ):Play()
-        game:GetService("TweenService"):Create( TextLabel, TweenInfo.new( Options.ESPS_FadeTime.Value ), { TextTransparency = 0 } ):Play()
-    else
-        game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { FillTransparency = Options.ESPS_FillTransparency.Value } ):Play()
-        game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { OutlineTransparency = Options.ESPS_OutlineTransparency.Value } ):Play()
-        game:GetService("TweenService"):Create( TextLabel, TweenInfo.new( Options.ESPS_FadeTime.Value ), { TextTransparency = 0 } ):Play()
-    end
+    game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { FillTransparency = Options.ESPS_FillTransparency.Value } ):Play()
+    game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { OutlineTransparency = Options.ESPS_OutlineTransparency.Value } ):Play()
+    game:GetService("TweenService"):Create( TextLabel, TweenInfo.new( Options.ESPS_FadeTime.Value ), { TextTransparency = 0 } ):Play()
 
     return Highlight, TextLabel
 end
@@ -2435,6 +2421,71 @@ end
 
 -- Code vvv
 
+task.spawn(function()
+    while task.wait() and not Library.Unloaded do
+
+		for Name, Table in EspTable.Interactables do
+			for _, v in Table do
+                local TextLabel = v[2]
+                local String = ""
+
+                if Toggles.ESPI_M_Name.Value then
+                    String = TextLabel:GetAttribute("Text")
+                end
+
+                if Toggles.ESPI_M_Distance.Value then
+                    local Distance = (workspace.CurrentCamera.CFrame.Position - v[1].Adornee:GetPivot().Position).Magnitude
+
+                    String = String .. "\n[ " .. string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance) .. " ]"
+                end
+
+                -- 😭😭😭 wtf
+                TextLabel.Visible = Toggles.ESPI_M_Enabled.Value and Toggles["ESPI_C_" .. Name].Value
+                TextLabel.Text = String
+            end
+		end
+
+        for _, v in EspTable.Entities do
+            local TextLabel = v[2]
+            local String = ""
+
+            if Toggles.ESPE_Name.Value then
+                String = TextLabel:GetAttribute("Text")
+            end
+
+			if Toggles.ESPE_Distance.Value then
+                local Distance = (workspace.CurrentCamera.CFrame.Position - v[1].Adornee:GetPivot().Position).Magnitude
+
+                String = String .. "\n[ " .. string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance) .. " ]"
+            end
+
+            -- 😭😭😭 wtf
+            TextLabel.Visible = Toggles.ESPE_Enabled.Value
+            TextLabel.Text = String
+		end
+
+        for _, v in EspTable.Players do
+            local TextLabel = v[2]
+            local String = ""
+
+            if Toggles.ESPP_Name.Value then
+                String = TextLabel:GetAttribute("Text")
+            end
+
+			if Toggles.ESPP_Distance.Value then
+                local Distance = (workspace.CurrentCamera.CFrame.Position - v[1].Adornee:GetPivot().Position).Magnitude
+
+                String = String .. "\n[ " .. string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance) .. " ]"
+            end
+
+            -- 😭😭😭 wtf
+            TextLabel.Visible = Toggles.ESPP_Enabled.Value
+            TextLabel.Text = String
+		end
+
+	end
+end)
+	
 local CameraAdded = workspace.CurrentCamera.ChildAdded:Connect(function(v)
 
     if v.Name == "Screech" then
