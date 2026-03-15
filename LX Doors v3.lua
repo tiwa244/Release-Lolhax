@@ -546,8 +546,6 @@ do
     end
 end
 
-
-
 local ErrorMessageOut
 ErrorMessageOut = game:GetService("LogService").MessageOut:Connect(function(Message, Type)
 
