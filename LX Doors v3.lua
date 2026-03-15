@@ -2081,32 +2081,27 @@ task.spawn(function()
     while task.wait() and not Library.Unloaded do
 
         -- INTERACTABLES
-        for Name, Category in pairs(EspTable.Interactables) do
-            for _, v in pairs(Category) do
-                local Highlight = v[1]
+        for Name, Table in EspTable.Interactables do
+			for _, v in Table do
                 local TextLabel = v[2]
-
-                if not Highlight or not TextLabel then continue end
-
                 local String = ""
 
                 if Toggles.ESPI_M_Name.Value then
-                    String = TextLabel:GetAttribute("Text") or ""
+                    String = TextLabel:GetAttribute("Text")
                 end
 
                 if Toggles.ESPI_M_Distance.Value then
-                   local adornee = v[1].Adornee
-                   local pos = adornee:IsA("Model") and adornee:GetPivot().Position or adornee.Position
-                   local Distance = (workspace.CurrentCamera.CFrame.Position - pos).Magnitude
+                    local Distance = (workspace.CurrentCamera.CFrame.Position - v[1].Adornee:GetPivot().Position).Magnitude
 
-                   String = String .. "\n[ " .. string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance) .. " ]"
-				end
+                    String = String .. "\n[ " .. string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance) .. " ]"
+                end
 
-                TextLabel.Visible = Toggles.ESPI_M_Enabled.Value
+                -- 😭😭😭 wtf
+                TextLabel.Visible = Toggles.ESPI_M_Enabled.Value and Toggles["ESPI_C_" .. Name].Value
                 TextLabel.Text = String
             end
-        end
-
+		end
+			
         -- ENTITIES
         for _, v in pairs(EspTable.Entities) do
             local Highlight = v[1]
