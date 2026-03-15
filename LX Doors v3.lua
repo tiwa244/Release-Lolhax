@@ -2076,105 +2076,6 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
 
     return Highlight, TextLabel
 end
-local RunService = game:GetService("RunService")
-ESPConnection = RunService.RenderStepped:Connect(function()		
-        -- INTERACTABLES
-        for Name, Table in EspTable.Interactables do
-			for _, v in Table do
-                local TextLabel = v[2]
-				local Highlight = v[1]
-                local String = ""
-
-                if Toggles.ESPI_M_Name.Value then
-                    String = TextLabel:GetAttribute("Text")
-                end
-
-                if Toggles.ESPI_M_Distance.Value then
-                    local Distance = (workspace.CurrentCamera.CFrame.Position - v[1].Adornee:GetPivot().Position).Magnitude
-
-                    String = String .. "\n[ " .. string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance) .. " ]"
-                end
-
-                -- 😭😭😭 wtf
-                TextLabel.Visible = Toggles.ESPI_M_Enabled.Value and Toggles["ESPI_C_" .. Name].Value
-                TextLabel.Text = String
-				Highlight.Enabled = Toggles.ESPI_M_Enabled.Value and Toggles["ESPI_C_" .. Name].Value
-            end
-		end
-			
-        -- ENTITIES
-        for _, v in pairs(EspTable.Entities) do
-            local Highlight = v[1]
-            local TextLabel = v[2]
-
-            if not Highlight or not TextLabel then continue end
-
-            local String = ""
-
-            if Toggles.ESPE_Name.Value then
-                String = TextLabel:GetAttribute("Text") or ""
-            end
-
-            if Toggles.ESPE_Distance.Value then
-                local adornee = Highlight.Adornee
-                if adornee then
-                    local pos
-
-                    if adornee:IsA("Model") then
-                        pos = adornee:GetPivot().Position
-                    elseif adornee:IsA("BasePart") then
-                        pos = adornee.Position
-                    end
-
-                    if pos then
-                        local Distance = (workspace.CurrentCamera.CFrame.Position - pos).Magnitude
-                        String = String .. "\n[ " .. string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance) .. " ]"
-                    end
-                end
-            end
-
-            TextLabel.Visible = Toggles.ESPE_Enabled.Value
-            TextLabel.Text = String
-        end
-
-
-        -- PLAYERS
-        for _, v in pairs(EspTable.Players) do
-            local Highlight = v[1]
-            local TextLabel = v[2]
-
-            if not Highlight or not TextLabel then continue end
-
-            local String = ""
-
-            if Toggles.ESPP_Name.Value then
-                String = TextLabel:GetAttribute("Text") or ""
-            end
-
-            if Toggles.ESPP_Distance.Value then
-                local adornee = Highlight.Adornee
-                if adornee then
-                    local pos
-
-                    if adornee:IsA("Model") then
-                        pos = adornee:GetPivot().Position
-                    elseif adornee:IsA("BasePart") then
-                        pos = adornee.Position
-                    end
-
-                    if pos then
-                        local Distance = (workspace.CurrentCamera.CFrame.Position - pos).Magnitude
-                        String = String .. "\n[ " .. string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance) .. " ]"
-                    end
-                end
-            end
-
-            TextLabel.Visible = Toggles.ESPP_Enabled.Value
-            TextLabel.Text = String
-        end
-
-    end
-end)
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -2518,7 +2419,72 @@ function SolveAnchor(Code, Offset)
 end
 
 -- Code vvvv
-	
+
+task.spawn(function()
+    while task.wait() and not Library.Unloaded do
+
+		for Name, Table in EspTable.Interactables do
+			for _, v in Table do
+                local TextLabel = v[2]
+                local String = ""
+
+                if Toggles.ESPI_M_Name.Value then
+                    String = TextLabel:GetAttribute("Text")
+                end
+
+                if Toggles.ESPI_M_Distance.Value then
+                    local Distance = (workspace.CurrentCamera.CFrame.Position - v[1].Adornee:GetPivot().Position).Magnitude
+
+                    String = String .. "\n[ " .. string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance) .. " ]"
+                end
+
+                -- 😭😭😭 wtf
+                TextLabel.Visible = Toggles.ESPI_M_Enabled.Value and Toggles["ESPI_C_" .. Name].Value
+                TextLabel.Text = String
+            end
+		end
+
+        for _, v in EspTable.Entities do
+            local TextLabel = v[2]
+            local String = ""
+
+            if Toggles.ESPE_Name.Value then
+                String = TextLabel:GetAttribute("Text")
+            end
+
+			if Toggles.ESPE_Distance.Value then
+                local Distance = (workspace.CurrentCamera.CFrame.Position - v[1].Adornee:GetPivot().Position).Magnitude
+
+                String = String .. "\n[ " .. string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance) .. " ]"
+            end
+
+            -- 😭😭😭 wtf
+            TextLabel.Visible = Toggles.ESPE_Enabled.Value
+            TextLabel.Text = String
+		end
+
+        for _, v in EspTable.Players do
+            local TextLabel = v[2]
+            local String = ""
+
+            if Toggles.ESPP_Name.Value then
+                String = TextLabel:GetAttribute("Text")
+            end
+
+			if Toggles.ESPP_Distance.Value then
+                local Distance = (workspace.CurrentCamera.CFrame.Position - v[1].Adornee:GetPivot().Position).Magnitude
+
+                String = String .. "\n[ " .. string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance) .. " ]"
+            end
+
+            -- 😭😭😭 wtf
+            TextLabel.Visible = Toggles.ESPP_Enabled.Value
+            TextLabel.Text = String
+		end
+
+	end
+end)
+
 local CameraAdded = workspace.CurrentCamera.ChildAdded:Connect(function(v)
 
     if v.Name == "Screech" then
@@ -6177,11 +6143,7 @@ task.spawn(function()
     end
         if FlyConnection then
         FlyConnection:Disconnect()
-        FlyConnection = nil
-    end
-        if ESPConnection then
-	    ESPConnection:Disconnect()
-        ESPConnection = nil
+        FlyConnection = nil										
 	end
         Fly:Disable()
         RemoveAllTracers()
