@@ -2077,8 +2077,8 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, Type)
         game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { OutlineTransparency = (Toggles.ESPP_Enabled.Value and Toggles.ESPP_Outline.Value) and Options.ESPS_OutlineTransparency.Value or 1 } ):Play()
         game:GetService("TweenService"):Create( TextLabel, TweenInfo.new( Options.ESPS_FadeTime.Value ), { TextTransparency = 0 } ):Play()
     else
-        game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { FillTransparency = (Toggles.ESPI_M_Enabled.Value and Toggles.ESPI_M_Fill.Value and Toggles["ESPI_C_" .. Type].Value) and Options.ESPS_FillTransparency.Value or 1 } ):Play()
-        game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { OutlineTransparency = (Toggles.ESPI_M_Enabled.Value and Toggles.ESPI_M_Outline.Value and Toggles["ESPI_C_" .. Type].Value) and Options.ESPS_OutlineTransparency.Value or 1 } ):Play()
+        game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { FillTransparency = (Toggles.ESPI_M_Enabled.Value and Toggles.ESPI_M_Fill.Value and Options.ESPS_FillTransparency.Value or 1 } ):Play()
+        game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { OutlineTransparency = (Toggles.ESPI_M_Enabled.Value and Toggles.ESPI_M_Outline.Value and Options.ESPS_OutlineTransparency.Value or 1 } ):Play()
         game:GetService("TweenService"):Create( TextLabel, TweenInfo.new( Options.ESPS_FadeTime.Value ), { TextTransparency = 0 } ):Play()
     end
 
