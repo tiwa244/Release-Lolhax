@@ -5234,6 +5234,11 @@ for _, v in Rooms:GetChildren() do
                     if Toggles.GA_BreakerAutoSolve.Value then
                         local State = ElevatorBreaker.SurfaceGui.Frame.Code.Frame.BackgroundTransparency == 0
 
+				   if Options.GA_BreakerAutoSolveOption.Value == "Exploit" then
+                               game.ReplicatedStorage.RemotesFolder.EBF:FireServer()
+                               return
+						end
+												
                         if ElevatorBreaker.SurfaceGui.Frame.Code.Text == "..." then
 
                             BreakerAlreadyDone = {}
