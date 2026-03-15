@@ -1852,7 +1852,35 @@ function Notify(TitleText, SubText, Duration, Force)
         end)
     end)
 end
+	
+function MissingNumber(a, b)
+	local Total = (b + 1) * (b + 2) / 2
 
+	for i = 1, #a do
+		Total -= a[i]
+	end
+
+	return Total 
+end
+
+-- omfg fudging pasted from lolhax v2.0.0.0 >:( idc this is like 1 day before april first i cant be fucked reinventing the wheel for literally no reason
+function BreakerThing(Breaker, Bool)
+    Breaker:SetAttribute("Enabled", Bool)
+
+    if Breaker:GetAttribute("Enabled") then
+        Breaker:FindFirstChild("PrismaticConstraint", true).TargetPosition = -0.2
+        Breaker.Light.Material = Enum.Material.Neon
+        Breaker.Light.Attachment.Spark:Emit(1)
+        Breaker.Sound.Pitch = 1.3
+    else
+        Breaker:FindFirstChild("PrismaticConstraint", true).TargetPosition = 0.2
+        Breaker.Light.Material = Enum.Material.Glass
+        Breaker.Sound.Pitch = 1.2
+    end
+
+    Breaker.Sound:Play()
+end
+	
 function Library:Notify(options, description, duration, force)
     -- Normalize input
     local data
