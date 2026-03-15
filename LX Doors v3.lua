@@ -2095,28 +2095,17 @@ task.spawn(function()
                 end
 
                 if Toggles.ESPI_M_Distance.Value then
-                    local adornee = Highlight.Adornee
-                    if adornee then
-                        local pos
+                   local adornee = v[1].Adornee
+                   local pos = adornee:IsA("Model") and adornee:GetPivot().Position or adornee.Position
+                   local Distance = (workspace.CurrentCamera.CFrame.Position - pos).Magnitude
 
-                        if adornee:IsA("Model") then
-                            pos = adornee:GetPivot().Position
-                        elseif adornee:IsA("BasePart") then
-                            pos = adornee.Position
-                        end
-
-                        if pos then
-                            local Distance = (workspace.CurrentCamera.CFrame.Position - pos).Magnitude
-                            String = String .. "\n[ " .. string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance) .. " ]"
-                        end
-                    end
-                end
+                   String = String .. "\n[ " .. string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance) .. " ]"
+				end
 
                 TextLabel.Visible = Toggles.ESPI_M_Enabled.Value
                 TextLabel.Text = String
             end
         end
-
 
         -- ENTITIES
         for _, v in pairs(EspTable.Entities) do
