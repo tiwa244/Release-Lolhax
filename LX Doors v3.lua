@@ -1429,10 +1429,7 @@ local EspTable = {
     },
 
     Entities = {},
-    HidingSpots = {
-        "Locker",
-        "Wardrobe"
-    }, 
+    HidingSpots = {},
     Players = {}
 }
 
