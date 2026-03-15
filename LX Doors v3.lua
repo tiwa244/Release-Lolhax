@@ -2063,6 +2063,7 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, Type)
 
     TextLabel:SetAttribute("Text", Text)
 	if Toggles.ESPI_M_Distance.Value then
+		local Distance = (workspace.CurrentCamera.CFrame.Position - Parent:GetPivot().Position).Magnitude
 		TextLabel.Text = Text .. "\n[ " .. string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance) .. " ]"
 	else
 		TextLabel.Text = Text
