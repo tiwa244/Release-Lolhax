@@ -718,26 +718,30 @@ ExploitRemovals:AddToggle("ER_NoA90Damage", { Text = "No A-90 Damage", Default =
 ExploitRemovals:AddToggle("ER_NoScreechDamage", { Text = "No Screech Damage", Default = false, Tooltip = "Completely disables entity 'Screech' damaging you.", Visible = Script.IsHotel or Script.IsMines, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 ExploitRemovals:AddToggle("ER_NoShadeDamage", { Text = "No Halt Damage", Default = false, Tooltip = "Completely disables entity 'Halt' damaging you.", Visible = Script.IsHotel or Script.IsMines, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 
---[[local ESPEntities = Tabs.ESP:AddLeftGroupbox("Entities")
+local ESPEntities = Tabs.ESP:AddLeftGroupbox("Entities")
 ESPEntities:AddToggle("ESPE_Enabled", { Text = "Enabled", Default = false })
 ESPEntities:AddDivider()
 ESPEntities:AddToggle("ESPE_Name", { Text = "Name", Default = false })
 ESPEntities:AddToggle("ESPE_Distance", { Text = "Distance", Default = false })
 ESPEntities:AddToggle("ESPE_Fill", { Text = "Highlight Fill", Default = false })
-ESPEntities:AddToggle("ESPE_Enabled", { Text = "Highlight Outline", Default = false })]]
+ESPEntities:AddToggle("ESPE_Outline", { Text = "Highlight Outline", Default = false })
 
+local ESPPlayers = Tabs.ESP:AddLeftGroupbox("Players")
+ESPPlayers:AddToggle("ESPP_Enabled", { Text = "Enabled", Default = false })
+:AddColorPicker("ESPP_Color_F", { Default = Color3.new(0, 1, 0.5), Title = "Fill Color" })
+:AddColorPicker("ESPP_Color_O", { Default = Color3.new(0, 0, 0), Title = "Outline Color" })
+ESPPlayers:AddDivider()
+ESPPlayers:AddToggle("ESPP_Name", { Text = "Name", Default = false })
+ESPPlayers:AddToggle("ESPP_Distance", { Text = "Distance", Default = false })
+ESPPlayers:AddToggle("ESPP_Fill", { Text = "Highlight Fill", Default = false })
+ESPPlayers:AddToggle("ESPP_Outline", { Text = "Highlight Outline", Default = false })
+	
 -- we have notify entity which uhh gives entity esps! so like very useless!!!!!!!!!!!!!!!!!!!
 local ESPLXUSER = Tabs.ESP:AddLeftGroupbox("LXStuff")
 ESPLXUSER:AddToggle("LXPP_Enabled", { Text = "ESP LXUSER", Default = false })
 :AddColorPicker("LXPLAYERFILLCOLOR", { Default = Color3.new(0.141176, 0.792156, 0.282352), Title = "Fill Color" })
 :AddColorPicker("LXPPLAYEROUTLINECOLOR", { Default = Color3.new(0.141176, 0.792156, 0.282352), Title = "Outline Color" })
 ESPLXUSER:AddDivider()
-
-
-local ESPPlayers = Tabs.ESP:AddLeftGroupbox("Players")
-ESPPlayers:AddToggle("ESPP_Enabled", { Text = "Enabled", Default = false })
-:AddColorPicker("ESPPLAYERFILLCOLOR", { Default = Color3.new(1, 1, 1), Title = "Fill Color" })
-:AddColorPicker("ESPPLAYEROUTLINECOLOR", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
 
 local ESPExtras = Tabs.ESP:AddLeftGroupbox("Extras")
 ESPExtras:AddToggle("ClosetESP", { Text = "Closet ESP", Default = true, Tooltip = "Highlights Closets."})
