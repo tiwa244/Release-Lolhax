@@ -2093,7 +2093,7 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
                         end
                     end
 
-                    TextLabel.Visible = Toggles.ESPI_M_Enabled.Value and (Toggles["ESPI_C_"..Name] and Toggles["ESPI_C_"..Name].Value)
+                    TextLabel.Visible = Toggles.ESPI_M_Enabled.Value 
                     TextLabel.Text = String
                 end
             end
