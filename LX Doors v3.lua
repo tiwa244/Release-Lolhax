@@ -2147,7 +2147,7 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
     game:GetService("TweenService"):Create( TextLabel, TweenInfo.new( Options.ESPS_FadeTime.Value ), { TextTransparency = 0 } ):Play()
 
     return Highlight, TextLabel
-end)
+end
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
