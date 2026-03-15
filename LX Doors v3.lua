@@ -2420,6 +2420,7 @@ task.spawn(function()
 
 		for Name, Table in EspTable.Interactables do
 			for _, v in Table do
+				print("v:", v, typeof(v))
                 local TextLabel = v[2]
                 local String = ""
 
