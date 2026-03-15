@@ -2076,6 +2076,7 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
 
     return Highlight, TextLabel
 end
+local RunService = game:GetService("RunService")
 ESPConnection = RunService.RenderStepped:Connect(function()		
         -- INTERACTABLES
         for Name, Table in EspTable.Interactables do
