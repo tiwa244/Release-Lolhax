@@ -2082,7 +2082,7 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
     task.spawn(function()
     while task.wait() and not Library.Unloaded do
 
-		for Name, Table in pairs(EspTable.Interactables) do
+		for Name, v in pairs(EspTable.Interactables) do
 			for _, v in Table do
                 local TextLabel = v[2]
                 local String = ""
