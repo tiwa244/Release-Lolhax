@@ -2904,21 +2904,11 @@ local Connections = {
                             end
                         end
 
-                    elseif Root.Name == "Bookshelves1" then
-                        for _, Shelf in pairs(Root:GetChildren()) do
-                            if Shelf.Name == "Modular_Bookshelf" then
-                                local LiveHintBook = Shelf:FindFirstChild("LiveHintBook")
-                            
-                            if LiveHintBook and LiveHintBook:FindFirstChild("Base") then
-                                local Prompt = LiveHintBook:FindFirstChild("ActivateEventPrompt")
-                                local dist = (LiveHintBook.Base.Position - LocalPlayer.Character.Collision.Position).Magnitude
+                    elseif Root.Name == "Modular_Bookshelf" and Root:FindFirstChild("LiveHintBook") then
 
-                                if dist < (Prompt.MaxActivationDistance * Options.GA_AutoInteract_Range.Value) then
-                                    fireproximityprompt(Prompt)
-                                end
-                            end
-                        end
-                    end
+                        if (Root.LiveHintBook.Base.Position - LocalPlayer.Character.Collision.Position).Magnitude < Root.LiveHintBook.ActivateEventPrompt.MaxActivationDistance * Options.GA_AutoInteract_Range.Value then
+                            fireproximityprompt(Root.LiveHintBook.ActivateEventPrompt)
+						end
 
                     elseif Root.Name == "RoomsLootItem" or Root.Name == "CrucifixOnTheWall" then
 
