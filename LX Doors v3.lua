@@ -3274,12 +3274,17 @@ local Connections = {
                     
                 if Toggles.DoorNum.Value then
                     local Highlight, TextLabel = Esp(Adornee, Adornee, "Door " .. RoomID, Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value, Options.ESPI_C_Doors_TC.Value)
+					table.insert(EspTable.Interactables.Doors, {Highlight, TextLabel})
                 else
                     local Highlight, TextLabel = Esp(Adornee, Adornee, "Door", Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value, Options.ESPI_C_Doors_TC.Value)
                     table.insert(EspTable.Interactables.Doors, {Highlight, TextLabel})
                 end
 
                     task.delay(1, function()
+					   v.Destroying:Once(function()
+                         table.remove(EspTable.Interactables.Doors, table.find(EspTable.Interactables.Doors, Table))
+					   end)
+								
                         if v:GetAttribute("Opened") then
                             RemoveEspSmooth(Adornee)
                         else
@@ -5370,11 +5375,16 @@ for _, v in Rooms:GetDescendants() do
                     end
                 if Toggles.DoorNum.Value then
                     local Highlight, TextLabel = Esp(Adornee, Adornee, "Door " .. RoomID, Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value, Options.ESPI_C_Doors_TC.Value)
+				    table.insert(EspTable.Interactables.Doors, {Highlight, TextLabel})
                 else
                     local Highlight, TextLabel = Esp(Adornee, Adornee, "Door", Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value, Options.ESPI_C_Doors_TC.Value)
                     table.insert(EspTable.Interactables.Doors, {Highlight, TextLabel})
                 end
-                
+
+					v.Destroying:Once(function()
+                        table.remove(EspTable.Interactables.Doors, table.find(EspTable.Interactables.Doors, Table))
+					end)
+										
                     v.AttributeChanged:Once(function()
                         RemoveEspSmooth(Adornee)
                     end)
