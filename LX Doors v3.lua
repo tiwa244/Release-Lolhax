@@ -2064,9 +2064,7 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
     Highlight.FillColor = Color
     Highlight.OutlineColor = OutlineColor or Color
     
-    if Toggles.ESPI_RAINBOW_HIGHLIGHT and Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
-        Highlight.OutlineColor = Color
-    end
+    -- bye bye rainbow esp part 
 
     TextLabel.TextTransparency = 1
     Highlight.FillTransparency = 1
@@ -2081,6 +2079,7 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
 			Highlight.Enabled = Toggles.ESPI_M_Enabled.Value
 			Highlight.FillColor = Color
 			Highlight.OutlineColor = OutlineColor or Color
+			TextLabel.TextColor3 = TextLabelColor or Color
 			TextLabel.Font = Enum.Font[Options.ESPS_Font.Value]
 			TextLabel.TextSize = Options.ESPS_FontSize.Value
 		   if not Toggles.ESPI_M_Name.Value then
@@ -2157,9 +2156,7 @@ function EspEntity(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColo
     Highlight.FillColor = Color
     Highlight.OutlineColor = OutlineColor or Color
     
-    if Toggles.ESPI_RAINBOW_HIGHLIGHT and Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
-        Highlight.OutlineColor = Color
-    end
+    -- bye bye rainbow esp part
 
     TextLabel.TextTransparency = 1
     Highlight.FillTransparency = 1
@@ -2174,6 +2171,7 @@ function EspEntity(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColo
 			Highlight.Enabled = Toggles.ESPE_Enabled.Value
 			Highlight.FillColor = Color
 			Highlight.OutlineColor = OutlineColor or Color
+			TextLabel.TextColor3 = TextLabelColor or Color
 			TextLabel.Font = Enum.Font[Options.ESPS_Font.Value]
 			TextLabel.TextSize = Options.ESPS_FontSize.Value
 		   if not Toggles.ESPE_Name.Value then
