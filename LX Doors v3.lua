@@ -2118,6 +2118,12 @@ game:GetService("TweenService"):Create(
     {OutlineTransparency = Toggles.ESPI_M_Outline.Value and Options.ESPS_OutlineTransparency.Value or 1}
 ):Play()
 
+	game:GetService("TweenService"):Create(
+    TextLabel,
+    TweenInfo.new(Options.ESPS_FadeTime.Value),
+    { TextTransparency = 0 }
+):Play()
+
     return Highlight, TextLabel
 end
 
