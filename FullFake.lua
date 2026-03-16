@@ -2807,7 +2807,7 @@ TimothyHook = hookfunction(require(LocalPlayer.PlayerGui.MainUI.Initiator.Main_G
     return TimothyHook(...)
 end)
 
-local ReviveHook; ReviveHook = hookfunction(require(game.ReplicatedStorage.ClientModules.ReviveCutscene), function(...)
+local ReviveHook; ReviveHook = hookfunction(require(game.ReplicatedStorage.ModulesClient.ReviveCutscene), function(...)
     if Toggles.VR_NoReviveCutscene.Value then
         return
     end
