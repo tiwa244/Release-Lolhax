@@ -723,7 +723,7 @@ ESPEntities:AddDivider()
 ESPEntities:AddToggle("ESPE_Name", { Text = "Name", Default = false })
 ESPEntities:AddToggle("ESPE_Distance", { Text = "Distance", Default = false })
 ESPEntities:AddToggle("ESPE_Fill", { Text = "Highlight Fill", Default = false })
-ESPEntities:AddToggle("ESPE_Enabled", { Text = "Highlight Outline", Default = false })
+ESPEntities:AddToggle("ESPE_Outline", { Text = "Highlight Outline", Default = false })
 
 -- we have notify entity which uhh gives entity esps! so like very useless!!!!!!!!!!!!!!!!!!!
 local ESPLXUSER = Tabs.ESP:AddLeftGroupbox("LXStuff")
