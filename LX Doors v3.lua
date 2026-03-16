@@ -5532,6 +5532,10 @@ for _, v in Rooms:GetDescendants() do
                 table.insert(EspTable.Interactables.DoorKeys, {Highlight, TextLabel})
 
             elseif v.Name == "GoldPile" then
+
+				if not v:GetAttribute("GoldValue") then
+						repeat task.wait() until v:GetAttribute("GoldValue")
+				end
                 
                 local Highlight, TextLabel = Esp(v, v, "Gold Pile [ "..v:GetAttribute("GoldValue").." ]", Options.ESPI_C_GoldPiles_F.Value, Options.ESPI_C_GoldPiles_O.Value)
                 table.insert(EspTable.Interactables.GoldPiles, {Highlight, TextLabel})
