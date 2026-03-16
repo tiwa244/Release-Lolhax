@@ -1146,6 +1146,10 @@ local Items = {
     {Tag="Toolbox", Text="Toolbox", Color=Color3.new(1,1,1), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)}
 }
 local IsSwitching = false
+local TextToTag = {}
+for _, item in ipairs(Items) do
+    TextToTag[item.Text] = item.Tag
+end
 
 for _, item in ipairs(Items) do
     local Toggle = ESPInteractables_Configurate:AddToggle("ESPI_C_"..item.Tag, { Text = item.Text, Default = false })
@@ -2041,13 +2045,7 @@ end
 function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
     -- rmved
 	-- new new
-   local Tag
-   for _, item in ipairs(Items) do
-     if item.Text == Text then
-         Tag = item.Tag
-          break
-       end
-	end
+    local Tag = TextToTag[Text]
 	local VarName = "ESPI_C_" .. Tag
     local BillboardGui = Instance.new("BillboardGui", Parent)
     local TextLabel = Instance.new("TextLabel", BillboardGui)
