@@ -585,7 +585,7 @@ end)
 -- UI vvv
 
 local GeneralAutomation = Tabs.General:AddLeftGroupbox("Automation")
-GeneralAutomation:AddToggle("GA_AutoInteract", { Text = "Automatic Interact", Default = false, }):AddKeyPicker("GA_AutoInteract_K", { Default = "R", SyncToggleState = false, Mode = "Toggle", Text = "Auto Interact", NoUI = false, Tooltip = "Will activate any nearby interactables when key is active." })
+GeneralAutomation:AddToggle("GA_AutoInteract", { Text = "Automatic Interact", Default = false, }):AddKeyPicker("GA_AutoInteract_K", { Default = "R", SyncToggleState = true, Mode = "Toggle", Text = "Auto Interact", NoUI = false, Tooltip = "Will activate any nearby interactables when key is active." })
 GeneralAutomation:AddSlider("GA_FlySpeed", { Text = "Fly Speed", Default = 15, Min = 0, Max = 75, Tooltip = "Flying Speed.", Rounding = 2, Compact = true})
 GeneralAutomation:AddDivider()
 GeneralAutomation:AddToggle("GA_Fly", { Text = "Fly", Default = false, Tooltip = "Enables flying in-game."}):AddKeyPicker("GA_FlyingF", { Default = "F", SyncToggleState = true, Mode = "Toggle", Text = "Fly", NoUI = false, Tooltip = "Enables Flying" })
