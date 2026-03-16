@@ -2078,7 +2078,7 @@ end
     task.spawn(function()
         while Parent and not Library.Unloaded and task.wait() do
 
-            local Toggle = Toggles[VarName]
+            local Toggle = Toggles[VarName] or {Value = true}
 
             TextLabel.Visible =
                 Toggles.ESPI_M_Enabled.Value
