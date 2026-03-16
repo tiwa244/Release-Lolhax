@@ -2042,10 +2042,8 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
     -- rmved
 	-- new new
     for _, item in ipairs(Items) do
-      local Tag = item.Tag
-        if Tag then
-           local VarName = "ESPI_C_" .. Tag
-        end
+    local Tag = item.Tag
+    local VarName = "ESPI_C_" .. Tag
 	end
     local BillboardGui = Instance.new("BillboardGui", Parent)
     local TextLabel = Instance.new("TextLabel", BillboardGui)
