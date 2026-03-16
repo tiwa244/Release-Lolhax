@@ -2640,7 +2640,7 @@ local Connections = {
 
                 elseif v:IsA("Model") then
 
-                    if v.Name:find("Sideroom") and v:FindFirstChild("Assets") then 
+                    if (v.Name == "Sideroom" or v.Name == "HotelSideroom" or string.find(v.Name, "Mines_Sideroom") or string.find(v.Name, "Sewer_Sideroom")) and v:FindFirstChild("Assets") then 
 
                         table.insert(Targets, v.Assets)
                     
@@ -2785,26 +2785,6 @@ local Connections = {
                                 end
                             end
                         end
-                    
-                    elseif Root.Name:find("Checkout") and Root:FindFirstChild("Library_Desk") then 
-                        
-                        -- rmv
-                        
-                        for _, Desks in Root:GetChildren() do 
-                            if Desks.Name == "Library_Desk" then
-                              for _, v in Desks:GetChildren() do 
-                                  if v.Name == "DrawerContainer" then
-                                     if not v.Knobs.ActivateEventPrompt:GetAttribute("Interactions") then
-                                       if (v.Knobs.Position - LocalPlayer.Character.Collision.Position).Magnitude < v.Knobs.ActivateEventPrompt.MaxActivationDistance * Options.GA_AutoInteract_Range.Value then
-                                        fireproximityprompt(v.Knobs.ActivateEventPrompt)
-                                       else
-                                        FindLoot(v)
-                                    end
-                                end
-                            end 
-                        end
-                    end
-                end
       
                     elseif Root.Name == "Backdoor_Table" then
 
