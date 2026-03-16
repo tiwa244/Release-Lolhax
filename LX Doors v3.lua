@@ -2039,7 +2039,7 @@ local function ManifestMspaintFrame(target)
 end
 
 function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
-    if not Toggles.ESPI_M_Enabled.Value then return end
+    -- rmved
     local BillboardGui = Instance.new("BillboardGui", Parent)
     local TextLabel = Instance.new("TextLabel", BillboardGui)
     local Highlight = Instance.new("Highlight", Parent)
