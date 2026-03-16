@@ -5559,7 +5559,7 @@ for _, v in Rooms:GetDescendants() do
 
             elseif v.Name == "GiggleCeiling" then
 
-                local Highlight, TextLabel = Esp(v, v.Root, "Giggle", Color3.new(0.9, 0.9, 0.9))
+                local Highlight, TextLabel = EspEntity(v, v.Root, "Giggle", Color3.new(0.9, 0.9, 0.9))
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
             elseif v.Name == "FigureRig" then
