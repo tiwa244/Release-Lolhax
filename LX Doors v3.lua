@@ -2038,10 +2038,14 @@ local function ManifestMspaintFrame(target)
     return frame
 end
 
-local VarName
-for _, item in ipairs(Items) do
-    VarName = "ESPI_C_" .. item.Tag
-end
+local Tag
+   for _, item in ipairs(Items) do
+     if item.Text == Text then
+         Tag = item.Tag
+          break
+       end
+	end
+local VarName = "ESPI_C_" .. Tag
 
  function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, VarName)
 
@@ -2078,7 +2082,7 @@ end
     task.spawn(function()
         while Parent and not Library.Unloaded and task.wait() do
 
-            local Toggle = Toggles[VarName] or {Value = true}
+            local Toggle = Toggles[VarName]
 
             TextLabel.Visible =
                 Toggles.ESPI_M_Enabled.Value
