@@ -2137,6 +2137,7 @@ end
 
 function EspEntity(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
     -- rmved
+	if not LHXLoadFinish then repeat task.wait() until LHXLoadFinish end
     local BillboardGui = Instance.new("BillboardGui", Parent)
     local TextLabel = Instance.new("TextLabel", BillboardGui)
     local Highlight = Instance.new("Highlight", Parent)
