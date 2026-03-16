@@ -2084,6 +2084,15 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
 			else
 				Text = TextLabel:GetAttribute("SafeText")
 			end
+					
+			if not Toggles.ESPI_M_Fill.Value then
+					Highlight.FillTransparency = 1
+			else
+					Highlight.FillTransparency = Options.ESPS_FillTransparency.Value
+			end
+
+	       -- outline customizable soon!!
+					
             local Distance = (workspace.CurrentCamera.CFrame.Position - Parent:GetPivot().Position).Magnitude
         if Toggles.ESPI_M_Distance.Value then
             TextLabel.Text = Text.."\n[ "..string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance).." ]"
