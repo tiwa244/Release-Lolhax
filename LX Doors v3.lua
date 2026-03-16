@@ -2079,6 +2079,7 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
         while Parent and not Library.Unloaded and task.wait() do
 			TextLabel.Visible = Toggles.ESPI_M_Enabled.Value
 			Highlight.Enabled = Toggles.ESPI_M_Enabled.Value
+			TextLabel.Font = Enum.Font[Options.ESPS_Font.Value]
 			TextLabel.TextSize = Options.ESPS_FontSize.Value
 		   if not Toggles.ESPI_M_Name.Value then
 			   Text = ""
@@ -2169,6 +2170,7 @@ function EspEntity(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColo
         while Parent and not Library.Unloaded and task.wait() do
 			TextLabel.Visible = Toggles.ESPE_Enabled.Value
 			Highlight.Enabled = Toggles.ESPE_Enabled.Value
+			TextLabel.Font = Enum.Font[Options.ESPS_Font.Value]
 			TextLabel.TextSize = Options.ESPS_FontSize.Value
 		   if not Toggles.ESPE_Name.Value then
 			   Text = ""
