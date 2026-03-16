@@ -2079,6 +2079,7 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
         while Parent and not Library.Unloaded and task.wait() do
 			TextLabel.Visible = Toggles.ESPI_M_Enabled.Value
 			Highlight.Enabled = Toggles.ESPI_M_Enabled.Value
+			TextLabel.TextSize = Options.ESPS_FontSize.Value
 		   if not Toggles.ESPI_M_Name.Value then
 			   Text = ""
 			else
