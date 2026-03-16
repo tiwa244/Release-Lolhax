@@ -2091,7 +2091,11 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
 					Highlight.FillTransparency = Options.ESPS_FillTransparency.Value
 			end
 
-	       -- outline customizable soon!!
+	        if not Toggles.ESPI_M_Outline.Value then
+						Highlight.OutlineTransparency = 1
+			else
+						Highlight.OutlineTransparency = Options.ESPS_OutlineTransparency.Value
+			end
 					
             local Distance = (workspace.CurrentCamera.CFrame.Position - Parent:GetPivot().Position).Magnitude
         if Toggles.ESPI_M_Distance.Value then
@@ -2102,8 +2106,8 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
     end
 end)
 
-    game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { FillTransparency = Options.ESPS_FillTransparency.Value } ):Play()
-    game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { OutlineTransparency = Options.ESPS_OutlineTransparency.Value } ):Play()
+    game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { FillTransparency = Options.ESPS_FillTransparency.Value and Toggles.ESPI_M_Fill.Value } ):Play()
+    game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { OutlineTransparency = Options.ESPS_OutlineTransparency.Value and Toggles.ESPI_M_Outline.Value } ):Play()
     game:GetService("TweenService"):Create( TextLabel, TweenInfo.new( Options.ESPS_FadeTime.Value ), { TextTransparency = 0 } ):Play()
 
     return Highlight, TextLabel
