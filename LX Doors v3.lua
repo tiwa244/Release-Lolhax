@@ -2674,7 +2674,7 @@ local Connections = {
 
                 elseif v:IsA("Model") then
 
-                    if (v.Name == "Sideroom" or v.Name == "HotelSideroom" or string.find(v.Name, "Mines_Sideroom") or string.find(v.Name, "Sewer_Sideroom")) and v:FindFirstChild("Assets") then 
+                    if v.Name:find("Sideroom") and v:FindFirstChild("Assets") then 
 
                         table.insert(Targets, v.Assets)
                     
