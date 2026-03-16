@@ -2040,7 +2040,15 @@ end
 
 function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
     -- rmved
-	local VarName = "ESPI_C_" .. item.Tag
+	-- new new
+   local Tag
+   for _, item in ipairs(Items) do
+     if item.Text == Text then
+         Tag = item.Tag
+          break
+       end
+	end
+	local VarName = "ESPI_C_" .. Tag
     local BillboardGui = Instance.new("BillboardGui", Parent)
     local TextLabel = Instance.new("TextLabel", BillboardGui)
     local Highlight = Instance.new("Highlight", Parent)
@@ -2078,9 +2086,9 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
         while Parent and not Library.Unloaded and task.wait() do
 			TextLabel.Visible = Toggles.ESPI_M_Enabled.Value
 			Highlight.Enabled = Toggles.ESPI_M_Enabled.Value
-			Highlight.FillColor = Color
-			Highlight.OutlineColor = OutlineColor or Color
-			TextLabel.TextColor3 = TextLabelColor or Color
+			Highlight.FillColor = Options[VarName .. "_F"].Value
+            Highlight.OutlineColor = Options[VarName .. "_O"].Value
+            TextLabel.TextColor3 = Options[VarName .. "_TC"].Value
 			TextLabel.Font = Enum.Font[Options.ESPS_Font.Value]
 			TextLabel.TextSize = Options.ESPS_FontSize.Value
 		   if not Toggles.ESPI_M_Name.Value then
