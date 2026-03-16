@@ -2041,12 +2041,17 @@ end
 function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
     -- rmved
 	-- new new
+   local items = Items
+   local text = Text
+   local count = #items
    local Tag
-   for _, item in ipairs(Items) do
-     if item.Text == Text then
-         Tag = item.Tag
-          break
-       end
+
+   for i = 1, count do
+      local it = items[i]
+        if it.Text == text then
+           Tag = it.Tag
+           break
+        end
 	end
 	local VarName = "ESPI_C_" .. Tag
     local BillboardGui = Instance.new("BillboardGui", Parent)
