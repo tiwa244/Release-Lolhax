@@ -2046,13 +2046,9 @@ end
 function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
     -- rmved
 	-- new new
-     local Tag = TextToTag[Text]
-     if not Tag then
-        warn("Missing TextToTag:", Text)
-     end
-
+    local BaseText = Text:match("^[^%[]+"):gsub("%s+$","")
+    local Tag = TextToTag[BaseText]
     local VarName = "ESPI_C_" .. Tag
-	local VarName = "ESPI_C_" .. Tag
     local BillboardGui = Instance.new("BillboardGui", Parent)
     local TextLabel = Instance.new("TextLabel", BillboardGui)
     local Highlight = Instance.new("Highlight", Parent)
