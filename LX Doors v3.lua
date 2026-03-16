@@ -1128,7 +1128,7 @@ local CustomColors = {}
 local Items = {
     {Tag="Doors", Text="Door", Color=Color3.fromRGB(0,255,150), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
     {Tag="DoorKeys", Text="Door Key", Color=Color3.fromRGB(255,174,0), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
-    {Tag="GoldPiles", Text="Gold Piles", Color=Color3.new(1,1,1), NoText=false, Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
+    {Tag="GoldPile", Text="Gold Piles", Color=Color3.new(1,1,1), NoText=false, Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
     {Tag="GeneratorFuses", Text="Generator Fuse", Color=Color3.fromRGB(0,255,150), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1), NewColor=Color3.fromRGB(0,255,150), NewColor2=Color3.fromRGB(0, 255, 155), NewColor3=Color3.fromRGB(0,255,155)},
     {Tag="Generators", Text="Generator", Color=Color3.fromRGB(0,255,150), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1), NewColor=Color3.fromRGB(0,255,150), NewColor2=Color3.fromRGB(0, 255, 155), NewColor3=Color3.fromRGB(0,255,155)},
     {Tag="GateLevers", Text="Gate Lever", Color=Color3.new(1,1,1), NoText=false, Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
@@ -3507,7 +3507,7 @@ local Connections = {
             elseif v.Name == "GoldPile" then
                 v:WaitForChild("Hitbox", 9e9)
 
-                local Highlight, TextLabel = Esp(v, v, "Gold Pile [ "..v:GetAttribute("GoldValue").." ]", Options.ESPI_C_GoldPiles_F.Value, Options.ESPI_C_GoldPiles_O.Value)
+                local Highlight, TextLabel = Esp(v, v, "Gold Pile [ "..v:GetAttribute("GoldValue").." ]", Options.ESPI_C_GoldPile_F.Value, Options.ESPI_C_GoldPile_O.Value)
                 table.insert(EspTable.Interactables.GoldPiles, {Highlight, TextLabel})
  
             elseif v.Name == "LeverForGate" then
@@ -5559,7 +5559,7 @@ for _, v in Rooms:GetDescendants() do
 
             elseif v.Name == "GoldPile" then
                 
-                local Highlight, TextLabel = Esp(v, v, "Gold Pile [ "..v:GetAttribute("GoldValue").." ]", Options.ESPI_C_GoldPiles_F.Value, Options.ESPI_C_GoldPiles_O.Value)
+                local Highlight, TextLabel = Esp(v, v, "Gold Pile [ "..v:GetAttribute("GoldValue").." ]", Options.ESPI_C_GoldPile_F.Value, Options.ESPI_C_GoldPile_O.Value)
                 table.insert(EspTable.Interactables.GoldPiles, {Highlight, TextLabel})
 
             elseif v.Name == "LeverForGate" and not v.ActivateEventPrompt:GetAttribute("Interactions") then
