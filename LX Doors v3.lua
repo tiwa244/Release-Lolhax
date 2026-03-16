@@ -750,7 +750,7 @@ ESPInteractables_Main:AddDivider()
 ESPInteractables_Main:AddToggle("ESPI_M_Name", { Text = "Name", Default = false })
 ESPInteractables_Main:AddToggle("ESPI_M_Distance", { Text = "Distance", Default = false })
 ESPInteractables_Main:AddToggle("ESPI_M_Fill", { Text = "Highlight Fill", Default = false })
-ESPInteractables_Main:AddToggle("ESPI_HO_Enabled", { Text = "Highlight Outline", Default = false })
+ESPInteractables_Main:AddToggle("ESPI_M_Outline", { Text = "Highlight Outline", Default = false })
 ESPInteractables_Main:AddToggle("ESPI_M_Tracers", { Text = "Tracers", Default = false, Tooltip = "Tracers."})
 ESPInteractables_Main:AddDropdown("ESPI_V_TracerPos", {
     Text = "Tracer Position",
