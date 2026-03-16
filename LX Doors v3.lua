@@ -2082,9 +2082,9 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
         while Parent and not Library.Unloaded and task.wait() do
 			TextLabel.Visible = Toggles.ESPI_M_Enabled.Value and Toggles[VarName].Value
 			Highlight.Enabled = Toggles.ESPI_M_Enabled.Value and Toggles[VarName].Value
-			Highlight.FillColor = Options[VarName .. "_F"].Value or Color
-            Highlight.OutlineColor = Options[VarName .. "_O"].Value or OutlineColor
-            TextLabel.TextColor3 = Options[VarName .. "_TC"].Value or TextLabelColor or Color
+			Highlight.FillColor = Color
+            Highlight.OutlineColor = OutlineColor
+            TextLabel.TextColor3 = TextLabelColor or Color
 			TextLabel.Font = Enum.Font[Options.ESPS_Font.Value]
 			TextLabel.TextSize = Options.ESPS_FontSize.Value
 		   if not Toggles.ESPI_M_Name.Value then
