@@ -2076,13 +2076,13 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
 
     task.spawn(function()
         while Parent and not Library.Unloaded and task.wait() do
+			TextLabel.Visible = Toggles.ESPI_M_Enabled.Value
+			Highlight.Enabled = Toggles.ESPI_M_Enabled.Value
             local Distance = (workspace.CurrentCamera.CFrame.Position - Parent:GetPivot().Position).Magnitude
         if Toggles.ESPI_M_Distance.Value then
             TextLabel.Text = Text.."\n[ "..string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance).." ]"
 		else
 			TextLabel.Text = Text
-		    Highlight.Enabled = Toggles.ESPI_M_Enabled.Value
-			TextLabel.Visible = Toggles.ESPI_M_Enabled.Value
         end
     end
 end)
