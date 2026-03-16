@@ -2038,15 +2038,6 @@ local function ManifestMspaintFrame(target)
     return frame
 end
 
-local Tag
-   for _, item in ipairs(Items) do
-     if item.Text == Text then
-         Tag = item.Tag
-          break
-       end
-	end
-local VarName = "ESPI_C_" .. Tag
-
  function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, VarName)
 
     local BillboardGui = Instance.new("BillboardGui", Parent)
@@ -2079,6 +2070,15 @@ local VarName = "ESPI_C_" .. Tag
     TextLabel:SetAttribute("Text", Text)
     TextLabel:SetAttribute("SafeText", Text)
 
+	local BaseText = TextLabel:GetAttribute("SafeText")
+    local VarName
+
+for _, item in ipairs(Items) do
+    if item.Text == BaseText then
+        VarName = "ESPI_C_" .. item.Tag
+        break
+       end
+	end
     task.spawn(function()
         while Parent and not Library.Unloaded and task.wait() do
 
