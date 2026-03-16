@@ -2106,9 +2106,17 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
     end
 end)
 
-    game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { FillTransparency = Options.ESPS_FillTransparency.Value and Toggles.ESPI_M_Fill.Value } ):Play()
-    game:GetService("TweenService"):Create( Highlight, TweenInfo.new( Options.ESPS_FadeTime.Value ), { OutlineTransparency = Options.ESPS_OutlineTransparency.Value and Toggles.ESPI_M_Outline.Value } ):Play()
-    game:GetService("TweenService"):Create( TextLabel, TweenInfo.new( Options.ESPS_FadeTime.Value ), { TextTransparency = 0 } ):Play()
+    game:GetService("TweenService"):Create(
+    Highlight,
+    TweenInfo.new(Options.ESPS_FadeTime.Value),
+    {FillTransparency = Toggles.ESPI_M_Fill.Value and Options.ESPS_FillTransparency.Value or 1}
+):Play()
+
+game:GetService("TweenService"):Create(
+    Highlight,
+    TweenInfo.new(Options.ESPS_FadeTime.Value),
+    {OutlineTransparency = Toggles.ESPI_M_Outline.Value and Options.ESPS_OutlineTransparency.Value or 1}
+):Play()
 
     return Highlight, TextLabel
 end
