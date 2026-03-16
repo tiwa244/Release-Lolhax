@@ -725,7 +725,7 @@ ESPEntities:AddToggle("ESPE_Distance", { Text = "Distance", Default = false })
 ESPEntities:AddToggle("ESPE_Fill", { Text = "Highlight Fill", Default = false })
 ESPEntities:AddToggle("ESPE_Outline", { Text = "Highlight Outline", Default = false })
 
--- we have notify entity which uhh gives entity esps! so like very useless!!!!!!!!!!!!!!!!!!!
+-- lolhax is goated
 local ESPLXUSER = Tabs.ESP:AddLeftGroupbox("LXStuff")
 ESPLXUSER:AddToggle("LXPP_Enabled", { Text = "ESP LXUSER", Default = false })
 :AddColorPicker("LXPLAYERFILLCOLOR", { Default = Color3.new(0.141176, 0.792156, 0.282352), Title = "Fill Color" })
@@ -745,7 +745,7 @@ ESPExtras:AddToggle("DoorNum", { Text = "Door Number", Default = false, Tooltip 
 local ESPInteractables = Tabs.ESP:AddRightTabbox("Interactables")
 
 local ESPInteractables_Main = ESPInteractables:AddTab("Main")
-ESPInteractables_Main:AddToggle("ESPI_M_Enabled", { Text = "Enabled", Default = true })
+ESPInteractables_Main:AddToggle("ESPI_M_Enabled", { Text = "Enabled", Default = false })
 ESPInteractables_Main:AddDivider()
 ESPInteractables_Main:AddToggle("ESPI_M_Name", { Text = "Name", Default = false })
 ESPInteractables_Main:AddToggle("ESPI_M_Distance", { Text = "Distance", Default = false })
