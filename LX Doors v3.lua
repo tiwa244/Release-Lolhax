@@ -2080,8 +2080,8 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
 
     task.spawn(function()
         while Parent and not Library.Unloaded and task.wait() do
-			TextLabel.Visible = Toggles.ESPI_M_Enabled.Value and Toggles[VarName].Value
-			Highlight.Enabled = Toggles.ESPI_M_Enabled.Value and Toggles[VarName].Value
+			TextLabel.Visible = Toggles.ESPI_M_Enabled.Value and Toggles[VarName] and Toggles[VarName].Value
+			Highlight.Enabled = Toggles.ESPI_M_Enabled.Value and Toggles[VarName] and Toggles[VarName].Value
 			Highlight.FillColor = Color
             Highlight.OutlineColor = OutlineColor
             TextLabel.TextColor3 = TextLabelColor or Color
