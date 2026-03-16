@@ -2043,6 +2043,9 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
 	-- new new
     for _, item in ipairs(Items) do
     local Tag = item.Tag
+	print("VarName:", VarName)
+print("Toggle:", Toggles[VarName])
+print("Master toggle:", Toggles.ESPI_M_Enabled)
     local VarName = "ESPI_C_" .. Tag
 	end
     local BillboardGui = Instance.new("BillboardGui", Parent)
@@ -2080,8 +2083,8 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
 
     task.spawn(function()
         while Parent and not Library.Unloaded and task.wait() do
-			TextLabel.Visible = --[[ and Toggles[VarName and]] Toggles[VarName].Value
-			Highlight.Enabled = --[[Toggles.ESPI_M_Enabled.Value--]] Toggles[VarName] and Toggles[VarName].Value
+			TextLabel.Visible = Toggles.ESPI_M_Enabled.Value and Toggles[VarName and Toggles[VarName].Value
+			Highlight.Enabled = Toggles.ESPI_M_Enabled.Value and Toggles[VarName] and Toggles[VarName].Value
 			Highlight.FillColor = Color
             Highlight.OutlineColor = OutlineColor
             TextLabel.TextColor3 = TextLabelColor or Color
