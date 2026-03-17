@@ -490,7 +490,18 @@ do
         BackgroundColor3 = "MainColor",
         BorderColor3 = "AccentColor"
     })
-    
+
+	if config.CurrentLibrary == "Obsidian" then
+		local UICorner = Instance.new("UICorner", Frame)
+        UICorner.CornerRadius = UDim.new(0, 5)
+
+        local UIStroke = Instance.new("UIStroke", Frame)
+        UIStroke.Thickness = 2
+	
+	    Library:AddToRegistry(UIStroke, {
+        Color = "AccentColor"
+    })
+	end
     TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     TextLabel.BackgroundTransparency = 1.000
     TextLabel.Size = UDim2.new(1, 0, 1, 0)
