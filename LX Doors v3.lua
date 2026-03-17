@@ -2075,7 +2075,7 @@ local function ManifestMspaintFrame(target)
     part.Size = Vector3.new(4.98, 7.75, 0.406)
     part.CFrame = targetPart.CFrame
     part.Transparency = 0.999
-    part.LocalTransparencyModifier = 1
+    --[[part.LocalTransparencyModifier = 1--]]
     part.Anchored = false
     part.CanCollide = false
     part.Parent = model
