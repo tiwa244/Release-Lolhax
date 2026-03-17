@@ -1857,7 +1857,8 @@ function Notify(TitleText, SubText, Duration, Force)
         Sound:Destroy()
     end
 
-    local Timer = Duration or 10 / 3
+    local TimerType = typeof(Duration)
+    local Timer = (TimerType == "number" and Duration) or (10 / 3)
 
     -- cant do an onchanged event.. ;w;
     local LockColor = game:GetService("RunService").RenderStepped:Connect(function()
@@ -1888,23 +1889,36 @@ function Notify(TitleText, SubText, Duration, Force)
 
     Line:TweenSize(UDim2.fromScale(1, 0.03), "Out", "Linear", Timer)
 
-    task.delay(Timer + 0.1, function()
-        local Info = TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.In)
-        local MainTween = game:GetService("TweenService"):Create(Main, Info, {Position = UDim2.fromScale(0.5, 0.525)})
-        MainTween:Play()
+    task.spawn(function()
+    if TimerType == "Instance" then
+        if Duration and Duration.Parent then
+            Duration.Destroying:Wait()
+        end
+    else
+        task.wait(Timer)
+    end
 
-        game:GetService("TweenService"):Create(Main, Info, {Transparency = 1}):Play()
-        game:GetService("TweenService"):Create(Line, Info, {Transparency = 1}):Play()
-        game:GetService("TweenService"):Create(LXLogo, Info, {ImageTransparency = 1}):Play()
-        game:GetService("TweenService"):Create(Title, Info, {TextTransparency = 1}):Play()
-        game:GetService("TweenService"):Create(Description, Info, {TextTransparency = 1}):Play()
+    task.wait(0.1)
 
-        GlobalOffset -= 0.05 * DPISize
-        MainTween.Completed:Once(function()
-            LockColor:Disconnect()
-            Main:Destroy()
-        end)
-    end)
+    local Info = TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.In)
+    local MainTween = game:GetService("TweenService"):Create(Main, Info, {
+        Position = UDim2.fromScale(0.5, 0.525)
+    })
+    MainTween:Play()
+
+    game:GetService("TweenService"):Create(Main, Info, {Transparency = 1}):Play()
+    game:GetService("TweenService"):Create(Line, Info, {Transparency = 1}):Play()
+    game:GetService("TweenService"):Create(LXLogo, Info, {ImageTransparency = 1}):Play()
+    game:GetService("TweenService"):Create(Title, Info, {TextTransparency = 1}):Play()
+    game:GetService("TweenService"):Create(Description, Info, {TextTransparency = 1}):Play()
+
+    GlobalOffset -= 0.05 * DPISize
+
+    MainTween.Completed:Once(function()
+        LockColor:Disconnect()
+        Main:Destroy()
+      end)
+   end)
 end
 	
 function MissingNumber(a, b)
