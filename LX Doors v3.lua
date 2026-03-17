@@ -725,18 +725,21 @@ ESPEntities:AddToggle("ESPE_Distance", { Text = "Distance", Default = false })
 ESPEntities:AddToggle("ESPE_Fill", { Text = "Highlight Fill", Default = false })
 ESPEntities:AddToggle("ESPE_Outline", { Text = "Highlight Outline", Default = false })
 
--- lolhax is goated
 local ESPLXUSER = Tabs.ESP:AddLeftGroupbox("LXStuff")
 ESPLXUSER:AddToggle("LXPP_Enabled", { Text = "ESP LXUSER", Default = false })
 :AddColorPicker("LXPLAYERFILLCOLOR", { Default = Color3.new(0.141176, 0.792156, 0.282352), Title = "Fill Color" })
 :AddColorPicker("LXPPLAYEROUTLINECOLOR", { Default = Color3.new(0.141176, 0.792156, 0.282352), Title = "Outline Color" })
 ESPLXUSER:AddDivider()
 
-
 local ESPPlayers = Tabs.ESP:AddLeftGroupbox("Players")
 ESPPlayers:AddToggle("ESPP_Enabled", { Text = "Enabled", Default = false })
-:AddColorPicker("ESPPLAYERFILLCOLOR", { Default = Color3.new(1, 1, 1), Title = "Fill Color" })
-:AddColorPicker("ESPPLAYEROUTLINECOLOR", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
+:AddColorPicker("ESPP_Color_F", { Default = Color3.new(0, 1, 0.5), Title = "Fill Color" })
+:AddColorPicker("ESPP_Color_O", { Default = Color3.new(0, 0, 0), Title = "Outline Color" })
+ESPPlayers:AddDivider()
+ESPPlayers:AddToggle("ESPP_Name", { Text = "Name", Default = false })
+ESPPlayers:AddToggle("ESPP_Distance", { Text = "Distance", Default = false })
+ESPPlayers:AddToggle("ESPP_Fill", { Text = "Highlight Fill", Default = false })
+ESPPlayers:AddToggle("ESPP_Outline", { Text = "Highlight Outline", Default = false })
 
 local ESPExtras = Tabs.ESP:AddLeftGroupbox("Extras")
 ESPExtras:AddToggle("ClosetESP", { Text = "Closet ESP", Default = true, Tooltip = "Highlights Closets."})
@@ -2173,24 +2176,24 @@ function EspPlayer(Parent, TextAdornee, Text, Color, OutlineColor)
         while Parent and not Library.Unloaded and task.wait() do
 			TextLabel.Visible = Toggles.ESPP_Enabled.Value
 			Highlight.Enabled = Toggles.ESPP_Enabled.Value
-			Highlight.FillColor = Options[prefix .. VarName .. "_F"].Value
-            Highlight.OutlineColor = Options[prefix .. VarName .. "_O"].Value
-            TextLabel.TextColor3 = Options[prefix .. VarName .. "_TC"].Value
+			Highlight.FillColor = Options.ESPP_Color_F.Value
+            Highlight.OutlineColor = Options.ESPP_Color_O.Value
+            TextLabel.TextColor3 = Options.ESPP_Color_TC.Value
 			TextLabel.Font = Enum.Font[Options.ESPS_Font.Value]
 			TextLabel.TextSize = Options.ESPS_FontSize.Value
-		   if not Toggles.ESPI_M_Name.Value then
+		   if not Toggles.ESPP_Name.Value then
 			   Text = ""
 			else
 				Text = TextLabel:GetAttribute("SafeText")
 			end
 					
-			if not Toggles.ESPI_M_Fill.Value then
+			if not Toggles.ESPP_Fill.Value then
 					Highlight.FillTransparency = 1
 			else
 					Highlight.FillTransparency = Options.ESPS_FillTransparency.Value
 			end
 
-	        if not Toggles.ESPI_M_Outline.Value then
+	        if not Toggles.ESPP_Outline.Value then
 						Highlight.OutlineTransparency = 1
 			else
 						Highlight.OutlineTransparency = Options.ESPS_OutlineTransparency.Value
