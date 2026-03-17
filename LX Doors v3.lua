@@ -735,6 +735,7 @@ local ESPPlayers = Tabs.ESP:AddLeftGroupbox("Players")
 ESPPlayers:AddToggle("ESPP_Enabled", { Text = "Enabled", Default = false })
 :AddColorPicker("ESPP_Color_F", { Default = Color3.new(0, 1, 0.5), Title = "Fill Color" })
 :AddColorPicker("ESPP_Color_O", { Default = Color3.new(0, 0, 0), Title = "Outline Color" })
+:AddColorPicker("ESPP_Color_F", { Default = Color3.new(0, 1, 0.5), Title = "TextLabel Color"
 ESPPlayers:AddDivider()
 ESPPlayers:AddToggle("ESPP_Name", { Text = "Name", Default = false })
 ESPPlayers:AddToggle("ESPP_Distance", { Text = "Distance", Default = false })
@@ -1465,7 +1466,7 @@ end)
 
 function lawl(Parent, Text)
     if Toggles.ESPP_Enabled.Value then
-        local Highlight, TextLabel = Esp(Parent, Parent, Parent.Name, Options.ESPPLAYERFILLCOLOR.Value, Options.ESPPLAYEROUTLINECOLOR.Value)
+        local Highlight, TextLabel = EspPlayer(Parent, Parent, Parent.Name, Options.ESPP_Color_F.Value, Options.ESPP_Color_O.Value, Options.ESPP_Color_TC.Value)
         table.insert(EspTable.Players, {Highlight, TextLabel})
         task.spawn(function()
             repeat task.wait() until not Toggles.ESPP_Enabled.Value or Library.Unloaded 
@@ -2135,7 +2136,7 @@ game:GetService("TweenService"):Create(
     return Highlight, TextLabel
 end
 
-function EspPlayer(Parent, TextAdornee, Text, Color, OutlineColor)
+function EspPlayer(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
     -- rmved
 	-- new new
 	-- label
