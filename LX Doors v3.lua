@@ -2138,7 +2138,7 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, Var
 			TextLabel.Visible = Toggles.ESPI_M_Enabled.Value and Toggles[prefix .. VarName].Value
 			Highlight.Enabled = Toggles.ESPI_M_Enabled.Value and Toggles[prefix .. VarName].Value
 			if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
-            print("really")
+            
         else
             Highlight.FillColor = Options[prefix .. VarName .. "_F"].Value
             Highlight.OutlineColor = Options[prefix .. VarName .. "_O"].Value
