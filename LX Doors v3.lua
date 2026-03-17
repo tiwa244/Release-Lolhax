@@ -2257,7 +2257,7 @@ game:GetService("TweenService"):Create(
     return Highlight, TextLabel
 end
 
-function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, VarName)
+function EspGold(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, VarName)
 
     local BillboardGui = Instance.new("BillboardGui", Parent)
     local TextLabel = Instance.new("TextLabel", BillboardGui)
