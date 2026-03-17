@@ -2145,6 +2145,8 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, Var
             TextLabel.TextColor3 = Options[prefix .. VarName .. "_TC"].Value
 			TextLabel.Font = Enum.Font[Options.ESPS_Font.Value]
 			TextLabel.TextSize = Options.ESPS_FontSize.Value
+			Highlight.FillTransparency = Options.ESPS_FillTransparency.Value
+			Highlight.OutlineTransparency = Options.ESPS_OutlineTransparency.Value
 		   if not Toggles.ESPI_M_Name.Value then
 			   Text = ""
 			else
@@ -2239,6 +2241,8 @@ function EspPlayer(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColo
             TextLabel.TextColor3 = Options.ESPP_Color_TC.Value
 			TextLabel.Font = Enum.Font[Options.ESPS_Font.Value]
 			TextLabel.TextSize = Options.ESPS_FontSize.Value
+			Highlight.FillTransparency = Options.ESPS_FillTransparency.Value
+			Highlight.OutlineTransparency = Options.ESPS_OutlineTransparency.Value
 		   if not Toggles.ESPP_Name.Value then
 			   Text = ""
 			else
@@ -2331,6 +2335,8 @@ function EspEntity(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColo
 			TextLabel.TextColor3 = TextLabelColor or Color
 			TextLabel.Font = Enum.Font[Options.ESPS_Font.Value]
 			TextLabel.TextSize = Options.ESPS_FontSize.Value
+			Highlight.FillTransparency = Options.ESPS_FillTransparency.Value
+			Highlight.OutlineTransparency = Options.ESPS_OutlineTransparency.Value
 		   if not Toggles.ESPE_Name.Value then
 			   Text = ""
 			else
