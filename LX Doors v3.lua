@@ -3696,7 +3696,7 @@ local Connections = {
                     print(false)
                 end
 
-                local Highlight, TextLabel = Esp(v, v, "Grumble", Color3.new(0.85, 0.85, 0.85), nil, nil, nil, nil, "Entity")
+                local Highlight, TextLabel = Esp(v, v, "Grumble", Color3.new(0.85, 0.85, 0.85), nil, nil, nil, "Entity")
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
             elseif v.Name == "GloomEgg" then
