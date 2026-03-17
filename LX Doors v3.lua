@@ -236,7 +236,7 @@ if not shared.Script then
         FloorReplicated = game:GetService("ReplicatedStorage"):WaitForChild("FloorReplicated"),
         ReplicatedStorage = game:GetService("ReplicatedStorage")
     }
-  end
+end
 
 local Script = shared.Script
 Script.Functions = {}
