@@ -492,6 +492,7 @@ do
 	    Library:AddToRegistry(UIStroke, {
         Color = "AccentColor"
     })
+	end
 	
     TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     TextLabel.BackgroundTransparency = 1.000
@@ -538,8 +539,7 @@ do
                 Script.Functions.HideCaptions()
             end
         end) 
-      end
-   end
+    end
 end
 
 local ErrorMessageOut
