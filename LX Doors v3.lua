@@ -484,7 +484,7 @@ do
 
 	if getgenv().UseLib.CurrentLib == "Obsidian" then
 		local UICorner = Instance.new("UICorner", Frame)
-        UICorner.CornerRadius = UDim.new(0, 5)
+        UICorner.CornerRadius = UDim.new(0, 2)
 
         local UIStroke = Instance.new("UIStroke", Frame)
         UIStroke.Thickness = 2
