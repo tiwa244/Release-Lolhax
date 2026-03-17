@@ -735,7 +735,7 @@ local ESPPlayers = Tabs.ESP:AddLeftGroupbox("Players")
 ESPPlayers:AddToggle("ESPP_Enabled", { Text = "Enabled", Default = false })
 :AddColorPicker("ESPP_Color_F", { Default = Color3.new(0, 1, 0.5), Title = "Fill Color" })
 :AddColorPicker("ESPP_Color_O", { Default = Color3.new(0, 0, 0), Title = "Outline Color" })
-:AddColorPicker("ESPP_Color_F", { Default = Color3.new(0, 1, 0.5), Title = "TextLabel Color"
+:AddColorPicker("ESPP_Color_TC", { Default = Color3.new(0, 1, 0.5), Title = "TextLabel Color"
 ESPPlayers:AddDivider()
 ESPPlayers:AddToggle("ESPP_Name", { Text = "Name", Default = false })
 ESPPlayers:AddToggle("ESPP_Distance", { Text = "Distance", Default = false })
@@ -2212,13 +2212,13 @@ end)
     game:GetService("TweenService"):Create(
     Highlight,
     TweenInfo.new(Options.ESPS_FadeTime.Value),
-    {FillTransparency = Toggles.ESPI_M_Fill.Value and Options.ESPS_FillTransparency.Value or 1}
+    {FillTransparency = Toggles.ESPP_Fill.Value and Options.ESPS_FillTransparency.Value or 1}
 ):Play()
 
 game:GetService("TweenService"):Create(
     Highlight,
     TweenInfo.new(Options.ESPS_FadeTime.Value),
-    {OutlineTransparency = Toggles.ESPI_M_Outline.Value and Options.ESPS_OutlineTransparency.Value or 1}
+    {OutlineTransparency = Toggles.ESPP_Outline.Value and Options.ESPS_OutlineTransparency.Value or 1}
 ):Play()
 
 	game:GetService("TweenService"):Create(
