@@ -2267,7 +2267,7 @@ function EspPlayer(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColo
 			end
 					
             local Distance = (workspace.CurrentCamera.CFrame.Position - Parent:GetPivot().Position).Magnitude
-        if Toggles.ESPI_M_Distance.Value then
+        if Toggles.ESPP_Distance.Value then
             TextLabel.Text = Text.."\n[ "..string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance).." ]"
 		else
 			TextLabel.Text = Text
