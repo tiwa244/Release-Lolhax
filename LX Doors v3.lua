@@ -257,17 +257,10 @@ Script.Functions.EnforceTypes = function(args, template)
     return args
 end
 
-Script.GuidingLightBasedFloors = {
-    Mines,
-    Hotel
-}
 
- local Doors = {}
-
---// Player Variables \\--
+local Doors = {}
 local mainUI
 
---// Functions \\--
 function Doors:Notify(unsafeOptions)
     assert(typeof(unsafeOptions) == "table", "Expected a table as options argument but got " .. typeof(unsafeOptions))
 
@@ -358,7 +351,6 @@ end
 
 function Doors:Warn(options) Doors:Alert(options) end
 
-
 task.spawn(function()
     -- 
     repeat task.wait() until game:IsLoaded() and game.Players.LocalPlayer
@@ -388,7 +380,6 @@ task.spawn(function()
         end
     end
 end)
-
 
 function Script.Functions.CalculateHideTime(room: number)
     for _, range in ipairs(Script.HideTimeValues) do
@@ -491,7 +482,7 @@ do
         BorderColor3 = "AccentColor"
     })
 
-	--
+	if getgenv().UIConfig.CurrentLib == "Obsidian" then
 		local UICorner = Instance.new("UICorner", Frame)
         UICorner.CornerRadius = UDim.new(0, 5)
 
@@ -501,7 +492,7 @@ do
 	    Library:AddToRegistry(UIStroke, {
         Color = "AccentColor"
     })
-	--end
+	
     TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     TextLabel.BackgroundTransparency = 1.000
     TextLabel.Size = UDim2.new(1, 0, 1, 0)
@@ -547,7 +538,8 @@ do
                 Script.Functions.HideCaptions()
             end
         end) 
-    end
+      end
+   end
 end
 
 local ErrorMessageOut
