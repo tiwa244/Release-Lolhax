@@ -2242,25 +2242,25 @@ function EspPlayer(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColo
         else
             Highlight.FillColor = Options.ESPP_Color_F.Value
             Highlight.OutlineColor = Options.ESPP_Color_O.Value
-            TextLabel.TextColor3 = Options.ESPP_Color_O.Value
+            TextLabel.TextColor3 = Options.ESPP_Color_TC.Value
 		end
 			TextLabel.Font = Enum.Font[Options.ESPS_Font.Value]
 			TextLabel.TextSize = Options.ESPS_FontSize.Value
 			Highlight.FillTransparency = Options.ESPS_FillTransparency.Value
 			Highlight.OutlineTransparency = Options.ESPS_OutlineTransparency.Value
-		   if not Toggles.ESPI_M_Name.Value then
+		   if not Toggles.ESPP_Name.Value then
 			   Text = ""
 			else
 				Text = TextLabel:GetAttribute("SafeText")
 			end
 					
-			if not Toggles.ESPI_M_Fill.Value then
+			if not Toggles.ESPP_Fill.Value then
 					Highlight.FillTransparency = 1
 			else
 					Highlight.FillTransparency = Options.ESPS_FillTransparency.Value
 			end
 
-	        if not Toggles.ESPI_M_Outline.Value then
+	        if not Toggles.ESPP_Outline.Value then
 						Highlight.OutlineTransparency = 1
 			else
 						Highlight.OutlineTransparency = Options.ESPS_OutlineTransparency.Value
