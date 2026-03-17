@@ -80,17 +80,17 @@ if not isfolder(foldername) then
     makefolder(foldername)
 end
 
--- 1. Local Table for speed
+-- lmao table here
 local config = {
     Use2Lib = true,
     CurrentLib = "Obsidian",
     CurrentNotify = "Obsidian"
 }
 
--- 2. Load the file (Merge it into our local config)
+-- ask an ai what ts is
 if isfile(filename) then
     local rawData = readfile(filename)
-    print("eh: ", rawData) -- This runs BEFORE decoding
+    print("eh: ", rawData) -- this runs before what
 
     local success, content = pcall(function()
         return HttpService:JSONDecode(rawData)
@@ -106,11 +106,7 @@ if isfile(filename) then
     end
 end
 
--- 3. LOCAL Functions (No getgenv here!)
-local foldername = "lolhax"
-local filename = foldername .. "/LibraryConfig.json"
-
--- Ensure the folder exists before doing ANYTHING else
+-- gojo satoru
 if not isfile(filename) then
     writefile(filename, HttpService:JSONEncode(config))
     print("created missig file lmao at: " .. filename)
@@ -121,7 +117,7 @@ local function SaveToFile()
 end
 
 local function SwitchLib(libName)
-    -- If the script isn't fully loaded, IGNORE all automated clicks from the UI
+    -- its not loaded so refhrn snd
     if not LHXLoadFinish then 
         print("ignored:", libName)
         return 
@@ -135,13 +131,13 @@ local function SwitchLib(libName)
 end
 
 local function SwitchNotify(notifyName)
-    -- 1. The Startup Gate (using your specific variable)
+    -- some gate idk
     if not LHXLoadFinish then 
         print("ignoring: " ..   notifyName ..  " sinc, its a config overwtie")
         return 
     end
 
-    -- 2. Only save if the user actually clicked a DIFFERENT style
+    -- only sace if dudude clicked a different style
     if notifyName ~= config.CurrentNotify then
         config.CurrentNotify = notifyName
         
