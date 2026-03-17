@@ -1893,7 +1893,7 @@ function Notify(TitleText, SubText, Duration, Force)
        Line.Visible = false
 	end
 
-    task.spawn(function()
+    task.defer(function()
     if TimerType == "Instance" then
         if Duration and Duration.Parent then
             Duration.Destroying:Wait()
