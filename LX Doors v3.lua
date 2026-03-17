@@ -2041,6 +2041,9 @@ end
 function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, VarName)
     -- rmved
 	-- new new
+	if not VarName then 
+		warn("missing varname for " .. Text)
+	end
     local BillboardGui = Instance.new("BillboardGui", Parent)
     local TextLabel = Instance.new("TextLabel", BillboardGui)
     local Highlight = Instance.new("Highlight", Parent)
