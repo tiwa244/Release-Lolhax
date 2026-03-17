@@ -5532,7 +5532,7 @@ for _, v in Rooms:GetDescendants() do
 
             elseif v.Name == "LeverForGate" and not v.ActivateEventPrompt:GetAttribute("Interactions") then
 
-                local Highlight, TextLabel = Esp(v, v.Main, "Gate Lever", Options.ESPI_C_GateLevers_F.Value, Options.ESPI_C_GateLevers_O.Value, nil, "GateLevers")
+                local Highlight, TextLabel = Esp(v, v.Main, "Gate Lever", Options.ESPI_C_GateLevers_F.Value, Options.ESPI_C_GateLevers_O.Value, Options.ESPI_C_GateLevers_TC.Value, "GateLevers")
                 table.insert(EspTable.Interactables.GateLevers, {Highlight, TextLabel})
 
                 v.ActivateEventPrompt.AttributeChanged:Once(function()
