@@ -2256,6 +2256,123 @@ game:GetService("TweenService"):Create(
 
     return Highlight, TextLabel
 end
+
+function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, VarName)
+
+    local BillboardGui = Instance.new("BillboardGui", Parent)
+    local TextLabel = Instance.new("TextLabel", BillboardGui)
+    local Highlight = Instance.new("Highlight", Parent)
+
+    BillboardGui.Adornee = TextAdornee
+    BillboardGui.AlwaysOnTop = true
+    BillboardGui.Name = "_LOLHAXBG"
+    BillboardGui.Size = UDim2.fromScale(1,1)
+    BillboardGui.Enabled = true
+
+    Highlight.Name = "_LOLHAXHL"
+    Highlight.Adornee = Parent
+
+    TextLabel.Size = UDim2.fromScale(1,1)
+    TextLabel.TextStrokeTransparency = 0
+    TextLabel.Font = Enum.Font[Options.ESPS_Font.Value]
+    TextLabel.TextSize = Options.ESPS_FontSize.Value
+    TextLabel.TextColor3 = TextLabelColor or Color
+    TextLabel.BackgroundTransparency = 1
+
+    Highlight.FillColor = Color
+    Highlight.OutlineColor = OutlineColor or Color
+
+    TextLabel.TextTransparency = 1
+    Highlight.FillTransparency = 1
+    Highlight.OutlineTransparency = 1
+
+    TextLabel:SetAttribute("Text", Text)
+    TextLabel:SetAttribute("SafeText", Text)
+
+    task.spawn(function()
+        while Parent and not Library.Unloaded and task.wait() do
+
+            local Toggle = Toggles.ESPI_M_GoldPiles
+
+            TextLabel.Visible =
+                Toggles.ESPI_M_Enabled.Value
+                and Toggle
+                and Toggle.Value
+
+            Highlight.Enabled =
+                Toggles.ESPI_M_Enabled.Value
+                and Toggle
+                and Toggle.Value
+
+            Highlight.FillColor = Color
+            Highlight.OutlineColor = OutlineColor
+            TextLabel.TextColor3 = TextLabelColor or Color
+
+            TextLabel.Font = Enum.Font[Options.ESPS_Font.Value]
+            TextLabel.TextSize = Options.ESPS_FontSize.Value
+
+            if not Toggles.ESPI_M_Name.Value then
+                Text = ""
+            else
+                Text = TextLabel:GetAttribute("SafeText")
+            end
+
+            if not Toggles.ESPI_M_Fill.Value then
+                Highlight.FillTransparency = 1
+            else
+                Highlight.FillTransparency = Options.ESPS_FillTransparency.Value
+            end
+
+            if not Toggles.ESPI_M_Outline.Value then
+                Highlight.OutlineTransparency = 1
+            else
+                Highlight.OutlineTransparency = Options.ESPS_OutlineTransparency.Value
+            end
+
+            local Distance =
+                (workspace.CurrentCamera.CFrame.Position - Parent:GetPivot().Position).Magnitude
+
+            if Toggles.ESPI_M_Distance.Value then
+                TextLabel.Text =
+                    Text .. "\n[ " ..
+                    string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance)
+                    .. " ]"
+            else
+                TextLabel.Text = Text
+            end
+        end
+    end)
+
+    game:GetService("TweenService"):Create(
+        Highlight,
+        TweenInfo.new(Options.ESPS_FadeTime.Value),
+        {
+            FillTransparency =
+                Toggles.ESPI_M_Fill.Value
+                and Options.ESPS_FillTransparency.Value
+                or 1
+        }
+    ):Play()
+
+    game:GetService("TweenService"):Create(
+        Highlight,
+        TweenInfo.new(Options.ESPS_FadeTime.Value),
+        {
+            OutlineTransparency =
+                Toggles.ESPI_M_Outline.Value
+                and Options.ESPS_OutlineTransparency.Value
+                or 1
+        }
+    ):Play()
+
+    game:GetService("TweenService"):Create(
+        TextLabel,
+        TweenInfo.new(Options.ESPS_FadeTime.Value),
+        {TextTransparency = 0}
+    ):Play()
+
+    return Highlight, TextLabel
+end
 	
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
