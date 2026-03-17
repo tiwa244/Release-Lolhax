@@ -5532,9 +5532,8 @@ for _, v in Rooms:GetDescendants() do
                 local Highlight, TextLabel = Esp(v, v, "Electric Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value, Options.ESPI_C_DoorKeys_TC.Value, "DoorKeys")
                 table.insert(EspTable.Interactables.DoorKeys, {Highlight, TextLabel})
 
-            elseif v.Name == "GoldPile" then
-                v:WaitForChild("Hitbox", 9e9)
-
+			elseif v.Name == "GoldPile" then
+                
                 local Highlight, TextLabel = Esp(v, v, "Gold Pile [ "..v:GetAttribute("GoldValue").." ]", Options.ESPI_C_GoldPiles_F.Value, Options.ESPI_C_GoldPiles_O.Value, nil, "GoldPiles")
 
                 local Table = {Highlight, TextLabel}
@@ -5542,8 +5541,7 @@ for _, v in Rooms:GetDescendants() do
 
                 v.Destroying:Once(function()
                     table.remove(EspTable.Interactables.GoldPiles, table.find(EspTable.Interactables.GoldPiles, Table))
-                end)
-												
+                end)						
 															
             elseif v.Name == "LeverForGate" and not v.ActivateEventPrompt:GetAttribute("Interactions") then
 
