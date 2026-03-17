@@ -739,7 +739,7 @@ ESPPlayers:AddToggle("ESPP_Fill", { Text = "Highlight Fill", Default = false })
 ESPPlayers:AddToggle("ESPP_Outline", { Text = "Highlight Outline", Default = false })
 
 local ESPExtras = Tabs.ESP:AddLeftGroupbox("Extras")
-ESPExtras:AddToggle("ClosetESP", { Text = "Closet ESP", Default = true, Tooltip = "Highlights Closets."})
+--[[ESPExtras:AddToggle("ClosetESP", { Text = "Closet ESP", Default = true, Tooltip = "Highlights Closets."})--]]
 ESPExtras:AddToggle("DoorNum", { Text = "Door Number", Default = false, Tooltip = "shows door number"})
 
 local ESPInteractables = Tabs.ESP:AddRightTabbox("Interactables")
@@ -4385,7 +4385,7 @@ local function MonitorCloset(v)
 end
 
 --bal Scan
-if Toggles.ClosetESP.Value then
+if Toggles.ESPI_C_Closet.Value then
     for _, x in ipairs(CurrentRooms:GetDescendants()) do
         MonitorCloset(x)
     end
@@ -4407,7 +4407,7 @@ local function RerenderClosets()
     CleanupClosets()
 
     -- Scan everything currently in workspace
-    if Toggles.ClosetESP.Value then
+    if Toggles.ESPI_C_Closet.Value.Value then
         for _, x in ipairs(CurrentRooms:GetDescendants()) do
             MonitorCloset(x)
         end
@@ -4415,8 +4415,8 @@ local function RerenderClosets()
 end
 
 -- 2. Hook it up to your toggle listener
-Toggles.ClosetESP:OnChanged(function()
-    if Toggles.ClosetESP.Value then
+Toggles.ESPI_C_Closet:OnChanged(function(value)
+    if value then
         RerenderClosets()
     else
         -- Cleanup when turned off
@@ -4426,10 +4426,10 @@ end)
 
 -- r
 CurrentRooms.DescendantAdded:Connect(function(v)
-    if not Toggles.ClosetESP.Value then return end
+    --
 
     task.delay(0.1, function()
-        if not Toggles.ClosetESP.Value then return end
+        --if not Toggles.ClosetESP.Value then return end
         if v and v.Parent then
             MonitorCloset(v)
         end
