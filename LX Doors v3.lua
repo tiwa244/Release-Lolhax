@@ -1088,6 +1088,7 @@ local function StopRainbow()
 		_G.RainbowConnection:Disconnect()
 		_G.RainbowConnection = nil
 	end
+	RestoreOriginal()
 end
 
 --------------------------------------------------
@@ -2230,42 +2231,44 @@ function EspPlayer(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColo
 
     task.spawn(function()
         while Parent and not Library.Unloaded and task.wait() do
-			TextLabel.Visible = Toggles.ESPP_Enabled.Value
-			Highlight.Enabled = Toggles.ESPP_Enabled.Value
-			Highlight.FillColor = Options.ESPP_Color_F.Value
-            Highlight.OutlineColor = Options.ESPP_Color_O.Value
-            TextLabel.TextColor3 = Options.ESPP_Color_TC.Value
+			TextLabel.Visible = Toggles.ESPI_M_Enabled.Value and Toggles[prefix .. VarName].Value
+			Highlight.Enabled = Toggles.ESPI_M_Enabled.Value and Toggles[prefix .. VarName].Value
+			if not Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
+			   Highlight.FillColor = Options[prefix .. VarName .. "_F"].Value
+               Highlight.OutlineColor = Options[prefix .. VarName .. "_O"].Value
+               TextLabel.TextColor3 = Options[prefix .. VarName .. "_TC"].Value
+			end
 			TextLabel.Font = Enum.Font[Options.ESPS_Font.Value]
 			TextLabel.TextSize = Options.ESPS_FontSize.Value
 			Highlight.FillTransparency = Options.ESPS_FillTransparency.Value
 			Highlight.OutlineTransparency = Options.ESPS_OutlineTransparency.Value
-		   if not Toggles.ESPP_Name.Value then
+		   if not Toggles.ESPI_M_Name.Value then
 			   Text = ""
 			else
 				Text = TextLabel:GetAttribute("SafeText")
 			end
 					
-			if not Toggles.ESPP_Fill.Value then
+			if not Toggles.ESPI_M_Fill.Value then
 					Highlight.FillTransparency = 1
 			else
 					Highlight.FillTransparency = Options.ESPS_FillTransparency.Value
 			end
 
-	        if not Toggles.ESPP_Outline.Value then
+	        if not Toggles.ESPI_M_Outline.Value then
 						Highlight.OutlineTransparency = 1
 			else
 						Highlight.OutlineTransparency = Options.ESPS_OutlineTransparency.Value
 			end
 					
             local Distance = (workspace.CurrentCamera.CFrame.Position - Parent:GetPivot().Position).Magnitude
-        if Toggles.ESPP_Distance.Value then
+        if Toggles.ESPI_M_Distance.Value then
             TextLabel.Text = Text.."\n[ "..string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance).." ]"
 		else
 			TextLabel.Text = Text
         end
     end
 end)
-
+		
     game:GetService("TweenService"):Create(
     Highlight,
     TweenInfo.new(Options.ESPS_FadeTime.Value),
