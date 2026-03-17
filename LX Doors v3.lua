@@ -1949,12 +1949,16 @@ function Library:Notify(options, description, duration, force)
         }
     end
 
-    -- Defaults
+    -- Ddefautlrlr
     data.Title = tostring(data.Title or "Notification")
     data.Description = tostring(data.Description or "")
-    data.Time = tonumber(data.Time) or 5
+    data.Time = data.Time or 5
 
-    local style = (getgenv().UseLib and getgenv().UseLib.CurrentNotify) or "Default"
+    -- safer style check
+    local style = "Default"
+    if getgenv().UseLib and getgenv().UseLib.CurrentNotify then
+        style = getgenv().UseLib.CurrentNotify
+    end
 
     local SoundService = game:GetService("SoundService")
     local Debris = game:GetService("Debris")
@@ -1962,10 +1966,25 @@ function Library:Notify(options, description, duration, force)
     local function PlayNotifySound(id)
         local sound = Instance.new("Sound")
         sound.SoundId = id or "rbxassetid://4590662766"
-        sound.Volume = Options.GN_NotificationSound_Volume.Value
+
+        -- safe volume
+        local volume = 1
+        if Options and Options.GN_NotificationSound_Volume then
+            volume = Options.GN_NotificationSound_Volume.Value
+        end
+
+        sound.Volume = volume
         sound.Parent = SoundService
         sound:Play()
         Debris:AddItem(sound, 2)
+    end
+
+    local function SafeCall(func)
+        local ok, result = pcall(func)
+        if not ok then
+            warn("[Notify Error]:", result)
+        end
+        return result
     end
 
     -- Notification routing
@@ -1973,29 +1992,43 @@ function Library:Notify(options, description, duration, force)
         PlayNotifySound()
 
         local message = data.LinoriaMessage or (data.Title .. " " .. data.Description)
-        return Linoria:Notify(message, data.Time)
+
+        if Linoria and Linoria.Notify then
+            return SafeCall(function()
+                return Linoria:Notify(message, data.Time)
+            end)
+        end
 
     elseif style == "Doors" then
-        return Doors:Notify({
-            Title = data.Title,
-            Description = data.Description,
-            Time = data.Time,
-            Reason = data.Reason
-        })
+        if Doors and Doors.Notify then
+            return SafeCall(function()
+                return Doors:Notify({
+                    Title = data.Title,
+                    Description = data.Description,
+                    Time = data.Time,
+                    Reason = data.Reason
+                })
+            end)
+        end
 
     elseif style == "Obsidian" then
-        return Obsidian:Notify({
-            Title = data.Title,
-            Description = data.Description,
-            Reason = data.Reason,
-            Force = data.Force,
-            SoundId = "rbxassetid://4590662766"
-        })
-
-    else
-        -- Fallback system
-        return Notify(data.Title, data.Description, data.Time, data.Force)
+        if Obsidian and Obsidian.Notify then
+            return SafeCall(function()
+                return Obsidian:Notify({
+                    Title = data.Title,
+                    Description = data.Description,
+                    Reason = data.Reason,
+                    Force = data.Force,
+                    SoundId = "rbxassetid://4590662766"
+                })
+            end)
+        end
     end
+
+    -- Fallback system (always safe)
+    return SafeCall(function()
+        return Notify(data.Title, data.Description, data.Time, data.Force)
+    end)
 end
 
 local AssetService = game:GetService("AssetService")
