@@ -2056,7 +2056,8 @@ local function ManifestMspaintFrame(target)
     local part = Instance.new("Part")
     part.Size = Vector3.new(4.98, 7.75, 0.406)
     part.CFrame = targetPart.CFrame
-    part.Transparency = 0.999 -- render trick
+    part.Transparency = 0.999
+    part.LocalTransparencyModifier = 1
     part.Anchored = false
     part.CanCollide = false
     part.Parent = model
@@ -2075,7 +2076,7 @@ local function ManifestMspaintFrame(target)
     weld.Part1 = targetPart
     weld.Parent = part
 
-    targetPart.Transparency = 1
+   --[[ targetPart.Transparency = 1 ]]--
 
     return part -- return the adornee
 end
