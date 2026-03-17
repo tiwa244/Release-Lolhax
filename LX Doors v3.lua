@@ -4292,7 +4292,8 @@ local ClosetConnection = RunService.Heartbeat:Connect(function()
                     data.displayName,
                     Options.ESPI_C_Closet_F.Value,
                     Options.ESPI_C_Closet_O.Value,
-                    Options.ESPI_C_Closet_TC.Value
+                    Options.ESPI_C_Closet_TC.Value,
+					"Closet"
                 )
         end
 
