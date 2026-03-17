@@ -3478,9 +3478,8 @@ local Connections = {
                 local Highlight, TextLabel = Esp(v, v, "Gold Pile [ "..v:GetAttribute("GoldValue").." ]", Options.ESPI_C_GoldPiles_F.Value, Options.ESPI_C_GoldPiles_O.Value, nil, "GoldPiles")
 			else
 				local Highlight, TextLabel = Esp(v, v, "Gold Pile", Options.ESPI_C_GoldPiles_F.Value, Options.ESPI_C_GoldPiles_O.Value, nil, "GoldPiles"				  
+			    table.insert(EspTable.Interactables.GoldPiles, {Highlight, TextLabel})
 			end
-			table.insert(EspTable.Interactables.GoldPiles, {Highlight, TextLabel})
-
 							
             elseif v.Name == "LeverForGate" then
 
@@ -5536,9 +5535,9 @@ for _, v in Rooms:GetDescendants() do
                 local Highlight, TextLabel = Esp(v, v, "Gold Pile [ "..v:GetAttribute("GoldValue").." ]", Options.ESPI_C_GoldPiles_F.Value, Options.ESPI_C_GoldPiles_O.Value, nil, "GoldPiles")
 			else
 				local Highlight, TextLabel = Esp(v, v, "Gold Pile", Options.ESPI_C_GoldPiles_F.Value, Options.ESPI_C_GoldPiles_O.Value, nil, "GoldPiles"				  
+			    table.insert(EspTable.Interactables.GoldPiles, {Highlight, TextLabel})
 			end
-			table.insert(EspTable.Interactables.GoldPiles, {Highlight, TextLabel})
-
+															
             elseif v.Name == "LeverForGate" and not v.ActivateEventPrompt:GetAttribute("Interactions") then
 
                 local Highlight, TextLabel = Esp(v, v.Main, "Gate Lever", Options.ESPI_C_GateLevers_F.Value, Options.ESPI_C_GateLevers_O.Value, Options.ESPI_C_GateLevers_TC.Value, "GateLevers")
