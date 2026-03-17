@@ -2076,7 +2076,7 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, Var
 	TextLabel:SetAttribute("SafeText", Text)
 
     task.spawn(function()
-        while Parent and not Library.Unloaded and task.wait() and LHXLoadFinish do
+        while Parent and not Library.Unloaded and task.wait() do
 			TextLabel.Visible = Toggles.ESPI_M_Enabled.Value and Toggles[prefix .. VarName].Value
 			Highlight.Enabled = Toggles.ESPI_M_Enabled.Value and Toggles[prefix .. VarName].Value
 			Highlight.FillColor = Options[prefix .. VarName .. "_F"].Value
