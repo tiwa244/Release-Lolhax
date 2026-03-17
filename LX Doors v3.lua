@@ -3474,12 +3474,15 @@ local Connections = {
             elseif v.Name == "GoldPile" then
                 v:WaitForChild("Hitbox", 9e9)
 
-			if v:GetAttribute("GoldValue") then	
-                local Highlight, TextLabel = Esp(v, v, "Gold Pile [ "..v:GetAttribute("GoldValue").." ]", Options.ESPI_C_GoldPiles_F.Value, Options.ESPI_C_GoldPiles_O.Value, nil, "GoldPiles")
-			else
-				local Highlight, TextLabel = Esp(v, v, "Gold Pile", Options.ESPI_C_GoldPiles_F.Value, Options.ESPI_C_GoldPiles_O.Value, nil, "GoldPiles"				  
-			    table.insert(EspTable.Interactables.GoldPiles, {Highlight, TextLabel})
-			end
+                local Highlight, TextLabel = Esp(v, v, "Gold Pile [ "..v:GetAttribute("GoldValue").." ]", Options.ESPI_C_GoldPiles_F.Value, Options.ESPI_C_GoldPiles_O.Value, "GoldPiles")
+
+                local Table = {Highlight, TextLabel}
+                table.insert(EspTable.Interactables.GoldPiles, Table)
+
+                v.Destroying:Once(function()
+                    table.remove(EspTable.Interactables.GoldPiles, table.find(EspTable.Interactables.GoldPiles, Table))
+                end)
+								
 							
             elseif v.Name == "LeverForGate" then
 
@@ -5530,13 +5533,17 @@ for _, v in Rooms:GetDescendants() do
                 table.insert(EspTable.Interactables.DoorKeys, {Highlight, TextLabel})
 
             elseif v.Name == "GoldPile" then
-                
-                if v:GetAttribute("GoldValue") then	
-                local Highlight, TextLabel = Esp(v, v, "Gold Pile [ "..v:GetAttribute("GoldValue").." ]", Options.ESPI_C_GoldPiles_F.Value, Options.ESPI_C_GoldPiles_O.Value, nil, "GoldPiles")
-			else
-				local Highlight, TextLabel = Esp(v, v, "Gold Pile", Options.ESPI_C_GoldPiles_F.Value, Options.ESPI_C_GoldPiles_O.Value, nil, "GoldPiles"				  
-			    table.insert(EspTable.Interactables.GoldPiles, {Highlight, TextLabel})
-			end
+                v:WaitForChild("Hitbox", 9e9)
+
+                local Highlight, TextLabel = Esp(v, v, "Gold Pile [ "..v:GetAttribute("GoldValue").." ]", Options.ESPI_C_GoldPiles_F.Value, Options.ESPI_C_GoldPiles_O.Value, "GoldPiles")
+
+                local Table = {Highlight, TextLabel}
+                table.insert(EspTable.Interactables.GoldPiles, Table)
+
+                v.Destroying:Once(function()
+                    table.remove(EspTable.Interactables.GoldPiles, table.find(EspTable.Interactables.GoldPiles, Table))
+                end)
+												
 															
             elseif v.Name == "LeverForGate" and not v.ActivateEventPrompt:GetAttribute("Interactions") then
 
