@@ -1887,7 +1887,11 @@ function Notify(TitleText, SubText, Duration, Force)
     game:GetService("TweenService"):Create(Title, Info, {TextTransparency = 0}):Play()
     game:GetService("TweenService"):Create(Description, Info, {TextTransparency = 0}):Play()
 
-    Line:TweenSize(UDim2.fromScale(1, 0.03), "Out", "Linear", Timer)
+    if TimerType == "number" then
+       Line:TweenSize(UDim2.fromScale(1, 0.03), "Out", "Linear", Timer)
+    else
+       Line.Visible = false
+	end
 
     task.spawn(function()
     if TimerType == "Instance" then
