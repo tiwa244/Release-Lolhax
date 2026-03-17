@@ -2038,17 +2038,9 @@ local function ManifestMspaintFrame(target)
     return frame
 end
 
-function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
+function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, VarName)
     -- rmved
 	-- new new
-   local Tag
-   for _, item in ipairs(Items) do
-     if item.Text == Text then
-         Tag = item.Tag
-          break
-       end
-	end
-	local VarName = "ESPI_C_" .. Tag
     local BillboardGui = Instance.new("BillboardGui", Parent)
     local TextLabel = Instance.new("TextLabel", BillboardGui)
     local Highlight = Instance.new("Highlight", Parent)
@@ -3350,9 +3342,9 @@ local Connections = {
                     end
                     
                 if Toggles.DoorNum.Value then
-                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door " .. RoomID, Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value, Options.ESPI_C_Doors_TC.Value)
+                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door " .. RoomID, Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value, Options.ESPI_C_Doors_TC.Value, "Doors")
                 else
-                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door", Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value, Options.ESPI_C_Doors_TC.Value)
+                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door", Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value, Options.ESPI_C_Doors_TC.Value, "Doors")
                     table.insert(EspTable.Interactables.Doors, {Highlight, TextLabel})
                 end
 
@@ -3370,7 +3362,7 @@ local Connections = {
 
                 v:WaitForChild("Hitbox", 9e9)
 
-                local Highlight, TextLabel = Esp(v, v, "Generator Fuse", Options.ESPI_C_GeneratorFuses_F.Value, Options.ESPI_C_GeneratorFuses_O.Value, Options.ESPI_C_GeneratorFuses_TC.Value)
+                local Highlight, TextLabel = Esp(v, v, "Generator Fuse", Options.ESPI_C_GeneratorFuses_F.Value, Options.ESPI_C_GeneratorFuses_O.Value, Options.ESPI_C_GeneratorFuses_TC.Value, "GeneratorFuses")
                 table.insert(EspTable.Interactables.GeneratorFuses, {Highlight, TextLabel})
 
                 v.Hitbox.FuseModel.Changed:Once(function()
@@ -3381,7 +3373,7 @@ local Connections = {
 
                 v:WaitForChild("GeneratorMain", 9e9)
 
-                local Highlight, TextLabel = Esp(v, v, "Generator", Options.ESPI_C_Generators_F.Value, Options.ESPI_C_Generators_O.Value, Options.ESPI_C_Generators_TC.Value)
+                local Highlight, TextLabel = Esp(v, v, "Generator", Options.ESPI_C_Generators_F.Value, Options.ESPI_C_Generators_O.Value, Options.ESPI_C_Generators_TC.Value, "Generators")
                 table.insert(EspTable.Interactables.Generators, {Highlight, TextLabel})
 
                 v.Lever.Sound.Played:Once(function()
@@ -3394,7 +3386,7 @@ local Connections = {
                 
                 v.Main:WaitForChild("Open", 9e9)
 
-                local Highlight, TextLabel = Esp(v, v, "Toolshed", Options.ESPI_C_Toolsheds_F.Value, Options.ESPI_C_Toolsheds_O.Value, Options.ESPI_C_Toolsheds_TC.Value)
+                local Highlight, TextLabel = Esp(v, v, "Toolshed", Options.ESPI_C_Toolsheds_F.Value, Options.ESPI_C_Toolsheds_O.Value, Options.ESPI_C_Toolsheds_TC.Value, "Toolsheds")
                 table.insert(EspTable.Interactables, {Highlight, TextLabel})
                 
                 v.Main.Open.Played:Once(function()
@@ -3410,7 +3402,7 @@ local Connections = {
                 local Locked = v:GetAttribute("Locked")
                 local State = if Locked then "[Locked]" else ""
 
-                local Highlight, TextLabel = Esp(v, v, "Chest " .. State, Options.ESPI_C_Chests_F.Value, Options.ESPI_C_Chests_O.Value, Options.ESPI_C_Chests_TC.Value)
+                local Highlight, TextLabel = Esp(v, v, "Chest " .. State, Options.ESPI_C_Chests_F.Value, Options.ESPI_C_Chests_O.Value, Options.ESPI_C_Chests_TC.Value, "Chests")
                 table.insert(EspTable.Interactables, {Highlight, TextLabel})
 
                 v.Main.Open.Played:Once(function()
@@ -3421,7 +3413,7 @@ local Connections = {
 
                 v:WaitForChild("Button", 9e9)
 
-                local Highlight, TextLabel = Esp(v, v, "Gate Button", Options.ESPI_C_GateButtons_F.Value, Options.ESPI_C_GateButtons_O.Value, Options.ESPI_C_GateButtons_TC.Value)
+                local Highlight, TextLabel = Esp(v, v, "Gate Button", Options.ESPI_C_GateButtons_F.Value, Options.ESPI_C_GateButtons_O.Value, Options.ESPI_C_GateButtons_TC.Value, "GateButtons")
                  table.insert(EspTable.Interactables, {Highlight, TextLabel})
 
                 v.Button.SoundWork.Played:Once(function()
@@ -3434,14 +3426,14 @@ local Connections = {
                 
                 if Script.Bypassed then RemoveEspSmooth(v) return end
 
-                local Highlight, TextLabel = Esp(v, v, "Ladder", Options.ESPI_C_Ladder_F.Value, Options.ESPI_C_Ladder_O.Value, Options.ESPI_C_Ladder_TC.Value)
+                local Highlight, TextLabel = Esp(v, v, "Ladder", Options.ESPI_C_Ladder_F.Value, Options.ESPI_C_Ladder_O.Value, Options.ESPI_C_Ladder_TC.Value, "Ladder")
                 table.insert(EspTable.Interactables, {Highlight, TextLabel})
 
             elseif v.Name == "WaterPump" then
 
                 v:WaitForChild("Wheel", 9e9)
                 
-                local Highlight, TextLabel = Esp(v.Wheel, v.Wheel, "Water Pump", Options.ESPI_C_WaterPumps_F.Value, Options.ESPI_C_WaterPumps_O.Value, Options.ESPI_C_WaterPumps_TC.Value)
+                local Highlight, TextLabel = Esp(v.Wheel, v.Wheel, "Water Pump", Options.ESPI_C_WaterPumps_F.Value, Options.ESPI_C_WaterPumps_O.Value, Options.ESPI_C_WaterPumps_TC.Value, "WaterPumps")
                 table.insert(EspTable.Interactables, {Highlight, TextLabel})
                 
                 v.Wheel.Sound.Played:Once(function()
@@ -3457,7 +3449,7 @@ local Connections = {
                 local Locked = v:GetAttribute("Locked")
                 local State = if Locked then "[Locked]" else ""
                 
-                local Highlight, TextLabel = Esp(v, v, "Toolbox " .. State, Options.ESPI_C_Toolbox_F.Value, Options.ESPI_C_Toolbox_O.Value, Options.ESPI_C_Toolbox_TC.Value)
+                local Highlight, TextLabel = Esp(v, v, "Toolbox " .. State, Options.ESPI_C_Toolbox_F.Value, Options.ESPI_C_Toolbox_O.Value, Options.ESPI_C_Toolbox_TC.Value, "Toolbox")
                 table.insert(EspTable.Interactables, {Highlight, TextLabel})
                 
                 v.Main.Open.Played:Once(function()
@@ -3469,26 +3461,26 @@ local Connections = {
                 v:WaitForChild("Hitbox", 9e9)
 
                 task.delay(1, function()
-                    local Highlight, TextLabel = Esp(v, v, "Door Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value, Options.ESPI_C_DoorKeys_TC.Value)
+                    local Highlight, TextLabel = Esp(v, v, "Door Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value, Options.ESPI_C_DoorKeys_TC.Value, "DoorKeys")
                     table.insert(EspTable.Interactables.DoorKeys, {Highlight, TextLabel})
                 end)
 
             elseif v.Name == "ElectricalKeyObtain" then
 
-                local Highlight, TextLabel = Esp(v, v, "Electric Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value, Options.ESPI_C_DoorKeys_TC.Value)
+                local Highlight, TextLabel = Esp(v, v, "Electric Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value, Options.ESPI_C_DoorKeys_TC.Value, "DoorKeys")
                 table.insert(EspTable.Interactables.DoorKeys, {Highlight, TextLabel})
 
             elseif v.Name == "GoldPile" then
                 v:WaitForChild("Hitbox", 9e9)
 
-                local Highlight, TextLabel = Esp(v, v, "Gold Pile [ "..v:GetAttribute("GoldValue").." ]", Options.ESPI_C_GoldPiles_F.Value, Options.ESPI_C_GoldPiles_O.Value)
+                local Highlight, TextLabel = Esp(v, v, "Gold Pile [ "..v:GetAttribute("GoldValue").." ]", Options.ESPI_C_GoldPiles_F.Value, Options.ESPI_C_GoldPiles_O.Value, nil, "GoldPiles")
                 table.insert(EspTable.Interactables.GoldPiles, {Highlight, TextLabel})
  
             elseif v.Name == "LeverForGate" then
 
                 v:WaitForChild("Main", 9e9)
 
-                local Highlight, TextLabel = Esp(v, v.Main, "Gate Lever", Options.ESPI_C_GateLevers_F.Value, Options.ESPI_C_GateLevers_O.Value)
+                local Highlight, TextLabel = Esp(v, v.Main, "Gate Lever", Options.ESPI_C_GateLevers_F.Value, Options.ESPI_C_GateLevers_O.Value, nil, "GateLevers")
                 table.insert(EspTable.Interactables.GateLevers, {Highlight, TextLabel})
 
                 v:WaitForChild("ActivateEventPrompt", 9e9)
@@ -3504,7 +3496,7 @@ local Connections = {
 
                     v:WaitForChild("Hitbox", 9e9)
 
-                    local Highlight, TextLabel = Esp(v, v.Hitbox, "Timer Lever", Options.ESPI_C_BackroomsLevers_F.Value, Options.ESPI_C_BackroomsLevers_O.Value, Options.ESPI_C_BackroomsLevers_TC.Value)
+                    local Highlight, TextLabel = Esp(v, v.Hitbox, "Timer Lever", Options.ESPI_C_BackroomsLevers_F.Value, Options.ESPI_C_BackroomsLevers_O.Value, Options.ESPI_C_BackroomsLevers_TC.Value, "BackroomsLevers")
                     table.insert(EspTable.Interactables.BackroomsLevers, {Highlight, TextLabel})
 
                     v:WaitForChild("ActivateEventPrompt", 9e9)
@@ -3522,28 +3514,28 @@ local Connections = {
 
                 v:WaitForChild("Base", 9e9)
 
-                local Highlight, TextLabel = Esp(v, v, "Book", Options.ESPI_C_LibraryBooks_F.Value, Options.ESPI_C_LibraryBooks_O.Value, Options.ESPI_C_LibraryBooks_TC.Value)
+                local Highlight, TextLabel = Esp(v, v, "Book", Options.ESPI_C_LibraryBooks_F.Value, Options.ESPI_C_LibraryBooks_O.Value, Options.ESPI_C_LibraryBooks_TC.Value, "LibraryBooks")
                 table.insert(EspTable.Interactables.LibraryBooks, {Highlight, TextLabel})
 
            elseif v.Name == "LibraryHintPaper" then
             
               v:WaitForChild("Handle", 9e9)
 
-              local Highlight, TextLabel = Esp(v, v, "Hint Paper", Options.ESPI_C_LibraryBooks_F.Value, Options.ESPI_C_LibraryBooks_O.Value, Options.ESPI_C_LibraryBooks_TC.Value)
+              local Highlight, TextLabel = Esp(v, v, "Hint Paper", Options.ESPI_C_LibraryBooks_F.Value, Options.ESPI_C_LibraryBooks_O.Value, Options.ESPI_C_LibraryBooks_TC.Value, "LibraryBooks")
               table.insert(EspTable.Interactables, {Highlight, TextLabel})
 
             elseif v.Name == "LiveBreakerPolePickup" then
 
                 v:WaitForChild("Base", 9e9)
 
-                local Highlight, TextLabel = Esp(v, v, "Breaker Pole", Options.ESPI_C_BreakerPoles_F.Value, Options.ESPI_C_BreakerPoles_O.Value)
+                local Highlight, TextLabel = Esp(v, v, "Breaker Pole", Options.ESPI_C_BreakerPoles_F.Value, Options.ESPI_C_BreakerPoles_O.Value, nil, "BreakerPoles")
                 table.insert(EspTable.Interactables.BreakerPoles, {Highlight, TextLabel})
 
             elseif MiscPickups[v.Name] then
 				
                 repeat task.wait() until v.PrimaryPart
 
-                local Highlight, TextLabel = Esp(v, v.PrimaryPart, MiscPickups[v.Name], Options.ESPI_C_MiscPickups_F.Value, Options.ESPI_C_MiscPickups_O.Value)
+                local Highlight, TextLabel = Esp(v, v.PrimaryPart, MiscPickups[v.Name], Options.ESPI_C_MiscPickups_F.Value, Options.ESPI_C_MiscPickups_O.Value, nil, "MiscPickups")
                 table.insert(EspTable.Interactables.MiscPickups, {Highlight, TextLabel})
 
             elseif v.Name == "GiggleCeiling" then
@@ -3632,7 +3624,7 @@ local Connections = {
                             Library:Notify("Anchor code solved.", "The code for Anchor "..NextAnchor.Sign.TextLabel.Text.." is '".. Solved .."'.", 10)
                         end
 
-                        local Highlight, TextLabel = Esp(NextAnchor, NextAnchor.AnchorBase, "( ".. Solved .." ) Anchor "..NextAnchor.Sign.TextLabel.Text, Color3.new(0.5, 0.25, 1))
+                        local Highlight, TextLabel = Esp(NextAnchor, NextAnchor.AnchorBase, "Anchor "..NextAnchor.Sign.TextLabel.Text, Color3.new(0.5, 0.25, 1), nil, nil, "Anchors")
                         table.insert(EspTable.Interactables.Anchors, {Highlight, TextLabel})
 					else
                         task.spawn(function()
@@ -3645,7 +3637,7 @@ local Connections = {
                             end
                         end)
 
-                        local Highlight, TextLabel = Esp(NextAnchor, NextAnchor.AnchorBase, "Anchor "..NextAnchor.Sign.TextLabel.Text, Color3.new(0.5, 0.25, 1))
+                        local Highlight, TextLabel = Esp(NextAnchor, NextAnchor.AnchorBase, "Anchor "..NextAnchor.Sign.TextLabel.Text, Color3.new(0.5, 0.25, 1), nil, nil, "Anchors")
                         table.insert(EspTable.Interactables.Anchors, {Highlight, TextLabel})
                     end
 
