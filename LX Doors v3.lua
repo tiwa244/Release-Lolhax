@@ -482,7 +482,7 @@ do
         BorderColor3 = "AccentColor"
     })
 
-	if getgenv().UIConfig.CurrentLib == "Obsidian" then
+	if getgenv().UseLib.CurrentLib == "Obsidian" then
 		local UICorner = Instance.new("UICorner", Frame)
         UICorner.CornerRadius = UDim.new(0, 5)
 
