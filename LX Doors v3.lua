@@ -4407,7 +4407,7 @@ local function RerenderClosets()
     CleanupClosets()
 
     -- Scan everything currently in workspace
-    if Toggles.ESPI_C_Closet.Value.Value then
+    if Toggles.ESPI_C_Closet.Value then
         for _, x in ipairs(CurrentRooms:GetDescendants()) do
             MonitorCloset(x)
         end
