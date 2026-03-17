@@ -2339,7 +2339,7 @@ function EspEntity(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColo
             
         else
             Highlight.FillColor = Color
-            Highlight.OutlineColor = Outline or Color
+            Highlight.OutlineColor = OutlineColor or Color
             TextLabel.TextColor3 = TextLabel or Color
 		end
 			TextLabel.Font = Enum.Font[Options.ESPS_Font.Value]
