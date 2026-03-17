@@ -735,7 +735,7 @@ local ESPPlayers = Tabs.ESP:AddLeftGroupbox("Players")
 ESPPlayers:AddToggle("ESPP_Enabled", { Text = "Enabled", Default = false })
 :AddColorPicker("ESPP_Color_F", { Default = Color3.new(0, 1, 0.5), Title = "Fill Color" })
 :AddColorPicker("ESPP_Color_O", { Default = Color3.new(0, 0, 0), Title = "Outline Color" })
-:AddColorPicker("ESPP_Color_TC", { Default = Color3.new(0, 1, 0.5), Title = "TextLabel Color"
+:AddColorPicker("ESPP_Color_TC", { Default = Color3.new(0, 1, 0.5), Title = "TextLabel Color" })
 ESPPlayers:AddDivider()
 ESPPlayers:AddToggle("ESPP_Name", { Text = "Name", Default = false })
 ESPPlayers:AddToggle("ESPP_Distance", { Text = "Distance", Default = false })
@@ -2201,7 +2201,7 @@ function EspPlayer(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColo
 			end
 					
             local Distance = (workspace.CurrentCamera.CFrame.Position - Parent:GetPivot().Position).Magnitude
-        if Toggles.ESPI_M_Distance.Value then
+        if Toggles.ESPP_Distance.Value then
             TextLabel.Text = Text.."\n[ "..string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance).." ]"
 		else
 			TextLabel.Text = Text
