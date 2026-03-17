@@ -2031,15 +2031,11 @@ function Library:Notify(options, description, duration, force)
     end)
 end
 
-local AssetService = game:GetService("AssetService")
-
-local MESH_ID = "rbxassetid://6502336164"
 local FRAME_NAME = "lhx_doorframe"
 
 local function ManifestMspaintFrame(target)
     if not target then return end
 
-    -- Resolve BasePart properly
     local targetPart
     if target:IsA("Model") then
         targetPart = target:FindFirstChild("Door", true)
@@ -2047,57 +2043,41 @@ local function ManifestMspaintFrame(target)
         targetPart = target
     end
 
-    if not targetPart or not targetPart:IsA("BasePart") then
-        return
-    end
+    if not targetPart then return end
 
-    -- Prevent duplicates
     if targetPart.Parent:FindFirstChild(FRAME_NAME) then
         return targetPart.Parent:FindFirstChild(FRAME_NAME)
     end
 
-    -- Create mesh safely
-    local frame
-    local ok, err = pcall(function()
-        frame = AssetService:CreateMeshPartAsync(MESH_ID, {
-            CollisionFidelity = Enum.CollisionFidelity.Default,
-            RenderFidelity = Enum.RenderFidelity.Precise
-        })
-    end)
+    -- create fake container
+    local model = Instance.new("Model")
+    model.Name = FRAME_NAME
 
-    if not ok or not frame then
-        warn("[ManifestMspaintFrame] Mesh creation failed:", err)
-        return
-    end
+    local part = Instance.new("Part")
+    part.Size = Vector3.new(4.98, 7.75, 0.406)
+    part.CFrame = targetPart.CFrame
+    part.Transparency = 0.999 -- render trick
+    part.Anchored = false
+    part.CanCollide = false
+    part.Parent = model
 
-    -- Apply properties BEFORE parenting (slightly cleaner replication order)
-    frame.Name = FRAME_NAME
-    frame.Size = Vector3.new(4.98, 7.75, 0.406)
-    frame.CFrame = targetPart.CFrame
+    -- THE SAUCE
+    local humanoid = Instance.new("Humanoid")
+    humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+    humanoid.HealthDisplayType = Enum.HumanoidHealthDisplayType.AlwaysOff
+    humanoid.Parent = model
 
-    frame.TextureID = ""
-    frame.Color = Color3.fromRGB(129, 111, 100)
-    frame.Material = Enum.Material.Wood
-    frame.MaterialVariant = "PlywoodALT"
+    model.Parent = targetPart.Parent
 
-    frame.Transparency = 0
-    frame.CastShadow = true
-    frame.CanCollide = false
-    frame.Anchored = false
+    -- weld
+    local weld = Instance.new("WeldConstraint")
+    weld.Part0 = part
+    weld.Part1 = targetPart
+    weld.Parent = part
 
-    -- Parent after configuration
-    frame.Parent = targetPart.Parent
-
-    -- Hide original
     targetPart.Transparency = 1
 
-    -- Weld
-    local weld = Instance.new("WeldConstraint")
-    weld.Part0 = frame
-    weld.Part1 = targetPart
-    weld.Parent = frame
-
-    return frame
+    return part -- return the adornee
 end
 
 function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, VarName)
