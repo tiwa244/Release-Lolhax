@@ -5525,12 +5525,12 @@ for _, v in Rooms:GetDescendants() do
 
             elseif v.Name == "GoldPile" then
                 
-                local Highlight, TextLabel = Esp(v, v, "Gold Pile [ "..v:GetAttribute("GoldValue").." ]", Options.ESPI_C_GoldPiles_F.Value, Options.ESPI_C_GoldPiles_O.Value, "GoldPiles")
+                local Highlight, TextLabel = Esp(v, v, "Gold Pile [ "..v:GetAttribute("GoldValue").." ]", Options.ESPI_C_GoldPiles_F.Value, Options.ESPI_C_GoldPiles_O.Value, nil, "GoldPiles")
                 table.insert(EspTable.Interactables.GoldPiles, {Highlight, TextLabel})
 
             elseif v.Name == "LeverForGate" and not v.ActivateEventPrompt:GetAttribute("Interactions") then
 
-                local Highlight, TextLabel = Esp(v, v.Main, "Gate Lever", Options.ESPI_C_GateLevers_F.Value, Options.ESPI_C_GateLevers_O.Value)
+                local Highlight, TextLabel = Esp(v, v.Main, "Gate Lever", Options.ESPI_C_GateLevers_F.Value, Options.ESPI_C_GateLevers_O.Value, nil, "GateLevers")
                 table.insert(EspTable.Interactables.GateLevers, {Highlight, TextLabel})
 
                 v.ActivateEventPrompt.AttributeChanged:Once(function()
@@ -5554,12 +5554,12 @@ for _, v in Rooms:GetDescendants() do
 
             elseif v.Name == "LiveBreakerPolePickup" then
 
-                local Highlight, TextLabel = Esp(v, v, "Breaker Pole", Options.ESPI_C_BreakerPoles_F.Value, Options.ESPI_C_BreakerPoles_O.Value, "BreakerPoles")
+                local Highlight, TextLabel = Esp(v, v, "Breaker Pole", Options.ESPI_C_BreakerPoles_F.Value, Options.ESPI_C_BreakerPoles_O.Value, nil, "BreakerPoles")
                 table.insert(EspTable.Interactables.BreakerPoles, {Highlight, TextLabel})
 
             elseif MiscPickups[v.Name] then
 				
-                local Highlight, TextLabel = Esp(v, v.PrimaryPart, MiscPickups[v.Name], Options.ESPI_C_MiscPickups_F.Value, Options.ESPI_C_MiscPickups_O.Value, "MiscPickups")
+                local Highlight, TextLabel = Esp(v, v.PrimaryPart, MiscPickups[v.Name], Options.ESPI_C_MiscPickups_F.Value, Options.ESPI_C_MiscPickups_O.Value, nil, "MiscPickups")
                 table.insert(EspTable.Interactables.MiscPickups, {Highlight, TextLabel})
 
             elseif v.Name == "GiggleCeiling" then
@@ -5616,7 +5616,7 @@ for _, v in Rooms:GetDescendants() do
                             Library:Notify("Anchor code solved.", "The code for Anchor "..NextAnchor.Sign.TextLabel.Text.." is '".. Solved .."'.", 10)
                         end
 
-                        local Highlight, TextLabel = Esp(NextAnchor, NextAnchor.AnchorBase, "( ".. Solved .." ) Anchor "..NextAnchor.Sign.TextLabel.Text, Color3.new(0.5, 0.25, 1), nil, "Anchors")
+                        local Highlight, TextLabel = Esp(NextAnchor, NextAnchor.AnchorBase, "( ".. Solved .." ) Anchor "..NextAnchor.Sign.TextLabel.Text, Color3.new(0.5, 0.25, 1), nil, nil, "Anchors")
                         table.insert(EspTable.Interactables.Anchors, {Highlight, TextLabel})
 					else
                         task.spawn(function()
@@ -5629,7 +5629,7 @@ for _, v in Rooms:GetDescendants() do
                             end
                         end)
 
-                        local Highlight, TextLabel = Esp(NextAnchor, NextAnchor.AnchorBase, "Anchor "..NextAnchor.Sign.TextLabel.Text, Color3.new(0.5, 0.25, 1), nil, "Anchors")
+                        local Highlight, TextLabel = Esp(NextAnchor, NextAnchor.AnchorBase, "Anchor "..NextAnchor.Sign.TextLabel.Text, Color3.new(0.5, 0.25, 1), nil, nil, "Anchors")
                         table.insert(EspTable.Interactables.Anchors, {Highlight, TextLabel})
                     end
 
