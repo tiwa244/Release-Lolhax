@@ -1488,7 +1488,7 @@ end)
 
 function lawl(Parent, Text)
     if Toggles.ESPP_Enabled.Value then
-        local Highlight, TextLabel = EspPlayer(Parent, Parent, Parent.Name, Options.ESPP_Color_F.Value, Options.ESPP_Color_O.Value, Options.ESPP_Color_TC.Value)
+        local Highlight, TextLabel = Esp(Parent, Parent, Parent.Name, Options.ESPP_Color_F.Value, Options.ESPP_Color_O.Value, Options.ESPP_Color_TC.Value, nil, "Player")
         table.insert(EspTable.Players, {Highlight, TextLabel})
         task.spawn(function()
             repeat task.wait() until not Toggles.ESPP_Enabled.Value or Library.Unloaded 
@@ -1504,7 +1504,7 @@ end
 function LXSmth(Parent, Text)
     if Toggles.LXPP_Enabled.Value then
         RemoveEspSmoothNoanim(Parent)  
-        local Highlight, TextLabel = Esp(Parent, Parent, Parent.Name, Options.LXPLAYERFILLCOLOR.Value, Options.LXPPLAYEROUTLINECOLOR.Value)
+        local Highlight, TextLabel = Esp(Parent, Parent, Parent.Name, Options.LXPLAYERFILLCOLOR.Value, Options.LXPPLAYEROUTLINECOLOR.Value, nil, "Player")
         table.insert(EspTable.Players, {Highlight, TextLabel})
         task.spawn(function()
             repeat task.wait() until not Toggles.LXPP_Enabled.Value or Library.Unloaded 
@@ -2096,110 +2096,46 @@ local function ManifestMspaintFrame(target)
     return part -- return the adornee
 end
 
-function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, VarName)
-    -- rmved
-	-- new new
-	local prefix = "ESPI_C_"
-    local BillboardGui = Instance.new("BillboardGui", Parent)
-    local TextLabel = Instance.new("TextLabel", BillboardGui)
-    local Highlight = Instance.new("Highlight", Parent)
+local ESPTypes = {
+    Interactable = {
+        Prefix = "ESPI_C_",
+        Master = "ESPI_M_Enabled",
+        Name = "ESPI_M_Name",
+        Distance = "ESPI_M_Distance",
+        Fill = "ESPI_M_Fill",
+        Outline = "ESPI_M_Outline",
+        UseVar = true
+    },
 
-    BillboardGui.Adornee = TextAdornee
-    BillboardGui.AlwaysOnTop = true
-    BillboardGui.Name = "_LOLHAXBG"
-    BillboardGui.Size = UDim2.fromScale(1, 1)
-    BillboardGui.Enabled = true
+    Player = {
+        Master = "ESPP_Enabled",
+        Name = "ESPP_Name",
+        Distance = "ESPP_Distance",
+        Fill = "ESPP_Fill",
+        Outline = "ESPP_Outline",
+        ColorF = "ESPP_Color_F",
+        ColorO = "ESPP_Color_O",
+        ColorTC = "ESPP_Color_TC"
+    },
 
-    Highlight.Name = "_LOLHAXHL"
+    Entity = {
+        Master = "ESPE_Enabled",
+        Name = "ESPE_Name",
+        Distance = "ESPE_Distance",
+        Fill = "ESPE_Fill",
+        Outline = "ESPE_Outline"
+    }
+}
 
-    TextLabel.Size = UDim2.fromScale(1, 1)
-    TextLabel.TextStrokeTransparency = 0
-    TextLabel.Font = Enum.Font[Options.ESPS_Font.Value]
-    TextLabel.TextSize = Options.ESPS_FontSize.Value
-    TextLabel.TextColor3 = TextLabelColor or Color
-    TextLabel.BackgroundTransparency = 1
-
-    Highlight.Adornee = Parent
-
-    Highlight.FillColor = Color
-    Highlight.OutlineColor = OutlineColor or Color
-    
-    -- bye bye rainbow esp part 
-
-    TextLabel.TextTransparency = 1
-    Highlight.FillTransparency = 1
-    Highlight.OutlineTransparency = 1
-
-    TextLabel:SetAttribute("Text", Text)
-	TextLabel:SetAttribute("SafeText", Text)
-
-    task.spawn(function()
-        while Parent and not Library.Unloaded and task.wait() do
-			TextLabel.Visible = Toggles.ESPI_M_Enabled.Value and Toggles[prefix .. VarName].Value
-			Highlight.Enabled = Toggles.ESPI_M_Enabled.Value and Toggles[prefix .. VarName].Value
-			if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
-            
-        else
-            Highlight.FillColor = Options[prefix .. VarName .. "_F"].Value
-            Highlight.OutlineColor = Options[prefix .. VarName .. "_O"].Value
-            TextLabel.TextColor3 = Options[prefix .. VarName .. "_TC"].Value
-		end
-			TextLabel.Font = Enum.Font[Options.ESPS_Font.Value]
-			TextLabel.TextSize = Options.ESPS_FontSize.Value
-			Highlight.FillTransparency = Options.ESPS_FillTransparency.Value
-			Highlight.OutlineTransparency = Options.ESPS_OutlineTransparency.Value
-		   if not Toggles.ESPI_M_Name.Value then
-			   Text = ""
-			else
-				Text = TextLabel:GetAttribute("SafeText")
-			end
-					
-			if not Toggles.ESPI_M_Fill.Value then
-					Highlight.FillTransparency = 1
-			else
-					Highlight.FillTransparency = Options.ESPS_FillTransparency.Value
-			end
-
-	        if not Toggles.ESPI_M_Outline.Value then
-						Highlight.OutlineTransparency = 1
-			else
-						Highlight.OutlineTransparency = Options.ESPS_OutlineTransparency.Value
-			end
-					
-            local Distance = (workspace.CurrentCamera.CFrame.Position - Parent:GetPivot().Position).Magnitude
-        if Toggles.ESPI_M_Distance.Value then
-            TextLabel.Text = Text.."\n[ "..string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance).." ]"
-		else
-			TextLabel.Text = Text
-        end
-    end
-end)
-
-    game:GetService("TweenService"):Create(
-    Highlight,
-    TweenInfo.new(Options.ESPS_FadeTime.Value),
-    {FillTransparency = Toggles.ESPI_M_Fill.Value and Options.ESPS_FillTransparency.Value or 1}
-):Play()
-
-game:GetService("TweenService"):Create(
-    Highlight,
-    TweenInfo.new(Options.ESPS_FadeTime.Value),
-    {OutlineTransparency = Toggles.ESPI_M_Outline.Value and Options.ESPS_OutlineTransparency.Value or 1}
-):Play()
-
-	game:GetService("TweenService"):Create(
-    TextLabel,
-    TweenInfo.new(Options.ESPS_FadeTime.Value),
-    { TextTransparency = 0 }
-):Play()
-
-    return Highlight, TextLabel
+local function ResolveType(t)
+    return ESPTypes[t] and t or "Interactable"
 end
 
-function EspPlayer(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
-    -- rmved
-	-- new new
-	-- label
+function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, VarName, Type)
+    Type = ResolveType(Type)
+    local cfg = ESPTypes[Type]
+    if not cfg or not Parent then return end
+
     local BillboardGui = Instance.new("BillboardGui", Parent)
     local TextLabel = Instance.new("TextLabel", BillboardGui)
     local Highlight = Instance.new("Highlight", Parent)
@@ -2208,188 +2144,110 @@ function EspPlayer(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColo
     BillboardGui.AlwaysOnTop = true
     BillboardGui.Name = "_LOLHAXBG"
     BillboardGui.Size = UDim2.fromScale(1, 1)
-    BillboardGui.Enabled = true
 
     Highlight.Name = "_LOLHAXHL"
-
-    TextLabel.Size = UDim2.fromScale(1, 1)
-    TextLabel.TextStrokeTransparency = 0
-    TextLabel.Font = Enum.Font[Options.ESPS_Font.Value]
-    TextLabel.TextSize = Options.ESPS_FontSize.Value
-    TextLabel.TextColor3 = TextLabelColor or Color
-    TextLabel.BackgroundTransparency = 1
-
     Highlight.Adornee = Parent
 
-    Highlight.FillColor = Color
-    Highlight.OutlineColor = OutlineColor or Color
-    
-    -- bye bye rainbow esp part 
-
+    TextLabel.Size = UDim2.fromScale(1, 1)
+    TextLabel.BackgroundTransparency = 1
+    TextLabel.TextStrokeTransparency = 0
     TextLabel.TextTransparency = 1
+
     Highlight.FillTransparency = 1
     Highlight.OutlineTransparency = 1
 
-    TextLabel:SetAttribute("Text", Text)
-	TextLabel:SetAttribute("SafeText", Text)
+    TextLabel:SetAttribute("SafeText", Text or "")
+
+    local camera = workspace.CurrentCamera
 
     task.spawn(function()
-        while Parent and not Library.Unloaded and task.wait() do
-			TextLabel.Visible = Toggles.ESPP_Enabled.Value
-			Highlight.Enabled = Toggles.ESPP_Enabled.Value
-			if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
-            
-        else
-            Highlight.FillColor = Options.ESPP_Color_F.Value
-            Highlight.OutlineColor = Options.ESPP_Color_O.Value
-            TextLabel.TextColor3 = Options.ESPP_Color_TC.Value
-		end
-			TextLabel.Font = Enum.Font[Options.ESPS_Font.Value]
-			TextLabel.TextSize = Options.ESPS_FontSize.Value
-			Highlight.FillTransparency = Options.ESPS_FillTransparency.Value
-			Highlight.OutlineTransparency = Options.ESPS_OutlineTransparency.Value
-		   if not Toggles.ESPP_Name.Value then
-			   Text = ""
-			else
-				Text = TextLabel:GetAttribute("SafeText")
-			end
-					
-			if not Toggles.ESPP_Fill.Value then
-					Highlight.FillTransparency = 1
-			else
-					Highlight.FillTransparency = Options.ESPS_FillTransparency.Value
-			end
+        while Parent and Parent.Parent and not Library.Unloaded do
+            task.wait()
 
-	        if not Toggles.ESPP_Outline.Value then
-						Highlight.OutlineTransparency = 1
-			else
-						Highlight.OutlineTransparency = Options.ESPS_OutlineTransparency.Value
-			end
-					
-            local Distance = (workspace.CurrentCamera.CFrame.Position - Parent:GetPivot().Position).Magnitude
-        if Toggles.ESPP_Distance.Value then
-            TextLabel.Text = Text.."\n[ "..string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance).." ]"
-		else
-			TextLabel.Text = Text
+            if not camera then
+                camera = workspace.CurrentCamera
+                continue
+            end
+
+            -- enabled
+            local enabled = Toggles[cfg.Master] and Toggles[cfg.Master].Value
+
+            if cfg.UseVar then
+                local toggle = VarName and Toggles[cfg.Prefix .. VarName]
+                enabled = enabled and toggle and toggle.Value
+            end
+
+            TextLabel.Visible = enabled
+            Highlight.Enabled = enabled
+
+            if not enabled then continue end
+
+            -- colors
+            if not Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
+                Highlight.FillColor =
+                    (cfg.ColorF and Options[cfg.ColorF] and Options[cfg.ColorF].Value)
+                    or Color or Color3.new(1,1,1)
+
+                Highlight.OutlineColor =
+                    (cfg.ColorO and Options[cfg.ColorO] and Options[cfg.ColorO].Value)
+                    or (OutlineColor or Color or Color3.new(1,1,1))
+
+                TextLabel.TextColor3 =
+                    (cfg.ColorTC and Options[cfg.ColorTC] and Options[cfg.ColorTC].Value)
+                    or (TextLabelColor or Color or Color3.new(1,1,1))
+            end
+
+            -- font
+            TextLabel.Font = Enum.Font[Options.ESPS_Font.Value]
+            TextLabel.TextSize = Options.ESPS_FontSize.Value
+
+            -- name
+            local displayText = ""
+            if Toggles[cfg.Name] and Toggles[cfg.Name].Value then
+                displayText = TextLabel:GetAttribute("SafeText") or ""
+            end
+
+            -- fill / outline
+            Highlight.FillTransparency =
+                (Toggles[cfg.Fill] and Toggles[cfg.Fill].Value)
+                and Options.ESPS_FillTransparency.Value or 1
+
+            Highlight.OutlineTransparency =
+                (Toggles[cfg.Outline] and Toggles[cfg.Outline].Value)
+                and Options.ESPS_OutlineTransparency.Value or 1
+
+            -- distance
+            if Toggles[cfg.Distance] and Toggles[cfg.Distance].Value then
+                local dist = (camera.CFrame.Position - Parent:GetPivot().Position).Magnitude
+                displayText ..= "\n[ " .. string.format(dist <= 9.9 and "%.1f" or "%.0f", dist) .. " ]"
+            end
+
+            TextLabel.Text = displayText
         end
-    end
-end)
-		
-    game:GetService("TweenService"):Create(
-    Highlight,
-    TweenInfo.new(Options.ESPS_FadeTime.Value),
-    {FillTransparency = Toggles.ESPP_Fill.Value and Options.ESPS_FillTransparency.Value or 1}
-):Play()
+    end)
 
-game:GetService("TweenService"):Create(
-    Highlight,
-    TweenInfo.new(Options.ESPS_FadeTime.Value),
-    {OutlineTransparency = Toggles.ESPP_Outline.Value and Options.ESPS_OutlineTransparency.Value or 1}
-):Play()
+    -- tween
+    local TweenService = game:GetService("TweenService")
 
-	game:GetService("TweenService"):Create(
-    TextLabel,
-    TweenInfo.new(Options.ESPS_FadeTime.Value),
-    { TextTransparency = 0 }
-):Play()
+    TweenService:Create(
+        Highlight,
+        TweenInfo.new(Options.ESPS_FadeTime.Value),
+        {FillTransparency = (Toggles[cfg.Fill] and Toggles[cfg.Fill].Value)
+            and Options.ESPS_FillTransparency.Value or 1}
+    ):Play()
 
-    return Highlight, TextLabel
-end
-	
-function EspEntity(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor)
-    -- rmved
-    local BillboardGui = Instance.new("BillboardGui", Parent)
-    local TextLabel = Instance.new("TextLabel", BillboardGui)
-    local Highlight = Instance.new("Highlight", Parent)
+    TweenService:Create(
+        Highlight,
+        TweenInfo.new(Options.ESPS_FadeTime.Value),
+        {OutlineTransparency = (Toggles[cfg.Outline] and Toggles[cfg.Outline].Value)
+            and Options.ESPS_OutlineTransparency.Value or 1}
+    ):Play()
 
-    BillboardGui.Adornee = TextAdornee
-    BillboardGui.AlwaysOnTop = true
-    BillboardGui.Name = "_LOLHAXBG"
-    BillboardGui.Size = UDim2.fromScale(1, 1)
-    BillboardGui.Enabled = true
-
-    Highlight.Name = "_LOLHAXHL"
-
-    TextLabel.Size = UDim2.fromScale(1, 1)
-    TextLabel.TextStrokeTransparency = 0
-    TextLabel.Font = Enum.Font[Options.ESPS_Font.Value]
-    TextLabel.TextSize = Options.ESPS_FontSize.Value
-    TextLabel.TextColor3 = TextLabelColor or Color
-    TextLabel.BackgroundTransparency = 1
-
-    Highlight.Adornee = Parent
-
-    Highlight.FillColor = Color
-    Highlight.OutlineColor = OutlineColor or Color
-    
-    -- bye bye rainbow esp part
-
-    TextLabel.TextTransparency = 1
-    Highlight.FillTransparency = 1
-    Highlight.OutlineTransparency = 1
-
-    TextLabel:SetAttribute("Text", Text)
-	TextLabel:SetAttribute("SafeText", Text)
-
-    task.spawn(function()
-        while Parent and not Library.Unloaded and task.wait() do
-			TextLabel.Visible = Toggles.ESPE_Enabled.Value
-			Highlight.Enabled = Toggles.ESPE_Enabled.Value
-			if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
-            
-        else
-            Highlight.FillColor = Color
-            Highlight.OutlineColor = OutlineColor or Color
-            TextLabel.TextColor3 = TextLabelColor or Color
-		end
-			TextLabel.Font = Enum.Font[Options.ESPS_Font.Value]
-			TextLabel.TextSize = Options.ESPS_FontSize.Value
-			Highlight.FillTransparency = Options.ESPS_FillTransparency.Value
-			Highlight.OutlineTransparency = Options.ESPS_OutlineTransparency.Value
-		   if not Toggles.ESPE_Name.Value then
-			   Text = ""
-			else
-				Text = TextLabel:GetAttribute("SafeText")
-			end
-					
-			if not Toggles.ESPE_Fill.Value then
-					Highlight.FillTransparency = 1
-			else
-					Highlight.FillTransparency = Options.ESPS_FillTransparency.Value
-			end
-
-	        if not Toggles.ESPE_Outline.Value then
-						Highlight.OutlineTransparency = 1
-			else
-						Highlight.OutlineTransparency = Options.ESPS_OutlineTransparency.Value
-			end
-					
-            local Distance = (workspace.CurrentCamera.CFrame.Position - Parent:GetPivot().Position).Magnitude
-        if Toggles.ESPE_Distance.Value then
-            TextLabel.Text = Text.."\n[ "..string.format(Distance <= 9.9 and "%.1f" or "%.0f", Distance).." ]"
-		else
-			TextLabel.Text = Text
-        end
-    end
-end)
-
-    game:GetService("TweenService"):Create(
-    Highlight,
-    TweenInfo.new(Options.ESPS_FadeTime.Value),
-    {FillTransparency = Toggles.ESPE_Fill.Value and Options.ESPS_FillTransparency.Value or 1}
-):Play()
-
-game:GetService("TweenService"):Create(
-    Highlight,
-    TweenInfo.new(Options.ESPS_FadeTime.Value),
-    {OutlineTransparency = Toggles.ESPE_Outline.Value and Options.ESPS_OutlineTransparency.Value or 1}
-):Play()
-
-	game:GetService("TweenService"):Create(
-    TextLabel,
-    TweenInfo.new(Options.ESPS_FadeTime.Value),
-    { TextTransparency = 0 }
-):Play()
+    TweenService:Create(
+        TextLabel,
+        TweenInfo.new(Options.ESPS_FadeTime.Value),
+        {TextTransparency = 0}
+    ):Play()
 
     return Highlight, TextLabel
 end
@@ -3513,9 +3371,9 @@ local Connections = {
                     end
                     
                 if Toggles.DoorNum.Value then
-                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door " .. RoomID, Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value, Options.ESPI_C_Doors_TC.Value, "Doors")
+                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door " .. RoomID, Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value, Options.ESPI_C_Doors_TC.Value, "Doors", "Interactable")
                 else
-                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door", Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value, Options.ESPI_C_Doors_TC.Value, "Doors")
+                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door", Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value, Options.ESPI_C_Doors_TC.Value, "Doors", "Interactable")
                     table.insert(EspTable.Interactables.Doors, {Highlight, TextLabel})
                 end
 
@@ -3533,7 +3391,7 @@ local Connections = {
 
                 v:WaitForChild("Hitbox", 9e9)
 
-                local Highlight, TextLabel = Esp(v, v, "Generator Fuse", Options.ESPI_C_GeneratorFuses_F.Value, Options.ESPI_C_GeneratorFuses_O.Value, Options.ESPI_C_GeneratorFuses_TC.Value, "GeneratorFuses")
+                local Highlight, TextLabel = Esp(v, v, "Generator Fuse", Options.ESPI_C_GeneratorFuses_F.Value, Options.ESPI_C_GeneratorFuses_O.Value, Options.ESPI_C_GeneratorFuses_TC.Value, "GeneratorFuses", "Interactable")
                 table.insert(EspTable.Interactables.GeneratorFuses, {Highlight, TextLabel})
 
                 v.Hitbox.FuseModel.Changed:Once(function()
@@ -3544,7 +3402,7 @@ local Connections = {
 
                 v:WaitForChild("GeneratorMain", 9e9)
 
-                local Highlight, TextLabel = Esp(v, v, "Generator", Options.ESPI_C_Generators_F.Value, Options.ESPI_C_Generators_O.Value, Options.ESPI_C_Generators_TC.Value, "Generators")
+                local Highlight, TextLabel = Esp(v, v, "Generator", Options.ESPI_C_Generators_F.Value, Options.ESPI_C_Generators_O.Value, Options.ESPI_C_Generators_TC.Value, "Generators", "Interactable")
                 table.insert(EspTable.Interactables.Generators, {Highlight, TextLabel})
 
                 v.Lever.Sound.Played:Once(function()
@@ -3557,7 +3415,7 @@ local Connections = {
                 
                 v.Main:WaitForChild("Open", 9e9)
 
-                local Highlight, TextLabel = Esp(v, v, "Toolshed", Options.ESPI_C_Toolsheds_F.Value, Options.ESPI_C_Toolsheds_O.Value, Options.ESPI_C_Toolsheds_TC.Value, "Toolsheds")
+                local Highlight, TextLabel = Esp(v, v, "Toolshed", Options.ESPI_C_Toolsheds_F.Value, Options.ESPI_C_Toolsheds_O.Value, Options.ESPI_C_Toolsheds_TC.Value, "Toolsheds", "Interactable")
                 table.insert(EspTable.Interactables, {Highlight, TextLabel})
                 
                 v.Main.Open.Played:Once(function()
@@ -3573,7 +3431,7 @@ local Connections = {
                 local Locked = v:GetAttribute("Locked")
                 local State = if Locked then "[Locked]" else ""
 
-                local Highlight, TextLabel = Esp(v, v, "Chest " .. State, Options.ESPI_C_Chests_F.Value, Options.ESPI_C_Chests_O.Value, Options.ESPI_C_Chests_TC.Value, "Chests")
+                local Highlight, TextLabel = Esp(v, v, "Chest " .. State, Options.ESPI_C_Chests_F.Value, Options.ESPI_C_Chests_O.Value, Options.ESPI_C_Chests_TC.Value, "Chests", "Interactable")
                 table.insert(EspTable.Interactables, {Highlight, TextLabel})
 
                 v.Main.Open.Played:Once(function()
@@ -3584,7 +3442,7 @@ local Connections = {
 
                 v:WaitForChild("Button", 9e9)
 
-                local Highlight, TextLabel = Esp(v, v, "Gate Button", Options.ESPI_C_GateButtons_F.Value, Options.ESPI_C_GateButtons_O.Value, Options.ESPI_C_GateButtons_TC.Value, "GateButtons")
+                local Highlight, TextLabel = Esp(v, v, "Gate Button", Options.ESPI_C_GateButtons_F.Value, Options.ESPI_C_GateButtons_O.Value, Options.ESPI_C_GateButtons_TC.Value, "GateButtons", "Interactable")
                  table.insert(EspTable.Interactables, {Highlight, TextLabel})
 
                 v.Button.SoundWork.Played:Once(function()
@@ -3597,14 +3455,14 @@ local Connections = {
                 
                 if Script.Bypassed then RemoveEspSmooth(v) return end
 
-                local Highlight, TextLabel = Esp(v, v, "Ladder", Options.ESPI_C_Ladder_F.Value, Options.ESPI_C_Ladder_O.Value, Options.ESPI_C_Ladder_TC.Value, "Ladder")
+                local Highlight, TextLabel = Esp(v, v, "Ladder", Options.ESPI_C_Ladder_F.Value, Options.ESPI_C_Ladder_O.Value, Options.ESPI_C_Ladder_TC.Value, "Ladder", "Interactable")
                 table.insert(EspTable.Interactables, {Highlight, TextLabel})
 
             elseif v.Name == "WaterPump" then
 
                 v:WaitForChild("Wheel", 9e9)
                 
-                local Highlight, TextLabel = Esp(v.Wheel, v.Wheel, "Water Pump", Options.ESPI_C_WaterPumps_F.Value, Options.ESPI_C_WaterPumps_O.Value, Options.ESPI_C_WaterPumps_TC.Value, "WaterPumps")
+                local Highlight, TextLabel = Esp(v.Wheel, v.Wheel, "Water Pump", Options.ESPI_C_WaterPumps_F.Value, Options.ESPI_C_WaterPumps_O.Value, Options.ESPI_C_WaterPumps_TC.Value, "WaterPumps", "Interactable")
                 table.insert(EspTable.Interactables, {Highlight, TextLabel})
                 
                 v.Wheel.Sound.Played:Once(function()
@@ -3620,7 +3478,7 @@ local Connections = {
                 local Locked = v:GetAttribute("Locked")
                 local State = if Locked then "[Locked]" else ""
                 
-                local Highlight, TextLabel = Esp(v, v, "Toolbox " .. State, Options.ESPI_C_Toolbox_F.Value, Options.ESPI_C_Toolbox_O.Value, Options.ESPI_C_Toolbox_TC.Value, "Toolbox")
+                local Highlight, TextLabel = Esp(v, v, "Toolbox " .. State, Options.ESPI_C_Toolbox_F.Value, Options.ESPI_C_Toolbox_O.Value, Options.ESPI_C_Toolbox_TC.Value, "Toolbox", "Interactable")
                 table.insert(EspTable.Interactables, {Highlight, TextLabel})
                 
                 v.Main.Open.Played:Once(function()
@@ -3632,19 +3490,19 @@ local Connections = {
                 v:WaitForChild("Hitbox", 9e9)
 
                 task.delay(1, function()
-                    local Highlight, TextLabel = Esp(v, v, "Door Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value, Options.ESPI_C_DoorKeys_TC.Value, "DoorKeys")
+                    local Highlight, TextLabel = Esp(v, v, "Door Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value, Options.ESPI_C_DoorKeys_TC.Value, "DoorKeys", "Interactable")
                     table.insert(EspTable.Interactables.DoorKeys, {Highlight, TextLabel})
                 end)
 
             elseif v.Name == "ElectricalKeyObtain" then
 
-                local Highlight, TextLabel = Esp(v, v, "Electric Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value, Options.ESPI_C_DoorKeys_TC.Value, "DoorKeys")
+                local Highlight, TextLabel = Esp(v, v, "Electric Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value, Options.ESPI_C_DoorKeys_TC.Value, "DoorKeys", "Interactable")
                 table.insert(EspTable.Interactables.DoorKeys, {Highlight, TextLabel})
 
             elseif v.Name == "GoldPile" then
                 v:WaitForChild("Hitbox", 9e9)
 
-                local Highlight, TextLabel = Esp(v, v, "Gold Pile [ "..v:GetAttribute("GoldValue").." ]", Options.ESPI_C_GoldPiles_F.Value, Options.ESPI_C_GoldPiles_O.Value, nil, "GoldPiles")
+                local Highlight, TextLabel = Esp(v, v, "Gold Pile [ "..v:GetAttribute("GoldValue").." ]", Options.ESPI_C_GoldPiles_F.Value, Options.ESPI_C_GoldPiles_O.Value, nil, "GoldPiles", "Interactable")
 
                 local Table = {Highlight, TextLabel}
                 table.insert(EspTable.Interactables.GoldPiles, Table)
@@ -3658,7 +3516,7 @@ local Connections = {
 
                 v:WaitForChild("Main", 9e9)
 
-                local Highlight, TextLabel = Esp(v, v.Main, "Gate Lever", Options.ESPI_C_GateLevers_F.Value, Options.ESPI_C_GateLevers_O.Value, nil, "GateLevers")
+                local Highlight, TextLabel = Esp(v, v.Main, "Gate Lever", Options.ESPI_C_GateLevers_F.Value, Options.ESPI_C_GateLevers_O.Value, nil, "GateLevers", "Interactable")
                 table.insert(EspTable.Interactables.GateLevers, {Highlight, TextLabel})
 
                 v:WaitForChild("ActivateEventPrompt", 9e9)
@@ -3674,7 +3532,7 @@ local Connections = {
 
                     v:WaitForChild("Hitbox", 9e9)
 
-                    local Highlight, TextLabel = Esp(v, v.Hitbox, "Timer Lever", Options.ESPI_C_BackroomsLevers_F.Value, Options.ESPI_C_BackroomsLevers_O.Value, Options.ESPI_C_BackroomsLevers_TC.Value, "BackroomsLevers")
+                    local Highlight, TextLabel = Esp(v, v.Hitbox, "Timer Lever", Options.ESPI_C_BackroomsLevers_F.Value, Options.ESPI_C_BackroomsLevers_O.Value, Options.ESPI_C_BackroomsLevers_TC.Value, "BackroomsLevers", "Interactable")
                     table.insert(EspTable.Interactables.BackroomsLevers, {Highlight, TextLabel})
 
                     v:WaitForChild("ActivateEventPrompt", 9e9)
@@ -3692,28 +3550,28 @@ local Connections = {
 
                 v:WaitForChild("Base", 9e9)
 
-                local Highlight, TextLabel = Esp(v, v, "Book", Options.ESPI_C_LibraryBooks_F.Value, Options.ESPI_C_LibraryBooks_O.Value, Options.ESPI_C_LibraryBooks_TC.Value, "LibraryBooks")
+                local Highlight, TextLabel = Esp(v, v, "Book", Options.ESPI_C_LibraryBooks_F.Value, Options.ESPI_C_LibraryBooks_O.Value, Options.ESPI_C_LibraryBooks_TC.Value, "LibraryBooks", "Interactable")
                 table.insert(EspTable.Interactables.LibraryBooks, {Highlight, TextLabel})
 
            elseif v.Name == "LibraryHintPaper" then
             
               v:WaitForChild("Handle", 9e9)
 
-              local Highlight, TextLabel = Esp(v, v, "Hint Paper", Options.ESPI_C_LibraryBooks_F.Value, Options.ESPI_C_LibraryBooks_O.Value, Options.ESPI_C_LibraryBooks_TC.Value, "LibraryBooks")
+              local Highlight, TextLabel = Esp(v, v, "Hint Paper", Options.ESPI_C_LibraryBooks_F.Value, Options.ESPI_C_LibraryBooks_O.Value, Options.ESPI_C_LibraryBooks_TC.Value, "LibraryBooks", "Interactable")
               table.insert(EspTable.Interactables, {Highlight, TextLabel})
 
             elseif v.Name == "LiveBreakerPolePickup" then
 
                 v:WaitForChild("Base", 9e9)
 
-                local Highlight, TextLabel = Esp(v, v, "Breaker Pole", Options.ESPI_C_BreakerPoles_F.Value, Options.ESPI_C_BreakerPoles_O.Value, nil, "BreakerPoles")
+                local Highlight, TextLabel = Esp(v, v, "Breaker Pole", Options.ESPI_C_BreakerPoles_F.Value, Options.ESPI_C_BreakerPoles_O.Value, nil, "BreakerPoles", "Interactable")
                 table.insert(EspTable.Interactables.BreakerPoles, {Highlight, TextLabel})
 
             elseif MiscPickups[v.Name] then
 				
                 repeat task.wait() until v.PrimaryPart
 
-                local Highlight, TextLabel = Esp(v, v.PrimaryPart, MiscPickups[v.Name], Options.ESPI_C_MiscPickups_F.Value, Options.ESPI_C_MiscPickups_O.Value, nil, "MiscPickups")
+                local Highlight, TextLabel = Esp(v, v.PrimaryPart, MiscPickups[v.Name], Options.ESPI_C_MiscPickups_F.Value, Options.ESPI_C_MiscPickups_O.Value, nil, "MiscPickups", "Interactable")
                 table.insert(EspTable.Interactables.MiscPickups, {Highlight, TextLabel})
 
             elseif v.Name == "GiggleCeiling" then
@@ -3722,7 +3580,7 @@ local Connections = {
                 v.Hitbox.CanTouch = not Toggles.ES_AntiGiggle.Value
 
                 v:WaitForChild("Root", 9e9)
-                local Highlight, TextLabel = EspEntity(v, v.Root, "Giggle", Color3.new(0.9, 0.9, 0.9))
+                local Highlight, TextLabel = Esp(v, v.Root, "Giggle", Color3.new(0.9, 0.9, 0.9), nil, nil, nil, "Entity")
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
             elseif v.Name == "Snare" then
@@ -3755,12 +3613,12 @@ local Connections = {
             elseif v.Name == "FigureRig" then
 
                 v:WaitForChild("Torso", 9e9)
-                local Highlight, TextLabel = EspEntity(v, v.Torso, "Figure", Color3.new(0.75, 0, 0))
+                local Highlight, TextLabel = Esp(v, v.Torso, "Figure", Color3.new(0.75, 0, 0), nil, nil, nil, "Entity")
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
             elseif v.Name == "Groundskeeper" then
 
-                local Highlight, TextLabel = EspEntity(v, v.Torso, "Groundskeeper", Color3.new(0.75, 0, 0))
+                local Highlight, TextLabel = Esp(v, v.Torso, "Groundskeeper", Color3.new(0.75, 0, 0), nil, nil, nil, "Entity")
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
             elseif v.Name == "_NestHandler" then
@@ -3802,7 +3660,7 @@ local Connections = {
                             Library:Notify("Anchor code solved.", "The code for Anchor "..NextAnchor.Sign.TextLabel.Text.." is '".. Solved .."'.", 10)
                         end
 
-                        local Highlight, TextLabel = Esp(NextAnchor, NextAnchor.AnchorBase, "Anchor "..NextAnchor.Sign.TextLabel.Text, Color3.new(0.5, 0.25, 1), nil, nil, "Anchors")
+                        local Highlight, TextLabel = Esp(NextAnchor, NextAnchor.AnchorBase, "Anchor "..NextAnchor.Sign.TextLabel.Text, Color3.new(0.5, 0.25, 1), nil, nil, "Anchors", "Interactable")
                         table.insert(EspTable.Interactables.Anchors, {Highlight, TextLabel})
 					else
                         task.spawn(function()
@@ -3815,7 +3673,7 @@ local Connections = {
                             end
                         end)
 
-                        local Highlight, TextLabel = Esp(NextAnchor, NextAnchor.AnchorBase, "Anchor "..NextAnchor.Sign.TextLabel.Text, Color3.new(0.5, 0.25, 1), nil, nil, "Anchors")
+                        local Highlight, TextLabel = Esp(NextAnchor, NextAnchor.AnchorBase, "Anchor "..NextAnchor.Sign.TextLabel.Text, Color3.new(0.5, 0.25, 1), nil, nil, "Anchors", "Interactable")
                         table.insert(EspTable.Interactables.Anchors, {Highlight, TextLabel})
                     end
 
@@ -3838,7 +3696,7 @@ local Connections = {
                     print(false)
                 end
 
-                local Highlight, TextLabel = EspEntity(v, v, "Grumble", Color3.new(0.85, 0.85, 0.85))
+                local Highlight, TextLabel = Esp(v, v, "Grumble", Color3.new(0.85, 0.85, 0.85), nil, nil, nil, nil, "Entity")
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
             elseif v.Name == "GloomEgg" then
