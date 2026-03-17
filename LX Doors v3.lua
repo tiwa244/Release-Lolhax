@@ -1129,7 +1129,7 @@ ESPInteractables_Configurate:AddDropdown("ESPI_C_Style", {
 })
 
 local CustomColors = {}
-{
+local Items = {
     {Tag="Doors", Text="Door", Color=Color3.fromRGB(0,255,127), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
     {Tag="DoorKeys", Text="Door Key", Color=Color3.fromRGB(255,174,0), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
     {Tag="GoldPiles", Text="Gold Piles", Color=Color3.new(1,1,1), NoText=false, Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
