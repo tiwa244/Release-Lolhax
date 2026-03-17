@@ -5607,17 +5607,17 @@ for _, v in Rooms:GetDescendants() do
 
             elseif v.Name == "GiggleCeiling" then
 
-                local Highlight, TextLabel = EspEntity(v, v.Root, "Giggle", Color3.new(0.9, 0.9, 0.9), nil, nil, nil, "Entity")
+                local Highlight, TextLabel = Esp(v, v.Root, "Giggle", Color3.new(0.9, 0.9, 0.9), nil, nil, nil, "Entity")
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
             elseif v.Name == "FigureRig" then
 
-                local Highlight, TextLabel = EspEntity(v, v.Torso, "Figure", Color3.new(0.75, 0, 0), nil, nil, nil, "Entity")
+                local Highlight, TextLabel = Esp(v, v.Torso, "Figure", Color3.new(0.75, 0, 0), nil, nil, nil, "Entity")
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
             elseif v.Name == "Groundskeeper" then
 
-                local Highlight, TextLabel = EspEntity(v, v.Torso, "Groundskeeper", Color3.new(0.75, 0, 0), nil, nil, nil, "Entity")
+                local Highlight, TextLabel = Esp(v, v.Torso, "Groundskeeper", Color3.new(0.75, 0, 0), nil, nil, nil, "Entity")
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
             elseif v.Name == "_NestHandler" then
@@ -5692,7 +5692,7 @@ for _, v in Rooms:GetDescendants() do
                     print(nil)
                 end
      
-                local Highlight, TextLabel = EspEntity(v, v, "Grumble", Color3.new(0.85, 0.85, 0.85), nil, nil, nil, "Entity")
+                local Highlight, TextLabel = Esp(v, v, "Grumble", Color3.new(0.85, 0.85, 0.85), nil, nil, nil, "Entity")
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
             end
