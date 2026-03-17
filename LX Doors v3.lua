@@ -5750,7 +5750,7 @@ for _, v in Rooms:GetDescendants() do
 
             elseif v.Name == "Groundskeeper" then
 
-                local Highlight, TextLabel = EspEntity(v, v, "Groundskeeper", Color3.new(0.75, 0, 0))
+                local Highlight, TextLabel = EspEntity(v, v.Torso, "Groundskeeper", Color3.new(0.75, 0, 0))
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
             elseif v.Name == "_NestHandler" then
@@ -6463,7 +6463,8 @@ task.spawn(function()
     MenuProperties:AddDropdown("NotifyStyle", {
         Text = "Notification Style",
         Values = { "Linoria", "Doors", "Obsidian", "Default" },
-        Default = getgenv().UseLib.CurrentNotify,
+        Default = nil,
+		AllowNull = true,
         Callback = function(value)
             SwitchNotify(value)
         if LHXLoadFinish then
