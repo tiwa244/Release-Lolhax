@@ -5480,9 +5480,9 @@ for _, v in Rooms:GetDescendants() do
                         end
                     end
                 if Toggles.DoorNum.Value then
-                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door " .. RoomID, Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value, Options.ESPI_C_Doors_TC.Value, "Doors")
+                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door " .. RoomID, Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value, Options.ESPI_C_Doors_TC.Value, "Doors", "Interactable")
                 else
-                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door", Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value, Options.ESPI_C_Doors_TC.Value, "Doors")
+                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door", Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value, Options.ESPI_C_Doors_TC.Value, "Doors", "Interactable")
                     table.insert(EspTable.Interactables.Doors, {Highlight, TextLabel})
                 end
                 
@@ -5492,7 +5492,7 @@ for _, v in Rooms:GetDescendants() do
 
             elseif v.Name == "FuseObtain" then
 
-                local Highlight, TextLabel = Esp(v, v, "Generator Fuse", Options.ESPI_C_GeneratorFuses_F.Value, Options.ESPI_C_GeneratorFuses_O.Value, Options.ESPI_C_GeneratorFuses_TC.Value, "GeneratorFuses")
+                local Highlight, TextLabel = Esp(v, v, "Generator Fuse", Options.ESPI_C_GeneratorFuses_F.Value, Options.ESPI_C_GeneratorFuses_O.Value, Options.ESPI_C_GeneratorFuses_TC.Value, "GeneratorFuses", "Interactable")
                 table.insert(EspTable.Interactables.GeneratorFuses, {Highlight, TextLabel})
 
                 v.Hitbox.FuseModel.Changed:Once(function()
@@ -5501,7 +5501,7 @@ for _, v in Rooms:GetDescendants() do
 
             elseif v.Name == "MinesGenerator" then
 
-                local Highlight, TextLabel = Esp(v, v, "Generator", Options.ESPI_C_Generators_F.Value, Options.ESPI_C_Generators_O.Value, Options.ESPI_C_Generators_TC.Value, "Generators")
+                local Highlight, TextLabel = Esp(v, v, "Generator", Options.ESPI_C_Generators_F.Value, Options.ESPI_C_Generators_O.Value, Options.ESPI_C_Generators_TC.Value, "Generators", "Interactable")
                 table.insert(EspTable.Interactables.Generators, {Highlight, TextLabel})
 
                 v.Lever.Sound.Played:Once(function()
@@ -5510,7 +5510,7 @@ for _, v in Rooms:GetDescendants() do
                 
             elseif v.Name == "Toolshed_Small" then
 
-                local Highlight, TextLabel = Esp(v, v, "Toolshed", Options.ESPI_C_Toolsheds_F.Value, Options.ESPI_C_Toolsheds_O.Value, Options.ESPI_C_Toolsheds_TC.Value, "Toolsheds")
+                local Highlight, TextLabel = Esp(v, v, "Toolshed", Options.ESPI_C_Toolsheds_F.Value, Options.ESPI_C_Toolsheds_O.Value, Options.ESPI_C_Toolsheds_TC.Value, "Toolsheds", "Interactable")
                 table.insert(EspTable.Interactables, {Highlight, TextLabel})
 
                 v.Main.Open.Played:Once(function()
@@ -5522,7 +5522,7 @@ for _, v in Rooms:GetDescendants() do
                 local Locked = v:GetAttribute("Locked")
                 local State = if Locked then "[Locked]" else "" 
 
-                local Highlight, TextLabel = Esp(v, v, "Chest " .. State, Options.ESPI_C_Chests_F.Value, Options.ESPI_C_Chests_O.Value, Options.ESPI_C_Chests_TC.Value, "Chests")
+                local Highlight, TextLabel = Esp(v, v, "Chest " .. State, Options.ESPI_C_Chests_F.Value, Options.ESPI_C_Chests_O.Value, Options.ESPI_C_Chests_TC.Value, "Chests", "Interactable")
                 table.insert(EspTable.Interactables, {Highlight, TextLabel})
 
                 v.Main.Open.Played:Once(function()
@@ -5534,7 +5534,7 @@ for _, v in Rooms:GetDescendants() do
                 local Locked = v:GetAttribute("Locked")
                 local State = if Locked then "[Locked]" else ""
                 
-                local Highlight, TextLabel = Esp(v, v, "Toolbox " .. State, Options.ESPI_C_Toolbox_F.Value, Options.ESPI_C_Toolbox_O.Value, Options.ESPI_C_Toolbox_TC.Value, "Toolbox")
+                local Highlight, TextLabel = Esp(v, v, "Toolbox " .. State, Options.ESPI_C_Toolbox_F.Value, Options.ESPI_C_Toolbox_O.Value, Options.ESPI_C_Toolbox_TC.Value, "Toolbox", "Interactable")
                 table.insert(EspTable.Interactables, {Highlight, TextLabel})
                 
                 v.Main.Open.Played:Once(function()
@@ -5543,7 +5543,7 @@ for _, v in Rooms:GetDescendants() do
                 
             elseif v.Name == "MinesGateButton" then
 
-                local Highlight, TextLabel = Esp(v, v, "Gate Button", Options.ESPI_C_GateButtons_F.Value, Options.ESPI_C_GateButtons_O.Value, Options.ESPI_C_GateButtons_TC.Value, "GateButtons")
+                local Highlight, TextLabel = Esp(v, v, "Gate Button", Options.ESPI_C_GateButtons_F.Value, Options.ESPI_C_GateButtons_O.Value, Options.ESPI_C_GateButtons_TC.Value, "GateButtons", "Interactable")
                 table.insert(EspTable.Interactables, {Highlight, TextLabel})
 
                 v.Button.SoundWork.Played:Once(function()
@@ -5552,17 +5552,17 @@ for _, v in Rooms:GetDescendants() do
                 
             elseif v.Name == "KeyObtain" then
 
-                local Highlight, TextLabel = Esp(v, v, "Door Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value, Options.ESPI_C_DoorKeys_TC.Value, "DoorKeys")
+                local Highlight, TextLabel = Esp(v, v, "Door Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value, Options.ESPI_C_DoorKeys_TC.Value, "DoorKeys", "Interactable")
                 table.insert(EspTable.Interactables.DoorKeys, {Highlight, TextLabel})
          
             elseif v.Name == "ElectricalKeyObtain" then
                 
-                local Highlight, TextLabel = Esp(v, v, "Electric Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value, Options.ESPI_C_DoorKeys_TC.Value, "DoorKeys")
+                local Highlight, TextLabel = Esp(v, v, "Electric Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value, Options.ESPI_C_DoorKeys_TC.Value, "DoorKeys", "Interactable")
                 table.insert(EspTable.Interactables.DoorKeys, {Highlight, TextLabel})
 
 			elseif v.Name == "GoldPile" then
                 
-                local Highlight, TextLabel = Esp(v, v, "Gold Pile [ "..v:GetAttribute("GoldValue").." ]", Options.ESPI_C_GoldPiles_F.Value, Options.ESPI_C_GoldPiles_O.Value, nil, "GoldPiles")
+                local Highlight, TextLabel = Esp(v, v, "Gold Pile [ "..v:GetAttribute("GoldValue").." ]", Options.ESPI_C_GoldPiles_F.Value, Options.ESPI_C_GoldPiles_O.Value, nil, "GoldPiles", "Interactable")
 
                 local Table = {Highlight, TextLabel}
                 table.insert(EspTable.Interactables.GoldPiles, Table)
@@ -5573,7 +5573,7 @@ for _, v in Rooms:GetDescendants() do
 															
             elseif v.Name == "LeverForGate" and not v.ActivateEventPrompt:GetAttribute("Interactions") then
 
-                local Highlight, TextLabel = Esp(v, v.Main, "Gate Lever", Options.ESPI_C_GateLevers_F.Value, Options.ESPI_C_GateLevers_O.Value, Options.ESPI_C_GateLevers_TC.Value, "GateLevers")
+                local Highlight, TextLabel = Esp(v, v.Main, "Gate Lever", Options.ESPI_C_GateLevers_F.Value, Options.ESPI_C_GateLevers_O.Value, Options.ESPI_C_GateLevers_TC.Value, "GateLevers", "Interactable")
                 table.insert(EspTable.Interactables.GateLevers, {Highlight, TextLabel})
 
                 v.ActivateEventPrompt.AttributeChanged:Once(function()
@@ -5583,7 +5583,7 @@ for _, v in Rooms:GetDescendants() do
 
             elseif v.Name == "TimerLever" and not v.ActivateEventPrompt:GetAttribute("Interactions") then
 
-                local Highlight, TextLabel = Esp(v, v.Hitbox, "Timer Lever", Options.ESPI_C_BackroomsLevers_F.Value, Options.ESPI_C_BackroomsLevers_O.Value, Options.ESPI_C_BackroomsLevers_TC.Value, "BackroomsLevers")
+                local Highlight, TextLabel = Esp(v, v.Hitbox, "Timer Lever", Options.ESPI_C_BackroomsLevers_F.Value, Options.ESPI_C_BackroomsLevers_O.Value, Options.ESPI_C_BackroomsLevers_TC.Value, "BackroomsLevers", "Interactable")
                 table.insert(EspTable.Interactables.BackroomsLevers, {Highlight, TextLabel})
 
                 v.Main.SoundToPlay.Played:Once(function()
@@ -5592,7 +5592,7 @@ for _, v in Rooms:GetDescendants() do
 
             elseif v.Name == "LiveHintBook" then
 
-                local Highlight, TextLabel = Esp(v, v, "Book", Options.ESPI_C_LibraryBooks_F.Value, Options.ESPI_C_LibraryBooks_O.Value, Options.ESPI_C_LibraryBooks_TC.Value, "LibraryBooks")
+                local Highlight, TextLabel = Esp(v, v, "Book", Options.ESPI_C_LibraryBooks_F.Value, Options.ESPI_C_LibraryBooks_O.Value, Options.ESPI_C_LibraryBooks_TC.Value, "LibraryBooks", "Interactable")
                 table.insert(EspTable.Interactables.LibraryBooks, {Highlight, TextLabel})
 
             elseif v.Name == "LiveBreakerPolePickup" then
@@ -5602,22 +5602,22 @@ for _, v in Rooms:GetDescendants() do
 
             elseif MiscPickups[v.Name] then
 				
-                local Highlight, TextLabel = Esp(v, v.PrimaryPart, MiscPickups[v.Name], Options.ESPI_C_MiscPickups_F.Value, Options.ESPI_C_MiscPickups_O.Value, nil, "MiscPickups")
+                local Highlight, TextLabel = Esp(v, v.PrimaryPart, MiscPickups[v.Name], Options.ESPI_C_MiscPickups_F.Value, Options.ESPI_C_MiscPickups_O.Value, nil, "MiscPickups", "Interactable")
                 table.insert(EspTable.Interactables.MiscPickups, {Highlight, TextLabel})
 
             elseif v.Name == "GiggleCeiling" then
 
-                local Highlight, TextLabel = EspEntity(v, v.Root, "Giggle", Color3.new(0.9, 0.9, 0.9))
+                local Highlight, TextLabel = EspEntity(v, v.Root, "Giggle", Color3.new(0.9, 0.9, 0.9), nil, nil, nil, "Entity")
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
             elseif v.Name == "FigureRig" then
 
-                local Highlight, TextLabel = EspEntity(v, v.Torso, "Figure", Color3.new(0.75, 0, 0))
+                local Highlight, TextLabel = EspEntity(v, v.Torso, "Figure", Color3.new(0.75, 0, 0), nil, nil, nil, "Entity")
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
             elseif v.Name == "Groundskeeper" then
 
-                local Highlight, TextLabel = EspEntity(v, v.Torso, "Groundskeeper", Color3.new(0.75, 0, 0))
+                local Highlight, TextLabel = EspEntity(v, v.Torso, "Groundskeeper", Color3.new(0.75, 0, 0), nil, nil, nil, "Entity")
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
             elseif v.Name == "_NestHandler" then
@@ -5659,7 +5659,7 @@ for _, v in Rooms:GetDescendants() do
                             Library:Notify("Anchor code solved.", "The code for Anchor "..NextAnchor.Sign.TextLabel.Text.." is '".. Solved .."'.", 10)
                         end
 
-                        local Highlight, TextLabel = Esp(NextAnchor, NextAnchor.AnchorBase, "( ".. Solved .." ) Anchor "..NextAnchor.Sign.TextLabel.Text, Color3.new(0.5, 0.25, 1), nil, nil, "Anchors")
+                        local Highlight, TextLabel = Esp(NextAnchor, NextAnchor.AnchorBase, "( ".. Solved .." ) Anchor "..NextAnchor.Sign.TextLabel.Text, Color3.new(0.5, 0.25, 1), nil, nil, "Anchors", "Interactable")
                         table.insert(EspTable.Interactables.Anchors, {Highlight, TextLabel})
 					else
                         task.spawn(function()
@@ -5672,7 +5672,7 @@ for _, v in Rooms:GetDescendants() do
                             end
                         end)
 
-                        local Highlight, TextLabel = Esp(NextAnchor, NextAnchor.AnchorBase, "Anchor "..NextAnchor.Sign.TextLabel.Text, Color3.new(0.5, 0.25, 1), nil, nil, "Anchors")
+                        local Highlight, TextLabel = Esp(NextAnchor, NextAnchor.AnchorBase, "Anchor "..NextAnchor.Sign.TextLabel.Text, Color3.new(0.5, 0.25, 1), nil, nil, "Anchors", "Interactable")
                         table.insert(EspTable.Interactables.Anchors, {Highlight, TextLabel})
                     end
 
