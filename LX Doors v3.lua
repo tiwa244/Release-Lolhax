@@ -2292,7 +2292,7 @@ function EspGold(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor,
     task.spawn(function()
         while Parent and not Library.Unloaded and task.wait() do
 
-            local Toggle = Toggles.ESPI_M_GoldPiles
+            local Toggle = Toggles.ESPI_C_GoldPiles
 
             TextLabel.Visible =
                 Toggles.ESPI_M_Enabled.Value
