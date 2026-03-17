@@ -2041,7 +2041,7 @@ end
 function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, VarName)
     -- rmved
 	-- new new
-	print(VarName)
+	local prefix = "ESPI_C_"
     local BillboardGui = Instance.new("BillboardGui", Parent)
     local TextLabel = Instance.new("TextLabel", BillboardGui)
     local Highlight = Instance.new("Highlight", Parent)
@@ -2077,11 +2077,11 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, Var
 
     task.spawn(function()
         while Parent and not Library.Unloaded and task.wait() and LHXLoadFinish do
-			TextLabel.Visible = Toggles.ESPI_M_Enabled.Value and Toggles[VarName].Value
-			Highlight.Enabled = Toggles.ESPI_M_Enabled.Value and Toggles[VarName].Value
-			Highlight.FillColor = Options[VarName .. "_F"].Value
-            Highlight.OutlineColor = Options[VarName .. "_O"].Value
-            TextLabel.TextColor3 = Options[VarName .. "_TC"].Value
+			TextLabel.Visible = Toggles.ESPI_M_Enabled.Value and Toggles[prefix .. VarName].Value
+			Highlight.Enabled = Toggles.ESPI_M_Enabled.Value and Toggles[prefix .. VarName].Value
+			Highlight.FillColor = Options[prefix .. VarName .. "_F"].Value
+            Highlight.OutlineColor = Options[prefix .. VarName .. "_O"].Value
+            TextLabel.TextColor3 = Options[prefix .. VarName .. "_TC"].Value
 			TextLabel.Font = Enum.Font[Options.ESPS_Font.Value]
 			TextLabel.TextSize = Options.ESPS_FontSize.Value
 		   if not Toggles.ESPI_M_Name.Value then
