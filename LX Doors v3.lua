@@ -2235,14 +2235,14 @@ function EspPlayer(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColo
 
     task.spawn(function()
         while Parent and not Library.Unloaded and task.wait() do
-			TextLabel.Visible = Toggles.ESPI_M_Enabled.Value and Toggles[prefix .. VarName].Value
-			Highlight.Enabled = Toggles.ESPI_M_Enabled.Value and Toggles[prefix .. VarName].Value
+			TextLabel.Visible = Toggles.ESPP_Enabled.Value
+			Highlight.Enabled = Toggles.ESPP_Enabled.Value
 			if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
             
         else
-            Highlight.FillColor = Options[prefix .. VarName .. "_F"].Value
-            Highlight.OutlineColor = Options[prefix .. VarName .. "_O"].Value
-            TextLabel.TextColor3 = Options[prefix .. VarName .. "_TC"].Value
+            Highlight.FillColor = Options.ESPP_Color_F.Value
+            Highlight.OutlineColor = Options.ESPP_Color_O.Value
+            TextLabel.TextColor3 = Options.ESPP_Color_O.Value
 		end
 			TextLabel.Font = Enum.Font[Options.ESPS_Font.Value]
 			TextLabel.TextSize = Options.ESPS_FontSize.Value
@@ -2338,9 +2338,9 @@ function EspEntity(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColo
 			if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
             
         else
-            Highlight.FillColor = Options[prefix .. VarName .. "_F"].Value
-            Highlight.OutlineColor = Options[prefix .. VarName .. "_O"].Value
-            TextLabel.TextColor3 = Options[prefix .. VarName .. "_TC"].Value
+            Highlight.FillColor = Color
+            Highlight.OutlineColor = Outline or Color
+            TextLabel.TextColor3 = TextLabel or Color
 		end
 			TextLabel.Font = Enum.Font[Options.ESPS_Font.Value]
 			TextLabel.TextSize = Options.ESPS_FontSize.Value
