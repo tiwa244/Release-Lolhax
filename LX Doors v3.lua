@@ -3879,7 +3879,7 @@ local Connections = {
                 Instance.new("Humanoid", v)
                 v.Main.Transparency = 0.999
 
-                local Highlight, TextLabel = EspEntity(v, v.Main, "Blitz", Color3.fromRGB(0, 175, 80), nil, nil, nil, "Entity")
+                local Highlight, TextLabel = Esp(v, v.Main, "Blitz", Color3.fromRGB(0, 175, 80), nil, nil, nil, "Entity")
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
                 if Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["Blitz"] then
@@ -3905,7 +3905,7 @@ local Connections = {
                 Instance.new("Humanoid", v)
                 v.Core.Transparency = 0.999
 
-                local Highlight, TextLabel = EspEntity(v, v.Core, "Eyes", Color3.fromRGB(127, 30, 220), nil, nil, nil, "Entity")
+                local Highlight, TextLabel = Esp(v, v.Core, "Eyes", Color3.fromRGB(127, 30, 220), nil, nil, nil, "Entity")
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
                 if Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["Eyes"] then
@@ -3919,7 +3919,7 @@ local Connections = {
                 Instance.new("Humanoid", v)
                 v.Core.Transparency = 0.999
 
-                local Highlight, TextLabel = EspEntity(v, v.Core, "Lookman", Color3.fromRGB(110, 15, 15), nil, nil, nil, "Entity")
+                local Highlight, TextLabel = Esp(v, v.Core, "Lookman", Color3.fromRGB(110, 15, 15), nil, nil, nil, "Entity")
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
                 if Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["Lookman"] then
