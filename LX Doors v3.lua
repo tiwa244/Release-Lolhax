@@ -6447,7 +6447,8 @@ task.spawn(function()
     MenuProperties:AddDropdown("UILib", {
         Text = "UI Library",
         Values = { "Obsidian", "Linoria"},
-        Default = getgenv().UseLib.CurrentLib,
+        Default = nil,
+		AllowNull = true,
         Callback = function(value)
            SwitchLib(value)
         if LHXLoadFinish then
