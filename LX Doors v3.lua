@@ -5610,7 +5610,7 @@ for _, v in Rooms:GetDescendants() do
                 local Locked = v:GetAttribute("Locked")
                 local State = if Locked then "[Locked]" else "" 
 
-                local Highlight, TextLabel = Esp(v, v, "Chest " .. State, Options.ESPI_C_Chests_F.Value, Options.ESPI_C_Chests_O.Value, Options.ESPI_C_Chests_TC.Value)
+                local Highlight, TextLabel = EspSpecial(v, v, "Chest " .. State, Options.ESPI_C_Chests_F.Value, Options.ESPI_C_Chests_O.Value, Options.ESPI_C_Chests_TC.Value)
                 table.insert(EspTable.Interactables, {Highlight, TextLabel})
 
                 v.Main.Open.Played:Once(function()
