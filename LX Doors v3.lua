@@ -225,16 +225,13 @@ if not shared.Script then
     shared.Script = {
         Functions = {},
         Temp = {
-    AnchorFinished = {},
-    AutoWardrobeEntities = {},
-    Bridges = {},
-    PipeBridges = {},
-    CollisionSize = Vector3.new(5.5, 3, 3),
-    Guidance = {},
-    PaintingDebounce = {},
-    UsedBreakers = {},
-    VoidGlitchNotifiedRooms = {},
-},
+           Bridges = {},
+           PipeBridges = {},
+           CollisionSize = Vector3.new(5.5, 3, 3),
+           Guidance = {},
+           PaintingDebounce = {},
+           VoidGlitchNotifiedRooms = {},
+        },
         Humanoid = {},
         FloorReplicated = game:GetService("ReplicatedStorage"):WaitForChild("FloorReplicated"),
         ReplicatedStorage = game:GetService("ReplicatedStorage")
