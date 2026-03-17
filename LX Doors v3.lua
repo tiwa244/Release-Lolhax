@@ -5597,7 +5597,7 @@ for _, v in Rooms:GetDescendants() do
 
             elseif v.Name == "LiveBreakerPolePickup" then
 
-                local Highlight, TextLabel = Esp(v, v, "Breaker Pole", Options.ESPI_C_BreakerPoles_F.Value, Options.ESPI_C_BreakerPoles_O.Value, nil, "BreakerPoles")
+                local Highlight, TextLabel = Esp(v, v, "Breaker Pole", Options.ESPI_C_BreakerPoles_F.Value, Options.ESPI_C_BreakerPoles_O.Value, nil, "BreakerPoles", "Interactable")
                 table.insert(EspTable.Interactables.BreakerPoles, {Highlight, TextLabel})
 
             elseif MiscPickups[v.Name] then
@@ -5692,7 +5692,7 @@ for _, v in Rooms:GetDescendants() do
                     print(nil)
                 end
      
-                local Highlight, TextLabel = EspEntity(v, v, "Grumble", Color3.new(0.85, 0.85, 0.85))
+                local Highlight, TextLabel = EspEntity(v, v, "Grumble", Color3.new(0.85, 0.85, 0.85), nil, nil, nil, "Entity")
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
             end
