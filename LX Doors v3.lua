@@ -2219,6 +2219,7 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, Var
     -- tween
     local TweenService = game:GetService("TweenService")
 
+if Toggles.ESPS_FadeAnim.Value then
     TweenService:Create(
         Highlight,
         TweenInfo.new(Options.ESPS_FadeTime.Value),
@@ -2238,6 +2239,11 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, Var
         TweenInfo.new(Options.ESPS_FadeTime.Value),
         {TextTransparency = 0}
     ):Play()
+else
+   Highlight.FillTransparency = (Toggles[cfg.Fill] and Toggles[cfg.Fill].Value) and Options.ESPS_FillTransparency.Value or 1
+   Highlight.OutlineTransparency = (Toggles[cfg.Outline] and Toggles[cfg.Outline].Value) and Options.ESPS_OutlineTransparency.Value or 1
+   TextLabel.TextTransparency = 0
+end
 
     return Highlight, TextLabel
 end
@@ -2538,16 +2544,20 @@ function RemoveEspSmoothNoanim(Parent)
 end
 
 function RemoveEspSmooth(Parent)
-    for _, x in Parent:GetChildren() do
-        if x.Name == "_LOLHAXBG" then
+  for _, x in Parent:GetChildren() do
+    if x.Name == "_LOLHAXBG" then
+		if Toggles.ESPS_FadeAnim.Value then
             game:GetService("TweenService"):Create( x.TextLabel, TweenInfo.new(1), { TextTransparency = 1 } ):Play()
+		end
 
             task.delay(Options.ESPS_FadeTime.Value, function()
                 x:Destroy()
             end)
-        elseif x.Name == "_LOLHAXHL" then
+    elseif x.Name == "_LOLHAXHL" then
+		if Toggles.ESPS_FadeAnim.Value then
             game:GetService("TweenService"):Create( x, TweenInfo.new( Options.ESPS_FadeTime.Value ), { FillTransparency = 1 } ):Play()
             game:GetService("TweenService"):Create( x, TweenInfo.new( Options.ESPS_FadeTime.Value ), { OutlineTransparency = 1 } ):Play()
+		end 
 
             task.delay(Options.ESPS_FadeTime.Value, function()
                 x:Destroy()
