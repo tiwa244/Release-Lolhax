@@ -2181,7 +2181,7 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, Var
             elseif Type == "Player" then
                 Highlight.FillColor    = Options.ESPP_Color_F.Value
                 Highlight.OutlineColor = Options.ESPP_Color_O.Value
-                TextLabel.TextColor3   = Options.ESPP_Color_F.Value
+                TextLabel.TextColor3   = Options.ESPP_Color_TC.Value
 
            elseif Toggles.ESPI_RAINBOW_HIGHLIGHT.Value and Type == "Entity" then
     -- empty, rainbow handles this
