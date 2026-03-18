@@ -2544,24 +2544,42 @@ function RemoveEspSmoothNoanim(Parent)
 end
 
 function RemoveEspSmooth(Parent)
-  for _, x in Parent:GetChildren() do
-    if x.Name == "_LOLHAXBG" then
-		if Toggles.ESPS_FadeAnim.Value then
-            game:GetService("TweenService"):Create( x.TextLabel, TweenInfo.new(1), { TextTransparency = 1 } ):Play()
-		end
+    for _, x in Parent:GetChildren() do
+        if x.Name == "_LOLHAXBG" then
+            if Toggles.ESPS_FadeAnim.Value then
+                game:GetService("TweenService"):Create(
+                    x.TextLabel,
+                    TweenInfo.new(1),
+                    { TextTransparency = 1 }
+                ):Play()
 
-            task.delay(Options.ESPS_FadeTime.Value, function()
+                task.delay(Options.ESPS_FadeTime.Value, function()
+                    x:Destroy()
+                end)
+            else
                 x:Destroy()
-            end)
-    elseif x.Name == "_LOLHAXHL" then
-		if Toggles.ESPS_FadeAnim.Value then
-            game:GetService("TweenService"):Create( x, TweenInfo.new( Options.ESPS_FadeTime.Value ), { FillTransparency = 1 } ):Play()
-            game:GetService("TweenService"):Create( x, TweenInfo.new( Options.ESPS_FadeTime.Value ), { OutlineTransparency = 1 } ):Play()
-		end 
+            end
 
-            task.delay(Options.ESPS_FadeTime.Value, function()
+        elseif x.Name == "_LOLHAXHL" then
+            if Toggles.ESPS_FadeAnim.Value then
+                game:GetService("TweenService"):Create(
+                    x,
+                    TweenInfo.new(Options.ESPS_FadeTime.Value),
+                    { FillTransparency = 1 }
+                ):Play()
+
+                game:GetService("TweenService"):Create(
+                    x,
+                    TweenInfo.new(Options.ESPS_FadeTime.Value),
+                    { OutlineTransparency = 1 }
+                ):Play()
+
+                task.delay(Options.ESPS_FadeTime.Value, function()
+                    x:Destroy()
+                end)
+            else
                 x:Destroy()
-            end)
+            end
         end
     end
 end
