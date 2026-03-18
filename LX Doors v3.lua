@@ -2164,6 +2164,8 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, Var
                 enabled = enabled and toggle and toggle.Value
             end
 
+			enabled = enabled and (Parent:GetAttribute("IsCurrentRoom") ~= false)
+
             TextLabel.Visible = enabled
             Highlight.Enabled = enabled
 
@@ -4304,6 +4306,7 @@ local ClosetConnection = RunService.Heartbeat:Connect(function()
         end
 
         local isCurrent = (data.roomNum == current)
+	    v:SetAttribute("IsCurrentRoom", isCurrent)
         local isOld = (data.roomNum < current - 1)
 
         if isCurrent and not data.highlight then
@@ -4318,14 +4321,6 @@ local ClosetConnection = RunService.Heartbeat:Connect(function()
 					"Closet",
 					"Interactable"
                 )
-        end
-
-        if data.highlight then
-            data.highlight.Enabled = isCurrent
-        end
-
-        if data.textLabel then
-            data.textLabel.Visible = isCurrent
         end
 
         if isOld then
