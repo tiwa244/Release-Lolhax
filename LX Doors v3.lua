@@ -1153,7 +1153,7 @@ for _, item in ipairs(Items) do
         end
     end)
     
-    Toggle:AddColorPicker("ESPI_C_"..item.Tag.."_O", { Default = item.Color4, Title = "Outline Color" })
+    Toggle:AddColorPicker("ESPI_C_"..item.Tag.."_O", { Default = item.Color2, Title = "Outline Color" })
     Options["ESPI_C_"..item.Tag.."_O"]:OnChanged(function(v)
         if not IsSwitching and Options.ESPI_C_Style.Value == "Custom" then 
             CustomColors[item.Tag].Outline = v 
@@ -1161,7 +1161,7 @@ for _, item in ipairs(Items) do
     end)
     
     if not item.NoText then
-        Toggle:AddColorPicker("ESPI_C_"..item.Tag.."_TC", { Default = item.Color2, Title = "TextLabel Color" })
+        Toggle:AddColorPicker("ESPI_C_"..item.Tag.."_TC", { Default = item.Color4, Title = "TextLabel Color" })
         Options["ESPI_C_"..item.Tag.."_TC"]:OnChanged(function(v)
             if not IsSwitching and Options.ESPI_C_Style.Value == "Custom" then 
                 CustomColors[item.Tag].Text = v 
