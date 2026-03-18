@@ -2169,29 +2169,27 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, Var
             if not enabled then continue end
 
             -- colors
-            if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value and Type == "Player" then
+        if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value and Type == "Interactable" then
+    -- empty, rainbow handles this
+            elseif Type == "Interactable" then
+                Highlight.FillColor    = Options[cfg.Prefix .. VarName .. "_F"].Value
+                Highlight.OutlineColor = Options[cfg.Prefix .. VarName .. "_O"].Value
+                TextLabel.TextColor3   = Options[cfg.Prefix .. VarName .. "_TC"].Value
 
-			else
-                Highlight.FillColor =
-                    (cfg.ColorF and Options[cfg.ColorF] and Options[cfg.ColorF].Value)
-                    or Color or Color3.new(1,1,1)
+            elseif Toggles.ESPI_RAINBOW_HIGHLIGHT.Value and Type == "Player" then
+    -- empty, rainbow handles this
+            elseif Type == "Player" then
+                Highlight.FillColor    = Options.ESPP_Color_F.Value
+                Highlight.OutlineColor = Options.ESPP_Color_O.Value
+                TextLabel.TextColor3   = Options.ESPP_Color_F.Value
 
-                Highlight.OutlineColor =
-                    (cfg.ColorO and Options[cfg.ColorO] and Options[cfg.ColorO].Value)
-                    or (OutlineColor or Color or Color3.new(1,1,1))
-
-                TextLabel.TextColor3 =
-                    (cfg.ColorTC and Options[cfg.ColorTC] and Options[cfg.ColorTC].Value)
-                    or (TextLabelColor or Color or Color3.new(1,1,1))
-            end
-
-			if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value and Type == "Interactable" then
-
-			else 
-				Highlight.FillColor = Options[cfg.Prefix .. VarName .. "_F"].Value
-				Highlight.OutlineColor = Options[cfg.Prefix .. VarName .. "_O"].Value
-				TextLabel.TextColor3 = Options[cfg.Prefix .. VarName .. "_TC"].Value
-			end
+           elseif Toggles.ESPI_RAINBOW_HIGHLIGHT.Value and Type == "Entity" then
+    -- empty, rainbow handles this
+           else
+               Highlight.FillColor = Color
+               Highlight.OutlineColor = OutlineColor or Color
+               TextLabel.TextColor3 = TextLabelColor or Color
+	       end
 
             -- stuff
              BillboardGui.AlwaysOnTop = true
