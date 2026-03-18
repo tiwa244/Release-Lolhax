@@ -4191,7 +4191,7 @@ local function getRoomModel(obj)
     return parent
 end
 
-    local HiddenSpots = {
+local HiddenSpots = {
     Locker_Large = "Locker",
     Wardrobe = "Closet",
     RetroWardrobe = "Closet",
@@ -4315,7 +4315,8 @@ local ClosetConnection = RunService.Heartbeat:Connect(function()
                     Options.ESPI_C_Closet_F.Value,
                     Options.ESPI_C_Closet_O.Value,
                     Options.ESPI_C_Closet_TC.Value,
-					"Closet"
+					"Closet",
+					"Interactable"
                 )
         end
 
