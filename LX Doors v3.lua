@@ -1225,6 +1225,15 @@ ESPSettings:AddDivider("Highlight")
 ESPSettings:AddSlider("ESPS_FillTransparency", { Text = "Fill Transparency", Default = 0.7, Min = 0, Max = 1, Rounding = 2, Compact = true })
 ESPSettings:AddSlider("ESPS_OutlineTransparency", { Text = "Outline Transparency", Default = 0.2, Min = 0, Max = 1, Rounding = 2, Compact = true })
 ESPSettings:AddDropdown("ESPS_DepthMode", { Values = { "Occlued", "Excluded" }, Default = "Excluded", Multi = false })
+ESPSettings:AddDropdown("ESPS_VisualType", { Values = { "Highlight",
+"BoxHandleAdornment", 
+"SphereHandleAdornment", 
+"CylinderHandleAdornment", 
+"LineHandleAdornment", 
+"SelectionBox"
+},
+Default = "Highlight",
+Text = "ESP Types"
 ESPSettings:AddDivider("Animations")
 ESPSettings:AddToggle("ESPS_FadeAnim", { Text = "Fade In animation", Default = true, Tooltip = "Fading animation." })
 ESPSettings:AddSlider("ESPS_FadeTime", { Text = "Fade In / Out Time", Default = 1, Min = 0, Max = 2, Rounding = 2, Compact = true, Suffix = "s" })
@@ -1805,6 +1814,7 @@ function Notify(TitleText, SubText, Duration, Force)
     if not Force then
         if not Toggles.GN_Enabled.Value then return end
     end
+	if not Toggles.GN_Enabled.Value then return end
 
     local DPISize = Options.GN_NotificationDPISize.Value
 
@@ -2120,36 +2130,66 @@ local function ManifestMspaintFrame(target)
     return part -- adornee
 end
 
-function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, VarName, Type)
-    Type = ResolveType(Type)
-    local cfg = ESPTypes[Type]
-    if not cfg or not Parent then return end
+-- test
 
+local TweenService = game:GetService("TweenService")
+
+function Esp(Parent, TextAdornee, Text, Color, cfg)
     local BillboardGui = Instance.new("BillboardGui", Parent)
     local TextLabel = Instance.new("TextLabel", BillboardGui)
-    local Highlight = Instance.new("Highlight", Parent)
 
     BillboardGui.Adornee = TextAdornee
     BillboardGui.AlwaysOnTop = true
-    BillboardGui.Name = "_LOLHAXBG"
     BillboardGui.Size = UDim2.fromScale(1, 1)
-
-    Highlight.Name = "_LOLHAXHL"
-    Highlight.Adornee = Parent
+    BillboardGui.Name = "_LOLHAX_BG"
 
     TextLabel.Size = UDim2.fromScale(1, 1)
     TextLabel.BackgroundTransparency = 1
     TextLabel.TextStrokeTransparency = 0
-    TextLabel.TextTransparency = 1
+    TextLabel.Text = Text
+    TextLabel.TextColor3 = Color
+    TextLabel.Name = "_LOLHAX_Label"
 
-    Highlight.FillTransparency = 1
-    Highlight.OutlineTransparency = 1
+    -- VISUAL TYPES
+    local Highlight = Instance.new("Highlight", Parent)
+    Highlight.Name = "_LOLHAX_HL"
 
-    TextLabel:SetAttribute("SafeText", Text or "")
+    local Box = Instance.new("BoxHandleAdornment", Parent)
+    Box.Name = "_LOLHAX_Box"
+    Box.Adornee = Parent
+    Box.AlwaysOnTop = true
 
-    local camera = workspace.CurrentCamera
+    local Sphere = Instance.new("SphereHandleAdornment", Parent)
+    Sphere.Name = "_LOLHAX_Sphere"
+    Sphere.Adornee = Parent
+    Sphere.AlwaysOnTop = true
 
+    local Cylinder = Instance.new("CylinderHandleAdornment", Parent)
+    Cylinder.Name = "_LOLHAX_Cylinder"
+    Cylinder.Adornee = Parent
+    Cylinder.AlwaysOnTop = true
+
+    local Line = Instance.new("LineHandleAdornment", Parent)
+    Line.Name = "_LOLHAX_Line"
+    Line.Adornee = Parent
+    Line.AlwaysOnTop = true
+
+    local Selection = Instance.new("SelectionBox", Parent)
+    Selection.Name = "_LOLHAX_Selection"
+    Selection.Adornee = Parent
+
+    -- DEFAULT SIZES
+    Box.Size = Parent.Size
+    Sphere.Radius = 3
+    Cylinder.Radius = 2
+    Cylinder.Height = 5
+    Line.Length = 5
+    Line.Thickness = 0.1
+
+    -- LOOP
     task.spawn(function()
+        local camera
+
         while Parent and Parent.Parent and not Library.Unloaded do
             task.wait()
 
@@ -2158,103 +2198,85 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, Var
                 continue
             end
 
-            -- enabled
             local enabled = Toggles[cfg.Master] and Toggles[cfg.Master].Value
 
             if cfg.UseVar then
-                local toggle = VarName and Toggles[cfg.Prefix .. VarName]
+                local toggle = cfg.VarName and Toggles[cfg.Prefix .. cfg.VarName]
                 enabled = enabled and toggle and toggle.Value
             end
 
-			enabled = enabled and (Parent:GetAttribute("IsCurrentRoom") ~= false)
-
+            -- TEXT
             TextLabel.Visible = enabled
-            Highlight.Enabled = enabled
-
-            if not enabled then continue end
-
-            -- colors
-            if not Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
-                Highlight.FillColor =
-                    (cfg.ColorF and Options[cfg.ColorF] and Options[cfg.ColorF].Value)
-                    or Color or Color3.new(1,1,1)
-
-                Highlight.OutlineColor =
-                    (cfg.ColorO and Options[cfg.ColorO] and Options[cfg.ColorO].Value)
-                    or (OutlineColor or Color or Color3.new(1,1,1))
-
-                TextLabel.TextColor3 =
-                    (cfg.ColorTC and Options[cfg.ColorTC] and Options[cfg.ColorTC].Value)
-                    or (TextLabelColor or Color or Color3.new(1,1,1))
-            end
-
-            -- mode and font
-           local mode = Options.ESPS_DepthMode.Value
-           if mode == "Occluded" then
-             BillboardGui.AlwaysOnTop = false
-             Highlight.DepthMode = Enum.HighlightDepthMode.Occluded
-        else
-             BillboardGui.AlwaysOnTop = true
-             Highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-		end
             TextLabel.Font = Enum.Font[Options.ESPS_Font.Value]
             TextLabel.TextSize = Options.ESPS_FontSize.Value
+            TextLabel.TextColor3 = Color
 
-            -- name
-            local displayText = ""
-            if Toggles[cfg.Name] and Toggles[cfg.Name].Value then
-                displayText = TextLabel:GetAttribute("SafeText") or ""
+            -- COLORS
+            Highlight.FillColor = Color
+            Box.Color3 = Color
+            Sphere.Color3 = Color
+            Cylinder.Color3 = Color
+            Line.Color3 = Color
+            Selection.Color3 = Color
+
+            -- DISABLE ALL
+            Highlight.Enabled = false
+            Box.Visible = false
+            Sphere.Visible = false
+            Cylinder.Visible = false
+            Line.Visible = false
+            Selection.Visible = false
+
+            -- ENABLE SELECTED VISUAL TYPE
+            local type = Options.ESPS_VisualType.Value
+
+            if type == "Highlight" then
+                Highlight.Enabled = enabled
+            elseif type == "BoxHandleAdornment" then
+                Box.Visible = enabled
+            elseif type == "SphereHandleAdornment" then
+                Sphere.Visible = enabled
+            elseif type == "CylinderHandleAdornment" then
+                Cylinder.Visible = enabled
+            elseif type == "LineHandleAdornment" then
+                Line.Visible = enabled
+            elseif type == "SelectionBox" then
+                Selection.Visible = enabled
             end
 
-            -- fill / outline
-            Highlight.FillTransparency =
-                (Toggles[cfg.Fill] and Toggles[cfg.Fill].Value)
+            -- TRANSPARENCY (WITH / WITHOUT TWEEN)
+            local fillT = (Toggles[cfg.Fill] and Toggles[cfg.Fill].Value)
                 and Options.ESPS_FillTransparency.Value or 1
 
-            Highlight.OutlineTransparency =
-                (Toggles[cfg.Outline] and Toggles[cfg.Outline].Value)
+            local outlineT = (Toggles[cfg.Outline] and Toggles[cfg.Outline].Value)
                 and Options.ESPS_OutlineTransparency.Value or 1
 
-            -- distance
-            if Toggles[cfg.Distance] and Toggles[cfg.Distance].Value then
-                local dist = (camera.CFrame.Position - Parent:GetPivot().Position).Magnitude
-                displayText ..= "\n[ " .. string.format(dist <= 9.9 and "%.1f" or "%.0f", dist) .. " ]"
-            end
+            if Toggles.ESPS_FadeAnim.Value then
+                TweenService:Create(Highlight, TweenInfo.new(Options.ESPS_FadeTime.Value), {
+                    FillTransparency = fillT,
+                    OutlineTransparency = outlineT
+                }):Play()
 
-            TextLabel.Text = displayText
+                TweenService:Create(TextLabel, TweenInfo.new(Options.ESPS_FadeTime.Value), {
+                    TextTransparency = 0
+                }):Play()
+            else
+                Highlight.FillTransparency = fillT
+                Highlight.OutlineTransparency = outlineT
+                TextLabel.TextTransparency = 0
+            end
         end
     end)
 
-    -- tween
-    local TweenService = game:GetService("TweenService")
-
-if Toggles.ESPS_FadeAnim.Value then
-    TweenService:Create(
-        Highlight,
-        TweenInfo.new(Options.ESPS_FadeTime.Value),
-        {FillTransparency = (Toggles[cfg.Fill] and Toggles[cfg.Fill].Value)
-            and Options.ESPS_FillTransparency.Value or 1}
-    ):Play()
-
-    TweenService:Create(
-        Highlight,
-        TweenInfo.new(Options.ESPS_FadeTime.Value),
-        {OutlineTransparency = (Toggles[cfg.Outline] and Toggles[cfg.Outline].Value)
-            and Options.ESPS_OutlineTransparency.Value or 1}
-    ):Play()
-
-    TweenService:Create(
-        TextLabel,
-        TweenInfo.new(Options.ESPS_FadeTime.Value),
-        {TextTransparency = 0}
-    ):Play()
-else
-   Highlight.FillTransparency = (Toggles[cfg.Fill] and Toggles[cfg.Fill].Value) and Options.ESPS_FillTransparency.Value or 1
-   Highlight.OutlineTransparency = (Toggles[cfg.Outline] and Toggles[cfg.Outline].Value) and Options.ESPS_OutlineTransparency.Value or 1
-   TextLabel.TextTransparency = 0
-end
-
-    return Highlight, TextLabel
+    return {
+        Highlight = Highlight,
+        TextLabel = TextLabel,
+        Box = Box,
+        Sphere = Sphere,
+        Cylinder = Cylinder,
+        Line = Line,
+        Selection = Selection
+    }
 end
 	
 local Players = game:GetService("Players")
