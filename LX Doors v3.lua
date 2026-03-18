@@ -1224,7 +1224,7 @@ ESPSettings:AddSlider("ESPS_FontSize", { Text = "Font Size", Default = 20, Min =
 ESPSettings:AddDivider("Highlight")
 ESPSettings:AddSlider("ESPS_FillTransparency", { Text = "Fill Transparency", Default = 0.7, Min = 0, Max = 1, Rounding = 2, Compact = true })
 ESPSettings:AddSlider("ESPS_OutlineTransparency", { Text = "Outline Transparency", Default = 0.2, Min = 0, Max = 1, Rounding = 2, Compact = true })
-ESPSettings:AddDropdown("ESPS_DepthMode", { Values = { "Occlued", "Excluded" }, Default = "Excluded", Multi = false })
+ESPSettings:AddDropdown("ESPS_DepthMode", { Values = { "Occluded", "Excluded" }, Default = "Excluded", Multi = false })
 ESPSettings:AddDivider("Animations")
 ESPSettings:AddToggle("ESPS_FadeAnim", { Text = "Fade In animation", Default = true, Tooltip = "Fading animation." })
 ESPSettings:AddSlider("ESPS_FadeTime", { Text = "Fade In / Out Time", Default = 1, Min = 0, Max = 2, Rounding = 2, Compact = true, Suffix = "s" })
