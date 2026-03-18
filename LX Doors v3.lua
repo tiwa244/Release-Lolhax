@@ -1224,6 +1224,7 @@ ESPSettings:AddSlider("ESPS_FontSize", { Text = "Font Size", Default = 20, Min =
 ESPSettings:AddDivider()
 ESPSettings:AddSlider("ESPS_FillTransparency", { Text = "Fill Transparency", Default = 0.7, Min = 0, Max = 1, Rounding = 2, Compact = true })
 ESPSettings:AddSlider("ESPS_OutlineTransparency", { Text = "Outline Transparency", Default = 0.2, Min = 0, Max = 1, Rounding = 2, Compact = true })
+ESPSettings:AddDropdown("ESPS_DepthMode", { Values = { "Occlued", "Excluded" }, Default = "Excluded", Multi = false })
 ESPSettings:AddDivider()
 ESPSettings:AddToggle("ESPS_FadeAnim", { Text = "Fade In animation", Default = true, Tooltip = "Fading animation." })
 ESPSettings:AddSlider("ESPS_FadeTime", { Text = "Fade In / Out Time", Default = 1, Min = 0, Max = 2, Rounding = 2, Compact = true, Suffix = "s" })
@@ -2187,7 +2188,15 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, Var
                     or (TextLabelColor or Color or Color3.new(1,1,1))
             end
 
-            -- font
+            -- mode and font
+           local mode = Options.ESPS_DepthMode.Value
+           if mode == "Occluded" then
+             BillboardGui.AlwaysOnTop = false
+             Highlight.DepthMode = Enum.HighlightDepthMode.Occluded
+        else
+             BillboardGui.AlwaysOnTop = true
+             Highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+		end
             TextLabel.Font = Enum.Font[Options.ESPS_Font.Value]
             TextLabel.TextSize = Options.ESPS_FontSize.Value
 
