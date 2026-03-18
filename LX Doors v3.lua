@@ -487,7 +487,7 @@ do
         UICorner.CornerRadius = UDim.new(0, 2)
 
         local UIStroke = Instance.new("UIStroke", Frame)
-        UIStroke.Thickness = 2
+        UIStroke.Thickness = 1
 	
 	    Library:AddToRegistry(UIStroke, {
         Color = "AccentColor"
