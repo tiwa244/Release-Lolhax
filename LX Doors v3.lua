@@ -2169,7 +2169,7 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, Var
             if not enabled then continue end
 
             -- colors
-            if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value and (Type == "Entity" or Type == "Player") then
+            if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value and Type == "Player" then
 
 			else
                 Highlight.FillColor =
