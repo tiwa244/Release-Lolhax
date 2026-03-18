@@ -2169,7 +2169,7 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, Var
             if not enabled then continue end
 
             -- colors
-            if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
+            if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value and Type ~= "Interactable" then
 
 			else
                 Highlight.FillColor =
@@ -2184,6 +2184,14 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, Var
                     (cfg.ColorTC and Options[cfg.ColorTC] and Options[cfg.ColorTC].Value)
                     or (TextLabelColor or Color or Color3.new(1,1,1))
             end
+
+			if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value and Type == "Interactable" then
+
+			else 
+				Highlight.FillColor = Options[cfg.Prefix .. VarName .. "_F"].Value
+				Highlight.OutlineColor = Options[cfg.Prefix .. VarName .. "_O"].Value
+				TextLabel.TextColor3 = Options[cfg.Prefix .. VarName .. "_TC"].Value
+			end
 
             -- stuff
              BillboardGui.AlwaysOnTop = true
