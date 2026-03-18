@@ -1464,7 +1464,37 @@ local EspTable = {
     }, 
     Players = {}
 }
+local ESPTypes = {
+    Interactable = {
+        Prefix = "ESPI_C_",
+        Master = "ESPI_M_Enabled",
+        Name = "ESPI_M_Name",
+        Distance = "ESPI_M_Distance",
+        Fill = "ESPI_M_Fill",
+        Outline = "ESPI_M_Outline",
+        UseVar = true
+    },
 
+    Player = {
+        Master = "ESPP_Enabled",
+        Name = "ESPP_Name",
+        Distance = "ESPP_Distance",
+        Fill = "ESPP_Fill",
+        Outline = "ESPP_Outline",
+        ColorF = "ESPP_Color_F",
+        ColorO = "ESPP_Color_O",
+        ColorTC = "ESPP_Color_TC"
+    },
+
+    Entity = {
+        Master = "ESPE_Enabled",
+        Name = "ESPE_Name",
+        Distance = "ESPE_Distance",
+        Fill = "ESPE_Fill",
+        Outline = "ESPE_Outline"
+    }
+}
+	
 task.spawn(function()
 	while task.wait() and not Library.Unloaded do
         if Toggles.DS_Debug and Toggles.DS_Debug.Value then
@@ -1485,6 +1515,9 @@ task.spawn(function()
 end)
 
 -- Functions vvv
+function ResolveType(t)
+    return ESPTypes[t] and t
+end
 
 function lawl(Parent, Text)
     if Toggles.ESPP_Enabled.Value then
@@ -1546,7 +1579,6 @@ task.spawn(function()
     until Library.Unloaded
 end)
 -- this is modified version of the lolhaxv2 get player function!
-
 
 function HasItem(Item)
     return (LocalPlayer.Character:FindFirstChild(Item) or LocalPlayer.Backpack:FindFirstChild(Item))
@@ -1997,7 +2029,7 @@ function Library:Notify(options, description, duration, force)
     local function SafeCall(func)
         local ok, result = pcall(func)
         if not ok then
-            warn("[Notify Error]:", result)
+            warn("[notify err:", result)
         end
         return result
     end
@@ -2077,7 +2109,7 @@ local function ManifestMspaintFrame(target)
     part.CanCollide = false
     part.Parent = model
 
-    -- THE SAUCE
+    -- method
     local humanoid = Instance.new("Humanoid")
     humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
     humanoid.HealthDisplayType = Enum.HumanoidHealthDisplayType.AlwaysOff
@@ -2093,42 +2125,7 @@ local function ManifestMspaintFrame(target)
 
    --[[ targetPart.Transparency = 1 ]]--
 
-    return part -- return the adornee
-end
-
-local ESPTypes = {
-    Interactable = {
-        Prefix = "ESPI_C_",
-        Master = "ESPI_M_Enabled",
-        Name = "ESPI_M_Name",
-        Distance = "ESPI_M_Distance",
-        Fill = "ESPI_M_Fill",
-        Outline = "ESPI_M_Outline",
-        UseVar = true
-    },
-
-    Player = {
-        Master = "ESPP_Enabled",
-        Name = "ESPP_Name",
-        Distance = "ESPP_Distance",
-        Fill = "ESPP_Fill",
-        Outline = "ESPP_Outline",
-        ColorF = "ESPP_Color_F",
-        ColorO = "ESPP_Color_O",
-        ColorTC = "ESPP_Color_TC"
-    },
-
-    Entity = {
-        Master = "ESPE_Enabled",
-        Name = "ESPE_Name",
-        Distance = "ESPE_Distance",
-        Fill = "ESPE_Fill",
-        Outline = "ESPE_Outline"
-    }
-}
-
-local function ResolveType(t)
-    return ESPTypes[t] and t or "Interactable"
+    return part -- adornee
 end
 
 function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, VarName, Type)
