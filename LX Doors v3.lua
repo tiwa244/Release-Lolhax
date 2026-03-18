@@ -977,7 +977,7 @@ end)
 local RunService = game:GetService("RunService")
 
 --------------------------------------------------
--- 🔥 KILL OLD RAINBOW LOOP IF SCRIPT RELOADS
+-- i dunno
 --------------------------------------------------
 if _G.RainbowConnection then
 	_G.RainbowConnection:Disconnect()
@@ -1028,9 +1028,6 @@ workspace.DescendantAdded:Connect(function(v)
 	end
 end)
 
---------------------------------------------------
--- RESTORE ORIGINAL COLORS
---------------------------------------------------
 local function RestoreOriginal()
 	for instance, data in pairs(OriginalColors) do
 		if instance and instance.Parent then
@@ -1045,15 +1042,9 @@ local function RestoreOriginal()
 	end
 end
 
---------------------------------------------------
--- FORCE CLEANUP ON SCRIPT START
--- (Fixes stuck rainbow from previous unload)
---------------------------------------------------
+	-- fix uh ubpaod flprobekm
 RestoreOriginal()
 
---------------------------------------------------
--- START RAINBOW
---------------------------------------------------
 local function StartRainbow()
 	if _G.RainbowConnection then return end
 
@@ -1080,9 +1071,7 @@ local function StartRainbow()
 	end)
 end
 
---------------------------------------------------
--- STOP RAINBOW
---------------------------------------------------
+	-- stip rqinbow
 local function StopRainbow()
 	if _G.RainbowConnection then
 		_G.RainbowConnection:Disconnect()
@@ -1515,6 +1504,7 @@ task.spawn(function()
 end)
 
 -- Functions vvv
+	
 function ResolveType(t)
     return ESPTypes[t] and t
 end
