@@ -3712,20 +3712,15 @@ local Connections = {
                     table.clear(Anchors)
                 end
                 
-            elseif v.Name == "GrumbleRig" or v.Name == "QueenGrumble" or v.Name == "_QueenGrumbleNest" or v.Name == "_QueenGrumble" and v.AnimationController:FindFirstChild("Animator"):GetPlayingAnimationTracks() then
-                v:WaitForChild("Root", 9e9)
-                task.wait(1)
+            elseif v.Name == "GrumbleRig" or v.Name == "QueenGrumble" or v.Name == "_QueenGrumbleNest" or v.Name == "_QueenGrumble" then
 
-                local AnimController = v:WaitForChild("AnimationController", 9e9)
-                local Animator = AnimController:FindFirstChild("Animator")
-                if not Animator:GetPlayingAnimationTracks() then 
-                    return
-                    print(false)
-                end
+              local Animator = v:WaitForChild("AnimationController", 5):WaitForChild("Animator", 5)
+              if not Animator then return end
+              if #Animator:GetPlayingAnimationTracks() == 0 then return end
 
-                local Highlight, TextLabel = Esp(v, v, "Grumble", Color3.new(0.85, 0.85, 0.85), nil, nil, nil, "Entity")
-                table.insert(EspTable.Entities, {Highlight, TextLabel})
-
+              local Highlight, TextLabel = Esp(v, v, "Grumble", Color3.new(0.85, 0.85, 0.85), nil, nil, nil, "Entity")
+			  table.insert(EspTable.Entities, {Highlight, TextLabel})
+								
             elseif v.Name == "GloomEgg" then
                 v:WaitForChild("Egg", 9e9)
 
@@ -5704,17 +5699,14 @@ for _, v in Rooms:GetDescendants() do
                     table.clear(Anchors)
                 end
 
-            elseif v.Name == "GrumbleRig" or v.Name == "QueenGrumble" or v.Name == "_QueenGrumbleNest" or v.Name == "_QueenGrumble" and v.AnimationController:FindFirstChild("Animator"):GetPlayingAnimationTracks() then
+            elseif v.Name == "GrumbleRig" or v.Name == "QueenGrumble" or v.Name == "_QueenGrumbleNest" or v.Name == "_QueenGrumble" then
 
-                local AnimController = v:WaitForChild("AnimationController", 9e9)
-                local Animator = AnimController:FindFirstChild("Animator")
-                if not Animator:GetPlayingAnimationTracks() then
-                    return 
-                    print(nil)
-                end
-     
-                local Highlight, TextLabel = Esp(v, v, "Grumble", Color3.new(0.85, 0.85, 0.85), nil, nil, nil, "Entity")
-                table.insert(EspTable.Entities, {Highlight, TextLabel})
+              local Animator = v:WaitForChild("AnimationController", 5):WaitForChild("Animator", 5)
+              if not Animator then return end
+              if #Animator:GetPlayingAnimationTracks() == 0 then return end
+
+              local Highlight, TextLabel = Esp(v, v, "Grumble", Color3.new(0.85, 0.85, 0.85), nil, nil, nil, "Entity")
+			  table.insert(EspTable.Entities, {Highlight, TextLabel})
 
             end
         end
