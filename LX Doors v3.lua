@@ -2169,7 +2169,9 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, Var
             if not enabled then continue end
 
             -- colors
-            if not Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
+            if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
+
+			else
                 Highlight.FillColor =
                     (cfg.ColorF and Options[cfg.ColorF] and Options[cfg.ColorF].Value)
                     or Color or Color3.new(1,1,1)
