@@ -351,36 +351,6 @@ end
 
 function Doors:Warn(options) Doors:Alert(options) end
 
-task.spawn(function()
-    -- 
-    repeat task.wait() until game:IsLoaded() and game.Players.LocalPlayer
-    
-    local player = game.Players.LocalPlayer
-
-    while task.wait() do
-        if Library.Unloaded then break end
-        
-        -- yes
-        if player and shared.Script then
-            pcall(function()
-                local attr = player:GetAttribute("CurrentRoom") or 0
-                shared.Script.CurrentRoom = attr
-
-                -- neinmare
-                if not workspace.CurrentRooms:FindFirstChild(tostring(attr)) then
-                    local latestObj = game:GetService("ReplicatedStorage"):FindFirstChild("GameData") 
-                                      and game.ReplicatedStorage.GameData:FindFirstChild("LatestRoom")
-                    
-                    if latestObj then
-                        shared.Script.CurrentRoom = latestObj.Value
-                        player:SetAttribute("CurrentRoom", latestObj.Value)
-                    end
-                end
-            end)
-        end
-    end
-end)
-
 function Script.Functions.CalculateHideTime(room: number)
     for _, range in ipairs(Script.HideTimeValues) do
         if room >= range.min and room <= range.max then
@@ -1388,7 +1358,8 @@ local SeekFunction = SeekModule.tease
 -- Instance Variables vvv
 
 local Rooms = workspace.CurrentRooms
-
+shared.Script.CurrentRoom = LocalPlayer.Character:GetAttribute("CurrentRoom") or LocalPlayer:GetAttribute("CurrentRoom")
+	
 local ThirdpersonParts = Instance.new("Folder", workspace)
 ThirdpersonParts.Name = "_ThirdpersonParts"
 
