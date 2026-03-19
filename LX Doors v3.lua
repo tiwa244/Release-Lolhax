@@ -3618,6 +3618,7 @@ local Connections = {
 
             elseif v.Name == "Groundskeeper" then
 
+				v:WaitForChild("Torso", 9e9)
                 local Highlight, TextLabel = Esp(v, v.Torso, "Groundskeeper", Color3.new(0.75, 0, 0), nil, nil, nil, "Entity")
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
