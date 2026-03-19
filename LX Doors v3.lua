@@ -1116,19 +1116,19 @@ ESPInteractables_Configurate:AddDropdown("ESPI_C_Style", {
 
 local CustomColors = {}
 local Items = {
-    {Tag="Doors", Text="Door", Color=Color3.fromRGB(0,255,127), Color2=Color3.new(1,1,1), Color4=Color3.fromRGB(0,225,100)},
+    {Tag="Doors", Text="Door", Color=Color3.fromRGB(0,255,127), Color2=Color3.new(1,1,1), Color4=Color3.fromRGB(0,200,100)},
     {Tag="DoorKeys", Text="Door Key", Color=Color3.fromRGB(255,174,0), Color2=Color3.new(1,1,1), Color4=Color3.fromRGB(255,174,0)},
     {Tag="GoldPiles", Text="Gold Piles", Color=Color3.new(1,1,1), NoText=false, Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
     {Tag="GeneratorFuses", Text="Generator Fuse", Color=Color3.fromRGB(0,255,127), Color2=Color3.new(1,1,1), Color4=Color3.fromRGB(0,255,127), NewColor=Color3.fromRGB(0,255,127), NewColor2=Color3.fromRGB(0,255,127), NewColor3=Color3.fromRGB(0,255,127)},
     {Tag="Generators", Text="Generator", Color=Color3.fromRGB(0,255,127), Color2=Color3.new(1,1,1), Color4=Color3.fromRGB(0,255,127), NewColor=Color3.fromRGB(0,255,127), NewColor2=Color3.fromRGB(0,255,127), NewColor3=Color3.fromRGB(0,255,127)},
     {Tag="GateLevers", Text="Gate Lever", Color=Color3.new(1,1,1), NoText=false, Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
-    {Tag="LibraryBooks", Text="Library Book", Color=Color3.fromRGB(0,255,127), Color2=Color3.new(1,1,1), Color4=Color3.fromRGB(0,225,100)},
+    {Tag="LibraryBooks", Text="Library Book", Color=Color3.fromRGB(0,255,127), Color2=Color3.new(1,1,1), Color4=Color3.fromRGB(0,200,100)},
     {Tag="GateButtons", Text="Gate Buttons", Color=Color3.new(1,1,1), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
     {Tag="BreakerPoles", Text="Breaker Pole", Color=Color3.fromRGB(81,81,81), NoText=false, Color2=Color3.fromRGB(81,81,81), Color4=Color3.fromRGB(81,81,81)},
     {Tag="Anchors", Text="Anchor", Color=Color3.new(0.5,0.25,1), NoText=false, Color2=Color3.new(1,1,1), Color4=Color3.new(0.5,0.25,1)},
     {Tag="BackroomsLevers", Text="Timer Lever", Color=Color3.fromRGB(82,82,82), Color2=Color3.fromRGB(82,82,82), Color4=Color3.fromRGB(82,82,82)},
     {Tag="MiscPickups", Text="Misc Items", Color=Color3.new(1,1,1), NoText=false, Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
-    {Tag="Closet", Text="Closet", Color=Color3.fromRGB(0,255,127), Color2=Color3.new(1,1,1), Color4=Color3.fromRGB(0,225,100)},
+    {Tag="Closet", Text="Closet", Color=Color3.fromRGB(0,255,127), Color2=Color3.new(1,1,1), Color4=Color3.fromRGB(0,200,100)},
     {Tag="Ladder", Text="Ladder", Color=Color3.new(1,1,1), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
     {Tag="WaterPumps", Text="Water Pumps", Color=Color3.new(1,1,1), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
     {Tag="Toolsheds", Text="Toolsheds", Color=Color3.new(1,1,1), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
