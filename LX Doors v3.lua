@@ -6433,7 +6433,7 @@ task.spawn(function()
     DebugStuff:AddToggle("DS_Debug", { Text = "Enable Debug Mode", Default = false, })
     DebugStuff:AddToggle("DS_BSRPC", { Text = "Bloxstrap RPC", Default = true })
     DebugStuff:AddLabel("Floor: " .. game.ReplicatedStorage.GameData.Floor.Value)
-    DebugStuff:AddLabel("lolhax version: 3.0.2.2b")
+    DebugStuff:AddLabel("lolhax version: 3.0.2.5b")
 
     local RPCRoomChange = game.ReplicatedStorage.GameData.LatestRoom:GetPropertyChangedSignal("Value"):Connect(function() updateRPC(Toggles.DS_BSRPC.Value) end)
     table.insert(Connections, RPCRoomChange)
