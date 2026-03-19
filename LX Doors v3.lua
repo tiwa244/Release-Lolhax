@@ -1135,7 +1135,57 @@ local Items = {
     {Tag="Chests", Text="Chests", Color=Color3.new(1,1,1), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
     {Tag="Toolbox", Text="Toolbox", Color=Color3.new(1,1,1), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)}
 }
+local OldItems = {
+    {Tag="Doors", Text="Door", Color=Color3.fromRGB(0,255,127), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
+    {Tag="DoorKeys", Text="Door Key", Color=Color3.fromRGB(255,174,0), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
+    {Tag="GoldPiles", Text="Gold Piles", Color=Color3.new(1,1,1), NoText=false, Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
+
+    {Tag="GeneratorFuses", Text="Generator Fuse",
+        Color=Color3.fromRGB(0,255,127),
+        Color2=Color3.new(1,1,1),
+        Color4=Color3.new(1,1,1),
+        NewColor=Color3.fromRGB(0,255,127),
+        NewColor2=Color3.fromRGB(0,255,127),
+        NewColor3=Color3.fromRGB(0,255,127)
+    },
+
+    {Tag="Generators", Text="Generator",
+        Color=Color3.fromRGB(0,255,127),
+        Color2=Color3.new(1,1,1),
+        Color4=Color3.new(1,1,1),
+        NewColor=Color3.fromRGB(0,255,127),
+        NewColor2=Color3.fromRGB(0,255,127),
+        NewColor3=Color3.fromRGB(0,255,127)
+    },
+
+    {Tag="GateLevers", Text="Gate Lever", Color=Color3.new(1,1,1), NoText=false, Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
+
+    {Tag="LibraryBooks", Text="Library Book", Color=Color3.fromRGB(0,255,127), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
+
+    {Tag="GateButtons", Text="Gate Buttons", Color=Color3.new(1,1,1), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
+
+    {Tag="BreakerPoles", Text="Breaker Pole", Color=Color3.fromRGB(81,81,81), NoText=false, Color2=Color3.fromRGB(81,81,81), Color4=Color3.new(1,1,1)},
+
+    {Tag="Anchors", Text="Anchor", Color=Color3.new(0.5,0.25,1), NoText=false, Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
+
+    {Tag="BackroomsLevers", Text="Timer Lever", Color=Color3.fromRGB(82,82,82), Color2=Color3.fromRGB(82,82,82), Color4=Color3.new(1,1,1)},
+
+    {Tag="MiscPickups", Text="Misc Items", Color=Color3.new(1,1,1), NoText=false, Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
+
+    {Tag="Closet", Text="Closet", Color=Color3.fromRGB(0,255,127), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
+
+    {Tag="Ladder", Text="Ladder", Color=Color3.new(1,1,1), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
+    {Tag="WaterPumps", Text="Water Pumps", Color=Color3.new(1,1,1), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
+    {Tag="Toolsheds", Text="Toolsheds", Color=Color3.new(1,1,1), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
+    {Tag="Chests", Text="Chests", Color=Color3.new(1,1,1), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
+    {Tag="Toolbox", Text="Toolbox", Color=Color3.new(1,1,1), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)}
+}
 local IsSwitching = false
+
+local OldMap = {}
+for _, v in ipairs(OldItems) do
+    OldMap[v.Tag] = v
+end
 
 for _, item in ipairs(Items) do
     local Toggle = ESPInteractables_Configurate:AddToggle("ESPI_C_"..item.Tag, { Text = item.Text, Default = false })
@@ -1176,11 +1226,19 @@ Options.ESPI_C_Style:OnChanged(function(Value)
         local F, O, TC
         
         if Value == "New" then
-            F, O, TC = item.NewColor or Color3.new(1, 1, 1), item.NewColor2 or Color3.new(1, 1, 1), item.NewColor3 or Color3.new(1, 1, 1)
+            F, O, TC = item.NewColor or Color3.new(1,1,1), item.NewColor2 or Color3.new(1,1,1), item.NewColor3 or Color3.new(1,1,1)
+        
         elseif Value == "Classic" then
             F, O, TC = item.Color, item.Color2, item.Color4
+        
         elseif Value == "Custom" then
             F, O, TC = CustomColors[item.Tag].Fill, CustomColors[item.Tag].Outline, CustomColors[item.Tag].Text
+        
+        elseif Value == "Beta" then
+            local oldItem = OldMap[item.Tag]
+            F = item.Color
+            O = item.Color2
+            TC = (oldItem and oldItem.Color4) or item.Color4
         end
 
         Options["ESPI_C_"..item.Tag.."_F"]:SetValue(F)
@@ -1189,8 +1247,8 @@ Options.ESPI_C_Style:OnChanged(function(Value)
             Options["ESPI_C_"..item.Tag.."_TC"]:SetValue(TC)
         end
     end
-    
-    -- very cool switcher 
+
+    -- insanely cool switcher;;#;#++
     IsSwitching = false 
 end)
 local ESPSettings = Tabs.ESP:AddRightGroupbox("ESP Settings")
