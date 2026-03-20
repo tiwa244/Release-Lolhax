@@ -656,7 +656,7 @@ ExploitSelf:AddToggle("ES_AntiChanedlier", { Text = "Anti-Chandelier", Default =
 ExploitSelf:AddToggle("ES_AntiSeekArms", { Text = "Anti-Seek Arms", Default = false, Tooltip = "Disallows touching on any seek arms during the seek chase.", Disabled = not Script.IsHotel, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 ExploitSelf:AddToggle("ES_AutoRooms", { Text = "Auto Rooms", Defaut = false, Tooltip = 'bozo', "randomizer", Disabled =not Script.IsRooms, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 ExploitSelf:AddToggle("ES_AutoRoomsDebug", { Text = "Auto Rooms Debug", Default = nil, Tooltip = "turn this shit off please", Disabled =not Script.IsRooms, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
-ExploitSelf:AddSlider("ES_AutoRoomsDelay", { Text = "Auto Rooms Delay", Default = 2.5, Min 0, Max = 10, Rounding= 0 })
+ExploitSelf:AddSlider("ES_AutoRoomsDelay", { Text = "Auto Rooms Delay", Default = 2.5, Min = 0, Max = 10, Rounding = 0 })
 local ExploitTroll = Tabs.Exploit:AddLeftGroupbox("Trolling")
 if Script.IsMines then
 Tabs.Exploit:UpdateWarningBox({
