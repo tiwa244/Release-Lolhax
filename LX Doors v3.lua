@@ -4228,54 +4228,35 @@ Toggles.ES_HASTECLOCK:OnChanged(function(value)
     end
 end)
 
-local function DoTrans(Value)
-    local Char = LocalPlayer.Character
-    if not Char then return end
-    
-    local isHiding = Char:GetAttribute("Hiding")
-    
-    if Value and isHiding then
-        task.spawn(function()
-            local TargetCloset = nil
+function HidingConnect(Closet, HiddenPlayer)
+    if not Toggles.VV_TransculentHidingSpot.Value then return end
 
-            for _, v in ipairs(workspace.CurrentRooms:GetDescendants()) do
-                if v.Name == "HiddenPlayer" and v.Value == Char then
-                    TargetCloset = v.Parent
-                    break
-                end
-            end
+    local PlayerChanged = HiddenPlayer:GetPropertyChangedSignal("Value"):Connect(function()
+        task.wait()
 
-            if TargetCloset then
-                local parts = {}
-                for _, p in ipairs(TargetCloset:GetChildren()) do
-                    if p:IsA("BasePart") then
-                        table.insert(parts, p)
-                    end
-                end
+        if HiddenPlayer.Value == LocalPlayer.Character then
+			
+            for _, Part in Closet:GetDescendants() do
+				if not Part:IsA("BasePart") or Part.Transparency >= 1 then continue end
 
-                while Toggles.VV_TranslucentHidingSpot.Value and Char:GetAttribute("Hiding") do
-                    for _, p in ipairs(parts) do
-                        p.Transparency = Options.VV_HidingTransparency.Value
-                    end
-                    task.wait(0.5)
-                end
+				local OldTransparency = Part.Transparency
 
-                for _, p in ipairs(parts) do
-                    p.Transparency = 0
-                end
-            end
-        end)
-    end
+                -- purely for cosmetic reason idk it just looks cooler if u see it going transparent
+                task.delay(0.5, function()
+                    game:GetService("TweenService"):Create(Part, TweenInfo.new( 1.5 ), { Transparency = Options.VV_HidingTransparency.Value }):Play()
+                end)
+
+                HiddenPlayer:GetPropertyChangedSignal("Value"):Once(function()
+                    game:GetService("TweenService"):Create(Part, TweenInfo.new( 1 ), { Transparency = OldTransparency }):Play()
+				end)
+			end
+
+		end
+	end)
+
+    table.insert(ClosetConnections, PlayerChanged)
 end
-
-task.spawn(function()
-    while task.wait(0.5) do
-        if Toggles.VV_TranslucentHidingSpot and Toggles.VV_TranslucentHidingSpot.Value then
-            DoTrans(true)
-        end
-    end
-end)
-
+			
 local RunService = game:GetService("RunService")
 local CurrentRooms = workspace:WaitForChild("CurrentRooms")
 
