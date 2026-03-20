@@ -752,6 +752,8 @@ ESPInteractables_Main:AddDivider("Component")
 ESPInteractables_Main:AddToggle("ESPI_M_Name", { Text = "Name", Default = false })
 ESPInteractables_Main:AddToggle("ESPI_M_Distance", { Text = "Distance", Default = false })
 ESPInteractables_Main:AddToggle("ESPI_M_Fill", { Text = "Highlight Fill", Default = false })
+ESPInteractables_Main:AddToggle("ESPI_M_CustomTC", { Text = "Custom Name Tag Color", Tooltip = "NameTag Color for all interactables." })
+:AddColorPicker("ESPI_Color_TC", { Default = Color3.new(1, 1, 1), Title = "Custom NameTag Color" })
 ESPInteractables_Main:AddToggle("ESPI_M_Outline", { Text = "Highlight Outline", Default = false })
 ESPInteractables_Main:AddToggle("ESPI_M_Tracers", { Text = "Tracers", Default = false, Tooltip = "Tracers."})
 ESPInteractables_Main:AddDropdown("ESPI_V_TracerPos", {
@@ -2216,7 +2218,11 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, Var
             elseif Type == "Interactable" then
                 Highlight.FillColor    = Options[cfg.Prefix .. VarName .. "_F"].Value
                 Highlight.OutlineColor = Options[cfg.Prefix .. VarName .. "_O"].Value
+			if not Toggles.ESPI_M_CustomTC.Value then
                 TextLabel.TextColor3   = Options[cfg.Prefix .. VarName .. "_TC"].Value
+			else
+				TextLabel.TextColor3 = Options.ESPI_Color_TC.Value
+			end
 
             elseif Toggles.ESPI_RAINBOW_HIGHLIGHT.Value and Type == "Player" then
     -- empty, rainbow handles this
