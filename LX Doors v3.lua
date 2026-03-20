@@ -2208,24 +2208,41 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, Var
 					
            enabled = enabled and (Parent:GetAttribute("IsCurrentRoom") ~= false)
 
--- tween highlight
-         local targetFill = enabled and 0 or 1
-         local targetOutline = enabled and 0 or 1
-         local targetText = enabled and 0 or 1
+			local TS = game:GetService("TweenService")
+local duration = Options.ESPS_FadeTime.Value
 
-         local TweenService = game:GetService("TweenService")
-         TweenService:Create(Highlight, TweenInfo.new(Options.ESPS_FadeTime.Value), {
-            FillTransparency = targetFill,
-            OutlineTransparency = targetOutline
-        }):Play()
+if enabled then
+    Highlight.Enabled = true
+    TextLabel.Visible = true
 
-        TweenService:Create(TextLabel, TweenInfo.new(Options.ESPS_FadeTime.Value), {
-            TextTransparency = targetText
-        }):Play()
+    TS:Create(Highlight, TweenInfo.new(duration), {
+        FillTransparency = 0,
+        OutlineTransparency = 0
+    }):Play()
 
--- idk
-      Highlight.Enabled = enabled
-      TextLabel.Visible = enabled
+    TS:Create(TextLabel, TweenInfo.new(duration), {
+        TextTransparency = 0
+    }):Play()
+
+else
+    local t1 = TS:Create(Highlight, TweenInfo.new(duration), {
+        FillTransparency = 1,
+        OutlineTransparency = 1
+    })
+
+    local t2 = TS:Create(TextLabel, TweenInfo.new(duration), {
+        TextTransparency = 1
+    })
+
+    t1:Play()
+    t2:Play()
+
+    task.spawn(function()
+        t1.Completed:Wait()
+        Highlight.Enabled = false
+        TextLabel.Visible = false
+    end)
+end
 
 	if not enabled then continue end 
 
