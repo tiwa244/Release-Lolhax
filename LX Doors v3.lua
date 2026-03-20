@@ -2240,15 +2240,23 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, Var
 							
            elseif Toggles.ESPI_RAINBOW_HIGHLIGHT.Value and Type == "Entity" then
     -- empty, rainbow handles this
-           else
+           elseif Type == "Entity" then
+			   local override = Parent:GetAttribute("OverrideColor")
+			if override then
+			   Highlight.FillColor = override
+			   Highlight.OutlineColor = override
+		       TextLabel.TextColor3 = override
+			else
                Highlight.FillColor = Color
                Highlight.OutlineColor = OutlineColor or Color
 			if not Toggles.ESPE_CustomTC.Value then
                TextLabel.TextColor3 = TextLabelColor or Color
 			else 
 				TextLabel.TextColor3 = Options.ESPE_Color_TC.Value
-			end
+			   end
+		    end
 	    end
+		
 
             -- stuff
              BillboardGui.AlwaysOnTop = true
@@ -4055,6 +4063,8 @@ local Connections = {
 
                 Instance.new("Humanoid", v)
                 v.Main.Transparency = 0.999
+
+				v:SetAttribute("OverrideColor", Color)
 
                 local Highlight, TextLabel = Esp(v, v.Main, "Blitz", Color3.fromRGB(0, 175, 80), nil, nil, nil, "Entity")
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
