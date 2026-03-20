@@ -2201,18 +2201,33 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, Var
 
             -- enabled
             local enabled = Toggles[cfg.Master] and Toggles[cfg.Master].Value
-
             if cfg.UseVar then
-                local toggle = VarName and Toggles[cfg.Prefix .. VarName]
-                enabled = enabled and toggle and toggle.Value
-            end
+               local toggle = VarName and Toggles[cfg.Prefix .. VarName]
+               enabled = enabled and toggle and toggle.Value
+           end
+					
+           enabled = enabled and (Parent:GetAttribute("IsCurrentRoom") ~= false)
 
-			enabled = enabled and (Parent:GetAttribute("IsCurrentRoom") ~= false)
+-- tween highlight
+         local targetFill = enabled and 0 or 1
+         local targetOutline = enabled and 0 or 1
+         local targetText = enabled and 0 or 1
 
-            TextLabel.Visible = enabled
-            Highlight.Enabled = enabled
+         local TweenService = game:GetService("TweenService")
+         TweenService:Create(Highlight, TweenInfo.new(Options.ESPS_FadeTime.Value), {
+            FillTransparency = targetFill,
+            OutlineTransparency = targetOutline
+        }):Play()
 
-            if not enabled then continue end
+        TweenService:Create(TextLabel, TweenInfo.new(Options.ESPS_FadeTime.Value), {
+            TextTransparency = targetText
+        }):Play()
+
+-- idk
+      Highlight.Enabled = enabled
+      TextLabel.Visible = enabled
+
+	if not enabled then continue end 
 
             -- colors
         if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value and Type == "Interactable" then
