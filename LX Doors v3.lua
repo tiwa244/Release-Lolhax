@@ -3243,18 +3243,7 @@ local Connections = {
         LocalPlayer.Character.HumanoidRootPart.CustomPhysicalProperties = (Toggles.MM_NoAcceleration.Value and PhysicalProperties.new(100, 0.7, 0, 1, 1) or OldAccel)
     end),
 
-   
-		
-    -- this is fucked.
-    LocalPlayer.Character:GetAttributeChangedSignal("CanJump"):Connect(function()
-        LocalPlayer.Character:SetAttribute("CanJump", Toggles.ES_AlwaysJump.Value or CanJump)     
-
-        if not Toggles.ES_AlwaysJump.Value then
-            CanJump = LocalPlayer.Character:GetAttribute("CanJump")
-        end
-    end),
-
-    LocalPlayer:GetAttributeChangedSignal("CurrentRoom"):Connect(function()
+	LocalPlayer:GetAttributeChangedSignal("CurrentRoom"):Connect(function()
         for _, Connection in ClosetConnections do
             Connection:Disconnect()
         end
@@ -3327,12 +3316,21 @@ local Connections = {
             end
         end
     end),
-		
+	
+    -- this is fucked.
+    LocalPlayer.Character:GetAttributeChangedSignal("CanJump"):Connect(function()
+        LocalPlayer.Character:SetAttribute("CanJump", Toggles.ES_AlwaysJump.Value or CanJump)     
+
+        if not Toggles.ES_AlwaysJump.Value then
+            CanJump = LocalPlayer.Character:GetAttribute("CanJump")
+        end
+    end),
+	
 		LocalPlayer.Character:GetAttributeChangedSignal("CanSlide"):Connect(function()
         LocalPlayer.Character:SetAttribute("CanSlide", Toggles.ES_AlwaysSlide.Value or CanJump)     
 
         if not Toggles.ES_AlwaysSlide.Value then
-            CanJump = LocalPlayer.Character:GetAttribute("CanSlide")
+            CanSlide = LocalPlayer.Character:GetAttribute("CanSlide")
         end
     end),
 
