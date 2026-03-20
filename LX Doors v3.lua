@@ -3525,6 +3525,8 @@ local Connections = {
                 v:WaitForChild("Door", 9e9)
 
                 local RoomID = v:GetAttribute("RoomID")
+				local Locked = v.Parent.Parent:GetAttribute("RequiresKey")
+				local State = if Locked then "[Locked]" else ""
                 local LibrarySpecial = {
                     [50] =  true,
                     [51] = true
@@ -3567,9 +3569,10 @@ local Connections = {
                     end
                     
                 if Toggles.DoorNum.Value then
-                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door " .. RoomID, Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value, Options.ESPI_C_Doors_TC.Value, "Doors", "Interactable")
+                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door " .. RoomID .. " " .. State, Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value, Options.ESPI_C_Doors_TC.Value, "Doors", "Interactable")
+					table.insert(EspTable.Interactables.Doors, {Highlight, TextLabel})
                 else
-                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door", Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value, Options.ESPI_C_Doors_TC.Value, "Doors", "Interactable")
+                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door " .. State, Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value, Options.ESPI_C_Doors_TC.Value, "Doors", "Interactable")
                     table.insert(EspTable.Interactables.Doors, {Highlight, TextLabel})
                 end
 
@@ -5612,6 +5615,8 @@ for _, v in Rooms:GetDescendants() do
             if v.Name == "Door" and not v:GetAttribute("Opened") then
          
                 local RoomID = v:GetAttribute("RoomID")
+				local Locked = v.Parent.Parent:GetAttribute("RequiresKey")
+				local State = if Locked then "[Locked]" else ""
                 local LibraryRoom = {
                     [51] = true,
                     [50] = true
@@ -5653,9 +5658,9 @@ for _, v in Rooms:GetDescendants() do
                         end
                     end
                 if Toggles.DoorNum.Value then
-                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door " .. RoomID, Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value, Options.ESPI_C_Doors_TC.Value, "Doors", "Interactable")
+                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door " .. RoomID .. " " .. State, Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value, Options.ESPI_C_Doors_TC.Value, "Doors", "Interactable")
                 else
-                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door", Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value, Options.ESPI_C_Doors_TC.Value, "Doors", "Interactable")
+                    local Highlight, TextLabel = Esp(Adornee, Adornee, "Door " .. State, Options.ESPI_C_Doors_F.Value, Options.ESPI_C_Doors_O.Value, Options.ESPI_C_Doors_TC.Value, "Doors", "Interactable")
                     table.insert(EspTable.Interactables.Doors, {Highlight, TextLabel})
                 end
                 
