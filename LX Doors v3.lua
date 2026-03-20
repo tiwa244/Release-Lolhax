@@ -4065,7 +4065,7 @@ local Connections = {
                 Instance.new("Humanoid", v)
                 v.Main.Transparency = 0.999
 
-				v:SetAttribute("OverrideColor", Color)
+				-- 
 
                 local Highlight, TextLabel = Esp(v, v.Main, "Blitz", Color3.fromRGB(0, 175, 80), nil, nil, nil, "Entity")
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
@@ -4076,6 +4076,8 @@ local Connections = {
 
                 local EnableChanged = v.Main.AttachmentSwitch.ParticleEmitter:GetPropertyChangedSignal("Enabled"):Connect(function()
                     local Color = v.Main.AttachmentSwitch.ParticleEmitter.Enabled and Color3.fromRGB(235, 80, 80) or Color3.fromRGB(0, 175, 80)
+
+					v:SetAttribute("OverrideColor", Color)
 
 				if Toggles.ESPS_FadeAnim.Value then
                     game:GetService("TweenService"):Create( v._LOLHAXHL, TweenInfo.new(2 / 3), { FillColor = Color } ):Play()
