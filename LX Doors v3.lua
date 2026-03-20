@@ -3692,10 +3692,10 @@ local Connections = {
 	            local Attribute = v:GetAttribute("LockID")
 				local KeyID = if Script.IsBackdoor then v:GetAttribute("LockID") - 51 else Attribute
 
-                task.delay(1, function()
+                --task.delay(1, function()
                     local Highlight, TextLabel = Esp(v, v, "( " .. tostring(KeyID) .. " ) " .. "Rooms Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value, Options.ESPI_C_DoorKeys_TC.Value, "DoorKeys", "Interactable")
                     table.insert(EspTable.Interactables.DoorKeys, {Highlight, TextLabel})
-                end)
+                --end)
 
             elseif v.Name == "ElectricalKeyObtain" then
 
