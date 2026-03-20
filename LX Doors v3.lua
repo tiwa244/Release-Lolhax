@@ -4451,17 +4451,13 @@ HideTimerConnection = game:GetService("ReplicatedStorage").RemotesFolder.HideMon
     end
 end)
 
-Toggles.VV_TranslucentHidingSpot:OnChanged(function()
-    DoTrans(Toggles.VV_TranslucentHidingSpot.Value)
-end)
-
 Script.FeatureConnections.Humanoid["Move"] = LocalPlayer.Character.Humanoid:GetPropertyChangedSignal("MoveDirection"):Connect(function()
  if not Toggles.GA_FastClosetExt then return end
 
     if Toggles.GA_FastClosetExt.Value and LocalPlayer.Character.Humanoid.MoveDirection.Magnitude > 0 and LocalPlayer.Character:GetAttribute("Hiding") then
-            game.ReplicatedStorage.RemotesFolder.CamLock:FireServer()
-        end
-  end)
+        game.ReplicatedStorage.RemotesFolder.CamLock:FireServer()
+     end
+end)
 
 Toggles.VR_NoCutscenes:OnChanged(function(value)
     if Script.MainGame then
