@@ -5408,7 +5408,7 @@ local lastNotifiedRoom
                                 break
                             end
 
-                            task.delay(0.5, function()
+                            task.delay(1.5, function()
                                 if moveToFinished then return end
                                 if (not Toggles.ES_AutoRooms.Value or Library.Unloaded) then return moveToCleanup() end
 
