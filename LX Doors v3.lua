@@ -5733,11 +5733,11 @@ for _, v in Rooms:GetDescendants() do
 
 		    local KeyID
 
-            v:GetAttributeChangedSignal("KeyID"):Connect(function()
+            task.delay(1, function()
                 KeyID = v:GetAttribute("KeyID")
             end)
 
-                local Highlight, TextLabel = Esp(v, v, "( " .. tostring(KeyID) .. " )" .. "Door Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value, Options.ESPI_C_DoorKeys_TC.Value, "DoorKeys", "Interactable")
+                local Highlight, TextLabel = Esp(v, v, "( " .. tostring(KeyID) .. ") " .. "Door Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value, Options.ESPI_C_DoorKeys_TC.Value, "DoorKeys", "Interactable")
                 table.insert(EspTable.Interactables.DoorKeys, {Highlight, TextLabel})
          
             elseif v.Name == "ElectricalKeyObtain" then
