@@ -4067,9 +4067,14 @@ local Connections = {
                 local EnableChanged = v.Main.AttachmentSwitch.ParticleEmitter:GetPropertyChangedSignal("Enabled"):Connect(function()
                     local Color = v.Main.AttachmentSwitch.ParticleEmitter.Enabled and Color3.fromRGB(235, 80, 80) or Color3.fromRGB(0, 175, 80)
 
+				if Toggles.ESPS_FadeAnim.Value then
                     game:GetService("TweenService"):Create( v._LOLHAXHL, TweenInfo.new(2 / 3), { FillColor = Color } ):Play()
                     game:GetService("TweenService"):Create( v._LOLHAXHL, TweenInfo.new(2 / 3), { OutlineColor = Color } ):Play()
                     game:GetService("TweenService"):Create( v._LOLHAXBG.TextLabel, TweenInfo.new(2 / 3), { TextColor3 = Color } ):Play()
+				else
+					v._LOLHAXHL.FillColor = Color
+				    v._LOLHAXHL.OutlineColor = Color
+				    v._LOLHAXBG.TextLabel.TextColor3 = Color
                 end)
 
                 v.Destroying:Once(function()
