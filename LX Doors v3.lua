@@ -3243,6 +3243,8 @@ local Connections = {
         LocalPlayer.Character.HumanoidRootPart.CustomPhysicalProperties = (Toggles.MM_NoAcceleration.Value and PhysicalProperties.new(100, 0.7, 0, 1, 1) or OldAccel)
     end),
 
+   
+		
     -- this is fucked.
     LocalPlayer.Character:GetAttributeChangedSignal("CanJump"):Connect(function()
         LocalPlayer.Character:SetAttribute("CanJump", Toggles.ES_AlwaysJump.Value or CanJump)     
@@ -3252,7 +3254,81 @@ local Connections = {
         end
     end),
 
-    LocalPlayer.Character:GetAttributeChangedSignal("CanSlide"):Connect(function()
+    LoLocalPlayer:GetAttributeChangedSignal("CurrentRoom"):Connect(function()
+        for _, Connection in ClosetConnections do
+            Connection:Disconnect()
+        end
+
+        task.wait()
+
+        for _, v in Rooms[LocalPlayer:GetAttribute("CurrentRoom")].Assets:GetChildren() do
+            if v:IsA("Model") then
+
+                if (v.Name == "Locker_Large" or v.Name == "Wardrobe" or v.Name == "Toolshed" or v.Name == "Bed" or v.Name == "Rooms_Locker" or v.Name == "Rooms_Locker_Fridge" or v.Name == "Backdoor_Wardrobe") and v:FindFirstChild("HiddenPlayer") then
+
+                    HidingConnect(v, v.HiddenPlayer)
+
+                elseif v.Name == "Double_Bed" then
+
+                    for _, x in v:GetChildren() do
+                        if x.Name == "DoubleBed" and x:FindFirstChild("HiddenPlayer") then
+
+                            HidingConnect(v, x.HiddenPlayer)
+
+                        end
+                    end
+
+                elseif v.Name == "Dumpster" then
+
+                    for _, x in v:GetChildren() do
+                        if x:FindFirstChild("HiddenPlayer") then
+
+                            HidingConnect(v, x.HiddenPlayer)
+
+                        end
+                    end
+
+                end
+
+            elseif v:IsA("Folder") then
+
+                if v.Name == "Blockage" then
+
+                    for _, x in v:GetChildren() do
+                        if x:IsA("Model") and x.Name == "Wardrobe" then
+
+                            HidingConnect(x, x.HiddenPlayer)
+
+                        end
+                    end
+
+                elseif v.Name == "Vents" then
+
+                    for _, x in v:GetChildren() do
+                        if x.Name == "CircularVent" and v:FindFirstChild("Grate") and v:FindFirstChild("HiddenPlayer") then
+
+                            HidingConnect(x, v.HiddenPlayer)
+
+                        end
+                    end
+
+                end
+
+            end
+        end
+
+        for _, v in Rooms[LocalPlayer:GetAttribute("CurrentRoom")]:GetChildren() do
+            if v:IsA("Model") then
+                if v.Name == "CircularVent" and v:FindFirstChild("HiddenPlayer") then
+
+                    HidingConnect(v, v.HiddenPlayer)
+
+                end
+            end
+        end
+    end),
+		
+		LocalPlayer.Character:GetAttributeChangedSignal("CanSlide"):Connect(function()
         LocalPlayer.Character:SetAttribute("CanSlide", Toggles.ES_AlwaysSlide.Value or CanJump)     
 
         if not Toggles.ES_AlwaysSlide.Value then
