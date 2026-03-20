@@ -3693,7 +3693,7 @@ local Connections = {
 				local KeyID = if Script.IsBackdoor then v:GetAttribute("LockID") - 51 else Attribute
 
                 task.delay(1, function()
-                    local Highlight, TextLabel = Esp(v, v, "( " .. tostring(KeyID) .. " ) " .. "Door Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value, Options.ESPI_C_DoorKeys_TC.Value, "DoorKeys", "Interactable")
+                    local Highlight, TextLabel = Esp(v, v, "( " .. tostring(KeyID) .. " ) " .. "Rooms Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value, Options.ESPI_C_DoorKeys_TC.Value, "DoorKeys", "Interactable")
                     table.insert(EspTable.Interactables.DoorKeys, {Highlight, TextLabel})
                 end)
 
@@ -3789,6 +3789,8 @@ local Connections = {
             elseif v.Name == "Snare" then
 
                 v:WaitForChild("Hitbox", 9e9)
+				local Highlight, TextLabel = Esp(v, v, "Snare", Color3.new(0.75, 0, 0), nil, nil, nil, "Entity")
+				table.insert(EspTable.Entities, {Highlight, TextLabel})
                 v.Hitbox.CanTouch = not Toggles.ES_AntiSnare.Value
 
             elseif v.Name == "ChandelierObstruction" then
@@ -5738,7 +5740,7 @@ for _, v in Rooms:GetDescendants() do
 	        local Attribute = v:GetAttribute("LockID")
 			local KeyID = if Script.IsBackdoor then v:GetAttribute("LockID") - 51 else Attribute
 
-                local Highlight, TextLabel = Esp(v, v, "( " .. tostring(KeyID) .. " ) " .. "Door Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value, Options.ESPI_C_DoorKeys_TC.Value, "DoorKeys", "Interactable")
+                local Highlight, TextLabel = Esp(v, v, "( " .. tostring(KeyID) .. " ) " .. "Rooms Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value, Options.ESPI_C_DoorKeys_TC.Value, "DoorKeys", "Interactable")
                 table.insert(EspTable.Interactables.DoorKeys, {Highlight, TextLabel})
          
             elseif v.Name == "ElectricalKeyObtain" then
@@ -5767,7 +5769,7 @@ for _, v in Rooms:GetDescendants() do
                     RemoveEspSmooth(v.Main)
                 end)
 
-            elseif v.Name == "TimerLever" and not v.ActivateEventPrompt:GetAttribute("Interactions") then
+            elseif v.Name == "TimerLever" then
 
                 local Highlight, TextLabel = Esp(v, v.Hitbox, "Timer Lever", Options.ESPI_C_BackroomsLevers_F.Value, Options.ESPI_C_BackroomsLevers_O.Value, Options.ESPI_C_BackroomsLevers_TC.Value, "BackroomsLevers", "Interactable")
                 table.insert(EspTable.Interactables.BackroomsLevers, {Highlight, TextLabel})
