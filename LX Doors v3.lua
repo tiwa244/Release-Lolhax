@@ -3525,7 +3525,7 @@ local Connections = {
                 v:WaitForChild("Door", 9e9)
 
                 local RoomID = v:GetAttribute("RoomID")
-				local Locked = v.Parent.Parent:GetAttribute("RequiresKey")
+				local Locked = v.Parent:GetAttribute("RequiresKey")
 				local State = if Locked then "[Locked]" else ""
                 local LibrarySpecial = {
                     [50] =  true,
@@ -5615,7 +5615,7 @@ for _, v in Rooms:GetDescendants() do
             if v.Name == "Door" and not v:GetAttribute("Opened") then
          
                 local RoomID = v:GetAttribute("RoomID")
-				local Locked = v.Parent.Parent:GetAttribute("RequiresKey")
+				local Locked = v.Parent:GetAttribute("RequiresKey")
 				local State = if Locked then "[Locked]" else ""
                 local LibraryRoom = {
                     [51] = true,
