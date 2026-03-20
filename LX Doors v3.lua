@@ -4303,7 +4303,7 @@ Toggles.ES_HASTECLOCK:OnChanged(function(value)
 end)
 
 function HidingConnect(Closet, HiddenPlayer)
-    if not Toggles.VV_TransculentHidingSpot.Value then return end
+    if not Toggles.VV_TranslucentHidingSpot.Value then return end
 
     local PlayerChanged = HiddenPlayer:GetPropertyChangedSignal("Value"):Connect(function()
         task.wait()
