@@ -1412,6 +1412,9 @@ ClonedCollision.CustomPhysicalProperties = PhysicalProperties.new(0.01, 0.7, 0, 
 
 -- Table Variables vvv
 
+local ClosetConnections = {}
+local BreakerAlreadyDone = {}	
+	
 local AnchorIdentify = {
     ["A"] = 1,
     ["B"] = 2,
