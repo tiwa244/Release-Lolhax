@@ -716,6 +716,8 @@ ExploitRemovals:AddToggle("ER_NoShadeDamage", { Text = "No Halt Damage", Default
 local ESPEntities = Tabs.ESP:AddLeftGroupbox("Entities")
 ESPEntities:AddToggle("ESPE_Enabled", { Text = "Enabled", Default = false })
 ESPEntities:AddDivider("Component")
+ESPEntities:AddToggle("ESPE_CustomTC", { Text = "Custom Name Color", Default = false })
+:AddColorPicker("ESPE_Color_TC", { Title = "Custom Name Color", Default = Color3.new(1, 1, 1)
 ESPEntities:AddToggle("ESPE_Name", { Text = "Name", Default = false })
 ESPEntities:AddToggle("ESPE_Distance", { Text = "Distance", Default = false })
 ESPEntities:AddToggle("ESPE_Fill", { Text = "Highlight Fill", Default = false })
@@ -733,8 +735,6 @@ ESPPlayers:AddToggle("ESPP_Enabled", { Text = "Enabled", Default = false })
 :AddColorPicker("ESPP_Color_O", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
 :AddColorPicker("ESPP_Color_TC", { Default = Color3.new(1, 1, 1), Title = "TextLabel Color" })
 ESPPlayers:AddDivider("Component")
-ESPPlayers:AddToggle("ESPP_CustomTC", { Text = "Custom NameTag", Default= false })
-:AddColorPicker("ESPP_CustomTC_Color", { Default = Color3.new(1, 1, 1), Title = "Custom NameTag Color" })
 ESPPlayers:AddToggle("ESPP_Name", { Text = "Name", Default = false })
 ESPPlayers:AddToggle("ESPP_Distance", { Text = "Distance", Default = false })
 ESPPlayers:AddToggle("ESPP_Fill", { Text = "Highlight Fill", Default = false })
@@ -2223,19 +2223,19 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, Var
             elseif Type == "Player" then
                 Highlight.FillColor    = Options.ESPP_Color_F.Value
                 Highlight.OutlineColor = Options.ESPP_Color_O.Value
-			if not Toggles.ESPP_CustomTC.Value then
                 TextLabel.TextColor3   = Options.ESPP_Color_TC.Value
-			else
-				TextLabel.TextColor3 = Options.ESPP_CustomTC_Color.Value
-			end
 							
            elseif Toggles.ESPI_RAINBOW_HIGHLIGHT.Value and Type == "Entity" then
     -- empty, rainbow handles this
            else
                Highlight.FillColor = Color
                Highlight.OutlineColor = OutlineColor or Color
+			if not Toggles.ESPE_CustomTC.Value then
                TextLabel.TextColor3 = TextLabelColor or Color
-	       end
+			else 
+				TextLabel.TextColor3 = Options.ESPE_Color_TC.Value
+			end
+	    end
 
             -- stuff
              BillboardGui.AlwaysOnTop = true
