@@ -733,6 +733,8 @@ ESPPlayers:AddToggle("ESPP_Enabled", { Text = "Enabled", Default = false })
 :AddColorPicker("ESPP_Color_O", { Default = Color3.new(1, 1, 1), Title = "Outline Color" })
 :AddColorPicker("ESPP_Color_TC", { Default = Color3.new(1, 1, 1), Title = "TextLabel Color" })
 ESPPlayers:AddDivider("Component")
+ESPPlayers:AddToggle("ESPP_CustomTC", { Text = "Custom NameTag", Default= false })
+:AddColorPicker("ESPP_CustomTC_Color", { Default = Color3.new(1, 1, 1), Title = "Custom NameTag Color" })
 ESPPlayers:AddToggle("ESPP_Name", { Text = "Name", Default = false })
 ESPPlayers:AddToggle("ESPP_Distance", { Text = "Distance", Default = false })
 ESPPlayers:AddToggle("ESPP_Fill", { Text = "Highlight Fill", Default = false })
@@ -2221,7 +2223,10 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, Var
             elseif Type == "Player" then
                 Highlight.FillColor    = Options.ESPP_Color_F.Value
                 Highlight.OutlineColor = Options.ESPP_Color_O.Value
+			if not Toggles.ESPP_CustomTC.Value then
                 TextLabel.TextColor3   = Options.ESPP_Color_TC.Value
+			else
+				TextLabel.TextColor3 = Options.ESPP_CustomTC_Color.Value
 
            elseif Toggles.ESPI_RAINBOW_HIGHLIGHT.Value and Type == "Entity" then
     -- empty, rainbow handles this
