@@ -752,9 +752,11 @@ ESPInteractables_Main:AddDivider("Component")
 ESPInteractables_Main:AddToggle("ESPI_M_Name", { Text = "Name", Default = false })
 ESPInteractables_Main:AddToggle("ESPI_M_Distance", { Text = "Distance", Default = false })
 ESPInteractables_Main:AddToggle("ESPI_M_Fill", { Text = "Highlight Fill", Default = false })
-ESPInteractables_Main:AddToggle("ESPI_M_CustomTC", { Text = "Custom Name Tag Color", Tooltip = "NameTag Color for all interactables." })
+ESPInteractables_Main:AddToggle("ESPI_M_CustomTC", { Text = "Custom Name Color", Tooltip = "Name Color for all interactables." })
 :AddColorPicker("ESPI_Color_TC", { Default = Color3.new(1, 1, 1), Title = "Custom NameTag Color" })
 ESPInteractables_Main:AddToggle("ESPI_M_Outline", { Text = "Highlight Outline", Default = false })
+ESPInteractables_Main:AddToggle("ESPI_M_CustomColor_Outline", { Text = "Custom Outline Color", Default = false })
+:AddColorPicker("ESPI_Color_Outline", Default = Color3.new(1, 1, 1), Title = "Custom Outline Color" })
 ESPInteractables_Main:AddToggle("ESPI_M_Tracers", { Text = "Tracers", Default = false, Tooltip = "Tracers."})
 ESPInteractables_Main:AddDropdown("ESPI_V_TracerPos", {
     Text = "Tracer Position",
@@ -2217,7 +2219,12 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, Var
     -- empty, rainbow handles this
             elseif Type == "Interactable" then
                 Highlight.FillColor    = Options[cfg.Prefix .. VarName .. "_F"].Value
+			if not Toggles_ESPI_M_CustomColor_Outline.Value then
                 Highlight.OutlineColor = Options[cfg.Prefix .. VarName .. "_O"].Value
+			else
+				Highlight.OutlineColor = Options.ESPI_M_Color_Outline.Value
+		    end 
+	
 			if not Toggles.ESPI_M_CustomTC.Value then
                 TextLabel.TextColor3   = Options[cfg.Prefix .. VarName .. "_TC"].Value
 			else
