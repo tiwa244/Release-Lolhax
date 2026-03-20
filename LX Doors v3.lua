@@ -1906,6 +1906,10 @@ function Notify(TitleText, SubText, Duration, Force)
         Sound:Destroy()
     end
 
+	if TitleText == "[LOLHAX]" then
+		TitleText = ""
+	end
+		
     local TimerType = typeof(Duration)
     local Timer = (TimerType == "number" and Duration) or (10 / 3)
 
@@ -2260,29 +2264,53 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, Var
     local TweenService = game:GetService("TweenService")
 
 if Toggles.ESPS_FadeAnim.Value then
-    TweenService:Create(
-        Highlight,
-        TweenInfo.new(Options.ESPS_FadeTime.Value),
-        {FillTransparency = (Toggles[cfg.Fill] and Toggles[cfg.Fill].Value)
-            and Options.ESPS_FillTransparency.Value or 1}
-    ):Play()
+    if Type == "Entity" then
+        TweenService:Create(Highlight, TweenInfo.new(Options.ESPS_FadeTime.Value), {
+            FillTransparency = (Toggles.ESPE_Enabled.Value and Toggles.ESPE_Fill.Value)
+                and Options.ESPS_FillTransparency.Value or 1
+        }):Play()
 
-    TweenService:Create(
-        Highlight,
-        TweenInfo.new(Options.ESPS_FadeTime.Value),
-        {OutlineTransparency = (Toggles[cfg.Outline] and Toggles[cfg.Outline].Value)
-            and Options.ESPS_OutlineTransparency.Value or 1}
-    ):Play()
+        TweenService:Create(Highlight, TweenInfo.new(Options.ESPS_FadeTime.Value), {
+            OutlineTransparency = (Toggles.ESPE_Enabled.Value and Toggles.ESPE_Outline.Value)
+                and Options.ESPS_OutlineTransparency.Value or 1
+        }):Play()
 
-    TweenService:Create(
-        TextLabel,
-        TweenInfo.new(Options.ESPS_FadeTime.Value),
-        {TextTransparency = 0}
-    ):Play()
+    elseif Type == "Player" then
+        TweenService:Create(Highlight, TweenInfo.new(Options.ESPS_FadeTime.Value), {
+            FillTransparency = (Toggles.ESPP_Enabled.Value and Toggles.ESPP_Fill.Value)
+                and Options.ESPS_FillTransparency.Value or 1
+        }):Play()
+
+        TweenService:Create(Highlight, TweenInfo.new(Options.ESPS_FadeTime.Value), {
+            OutlineTransparency = (Toggles.ESPP_Enabled.Value and Toggles.ESPP_Outline.Value)
+                and Options.ESPS_OutlineTransparency.Value or 1
+        }):Play()
+
+    elseif Type == "Interactable" then
+        TweenService:Create(Highlight, TweenInfo.new(Options.ESPS_FadeTime.Value), {
+            FillTransparency = (Toggles.ESPI_M_Enabled.Value and Toggles.ESPI_M_Fill.Value and Toggles["ESPI_C_" .. VarName].Value)
+                and Options.ESPS_FillTransparency.Value or 1
+        }):Play()
+
+        TweenService:Create(Highlight, TweenInfo.new(Options.ESPS_FadeTime.Value), {
+            OutlineTransparency = (Toggles.ESPI_M_Enabled.Value and Toggles.ESPI_M_Outline.Value and Toggles["ESPI_C_" .. VarName].Value)
+                and Options.ESPS_OutlineTransparency.Value or 1
+        }):Play()
+    end
+
+    TweenService:Create(TextLabel, TweenInfo.new(Options.ESPS_FadeTime.Value), {
+        TextTransparency = 0
+    }):Play()
+
 else
-   Highlight.FillTransparency = (Toggles[cfg.Fill] and Toggles[cfg.Fill].Value) and Options.ESPS_FillTransparency.Value or 1
-   Highlight.OutlineTransparency = (Toggles[cfg.Outline] and Toggles[cfg.Outline].Value) and Options.ESPS_OutlineTransparency.Value or 1
-   TextLabel.TextTransparency = 0
+    -- fallback (no animation)
+    Highlight.FillTransparency = (Toggles[cfg.Fill] and Toggles[cfg.Fill].Value)
+        and Options.ESPS_FillTransparency.Value or 1
+
+    Highlight.OutlineTransparency = (Toggles[cfg.Outline] and Toggles[cfg.Outline].Value)
+        and Options.ESPS_OutlineTransparency.Value or 1
+
+    TextLabel.TextTransparency = 0
 end
 
     return Highlight, TextLabel
