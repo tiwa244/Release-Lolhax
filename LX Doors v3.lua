@@ -2219,10 +2219,10 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, Var
     -- empty, rainbow handles this
             elseif Type == "Interactable" then
                 Highlight.FillColor    = Options[cfg.Prefix .. VarName .. "_F"].Value
-			if not Toggles_ESPI_M_CustomColor_Outline.Value then
+			if not Toggles.ESPI_M_CustomColor_Outline.Value then
                 Highlight.OutlineColor = Options[cfg.Prefix .. VarName .. "_O"].Value
 			else
-				Highlight.OutlineColor = Options.ESPI_M_Color_Outline.Value
+				Highlight.OutlineColor = Options.ESPI_Color_Outline.Value
 		    end 
 	
 			if not Toggles.ESPI_M_CustomTC.Value then
