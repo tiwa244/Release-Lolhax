@@ -3689,7 +3689,8 @@ local Connections = {
                 v:WaitForChild("Hitbox", 9e9)
 
 				repeat task.wait() until v:GetAttribute("LockID") ~= nil
-	            local KeyID = v:GetAttribute("LockID")
+	            local Attribute = v:GetAttribute("LockID")
+				local KeyID = if Script.IsBackdoor then v:GetAttribute("LockID") - 51 else Attribute
 
                 task.delay(1, function()
                     local Highlight, TextLabel = Esp(v, v, "( " .. tostring(KeyID) .. " ) " .. "Door Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value, Options.ESPI_C_DoorKeys_TC.Value, "DoorKeys", "Interactable")
@@ -5734,7 +5735,8 @@ for _, v in Rooms:GetDescendants() do
             elseif v.Name == "KeyObtain" then
 
 		    repeat task.wait() until v:GetAttribute("LockID") ~= nil
-	        local KeyID = v:GetAttribute("LockID")
+	        local Attribute = v:GetAttribute("LockID")
+			local KeyID = if Script.IsBackdoor then v:GetAttribute("LockID") - 51 else Attribute
 
                 local Highlight, TextLabel = Esp(v, v, "( " .. tostring(KeyID) .. " ) " .. "Door Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value, Options.ESPI_C_DoorKeys_TC.Value, "DoorKeys", "Interactable")
                 table.insert(EspTable.Interactables.DoorKeys, {Highlight, TextLabel})
