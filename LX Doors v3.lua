@@ -2243,9 +2243,15 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, Var
            elseif Type == "Entity" then
 			   local override = Parent:GetAttribute("OverrideColor")
 			if override then
-			   Highlight.FillColor = override
-			   Highlight.OutlineColor = override
-		       TextLabel.TextColor3 = override
+				if Toggles.ESPS_FadeAnim.Value then
+			        game:GetService("TweenService"):Create( Highlight, TweenInfo.new(2 / 3), { FillColor = override } ):Play()
+                    game:GetService("TweenService"):Create( Highlight, TweenInfo.new(2 / 3), { OutlineColor = override } ):Play()
+                    game:GetService("TweenService"):Create( TextLabel, TweenInfo.new(2 / 3), { TextColor3 = override } ):Play()
+			   else
+					Highlight.FillColor = override
+					Highlight.OutlineColor = override
+				    TextLabel.TextColor3 = override
+				end
 			else
                Highlight.FillColor = Color
                Highlight.OutlineColor = OutlineColor or Color
