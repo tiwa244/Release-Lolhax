@@ -6346,7 +6346,11 @@ task.spawn(function()
         for _, Connection in Connections do
             Connection:Disconnect()
         end
-
+											
+        for _, Connection in ClosetConnections do
+            Connection:Disconnect()
+		end
+											
         Detection:Disconnect()
         ThirdpersonParts:Destroy()
         LXNotifications:Destroy()
