@@ -2227,7 +2227,8 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, Var
                 TextLabel.TextColor3   = Options.ESPP_Color_TC.Value
 			else
 				TextLabel.TextColor3 = Options.ESPP_CustomTC_Color.Value
-
+			end
+							
            elseif Toggles.ESPI_RAINBOW_HIGHLIGHT.Value and Type == "Entity" then
     -- empty, rainbow handles this
            else
