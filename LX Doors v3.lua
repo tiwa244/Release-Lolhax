@@ -3254,7 +3254,7 @@ local Connections = {
         end
     end),
 
-    LoLocalPlayer:GetAttributeChangedSignal("CurrentRoom"):Connect(function()
+    LocalPlayer:GetAttributeChangedSignal("CurrentRoom"):Connect(function()
         for _, Connection in ClosetConnections do
             Connection:Disconnect()
         end
