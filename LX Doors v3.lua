@@ -4075,7 +4075,8 @@ local Connections = {
 					v._LOLHAXHL.FillColor = Color
 				    v._LOLHAXHL.OutlineColor = Color
 				    v._LOLHAXBG.TextLabel.TextColor3 = Color
-                end)
+                end
+			end)
 
                 v.Destroying:Once(function()
                     EnableChanged:Disconnect()
