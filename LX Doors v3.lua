@@ -1120,7 +1120,7 @@ local Items = {
     {Tag="DoorKeys", Text="Door Key", Color=Color3.fromRGB(255,174,0), Color2=Color3.new(1,1,1), Color4=Color3.fromRGB(255,174,0)},
     {Tag="GoldPiles", Text="Gold Piles", Color=Color3.new(1,1,1), NoText=false, Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
     {Tag="GeneratorFuses", Text="Generator Fuse", Color=Color3.fromRGB(0,255,127), Color2=Color3.fromRGB(0,255,127), Color4=Color3.fromRGB(0,255,127), NewColor=Color3.fromRGB(0,255,127), NewColor2=Color3.fromRGB(0,255,127), NewColor3=Color3.fromRGB(0,255,127)},
-    {Tag="Generators", Text="Generator", Color=Color3.fromRGB(0,255,127), Color2=Color3.new(0,255,127), Color4=Color3.fromRGB(0,255,127), NewColor=Color3.fromRGB(0,255,127), NewColor2=Color3.fromRGB(0,255,127), NewColor3=Color3.fromRGB(0,255,127)},
+    {Tag="Generators", Text="Generator", Color=Color3.fromRGB(0,255,127), Color2=Color3.fromRGB(0,255,127), Color4=Color3.fromRGB(0,255,127), NewColor=Color3.fromRGB(0,255,127), NewColor2=Color3.fromRGB(0,255,127), NewColor3=Color3.fromRGB(0,255,127)},
     {Tag="GateLevers", Text="Gate Lever", Color=Color3.new(1,1,1), NoText=false, Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
     {Tag="LibraryBooks", Text="Library Book", Color=Color3.fromRGB(0,255,127), Color2=Color3.new(1,1,1), Color4=Color3.fromRGB(0,225,100)},
     {Tag="GateButtons", Text="Gate Buttons", Color=Color3.new(1,1,1), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
