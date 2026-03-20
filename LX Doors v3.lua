@@ -2293,6 +2293,7 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, Var
     -- tween
     local TweenService = game:GetService("TweenService")
 
+if Toggles.ESPS_FadeAnim.Value
     if Type == "Entity" then
         TweenService:Create(Highlight, TweenInfo.new(Options.ESPS_FadeTime.Value), {
             FillTransparency = (Toggles.ESPE_Enabled.Value and Toggles.ESPE_Fill.Value)
