@@ -3692,7 +3692,7 @@ local Connections = {
 	            local KeyID = v:GetAttribute("LockID")
 
                 task.delay(1, function()
-                    local Highlight, TextLabel = Esp(v, v, "( " .. tostring(KeyID) .. ") " .. "Door Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value, Options.ESPI_C_DoorKeys_TC.Value, "DoorKeys", "Interactable")
+                    local Highlight, TextLabel = Esp(v, v, "( " .. tostring(KeyID) .. " ) " .. "Door Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value, Options.ESPI_C_DoorKeys_TC.Value, "DoorKeys", "Interactable")
                     table.insert(EspTable.Interactables.DoorKeys, {Highlight, TextLabel})
                 end)
 
@@ -5736,7 +5736,7 @@ for _, v in Rooms:GetDescendants() do
 		    repeat task.wait() until v:GetAttribute("LockID") ~= nil
 	        local KeyID = v:GetAttribute("LockID")
 
-                local Highlight, TextLabel = Esp(v, v, "( " .. tostring(KeyID) .. ") " .. "Door Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value, Options.ESPI_C_DoorKeys_TC.Value, "DoorKeys", "Interactable")
+                local Highlight, TextLabel = Esp(v, v, "( " .. tostring(KeyID) .. " ) " .. "Door Key", Options.ESPI_C_DoorKeys_F.Value, Options.ESPI_C_DoorKeys_O.Value, Options.ESPI_C_DoorKeys_TC.Value, "DoorKeys", "Interactable")
                 table.insert(EspTable.Interactables.DoorKeys, {Highlight, TextLabel})
          
             elseif v.Name == "ElectricalKeyObtain" then
