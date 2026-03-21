@@ -3353,9 +3353,7 @@ local Connections = {
 
     LocalPlayer:GetAttributeChangedSignal("CurrentRoom"):Connect(function()
      Library:Notify("CurrentRoom is now: ", LocalPlayer:GetAttribute("CurrentRoom"))
-    if not Rooms[ LocalPlayer:GetAttribute("CurrentRoom") ]:GetAttribute("RawName") then
-		repeat task.wait() print("gimme rawname pls") until Rooms[ LocalPlayer:GetAttribute("CurrentRoom") ]:GetAttribute("RawName")
-	end
+	 Library:Notify("CurrentRoom's Room is: ", Rooms[LocalPlayer:GetAttribute("CurrentRoom")]
 						
 	if Script.IsBypassed and Rooms[LocalPlayer:GetAttribute("CurrentRoom")]:GetAttribute("RawName") == "Mines_HaltHallway" then
 	    Script.IsBypassed = false
