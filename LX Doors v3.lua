@@ -3870,10 +3870,6 @@ local Connections = {
                 
             elseif v.Name == "GrumbleRig" or v.Name == "QueenGrumble" or v.Name == "_QueenGrumbleNest" or v.Name == "_QueenGrumble" then
 
-              local Animator = v:WaitForChild("AnimationController", 5):WaitForChild("Animator", 5)
-              if not Animator then return end
-              if #Animator:GetPlayingAnimationTracks() == 0 then return end
-
               local Highlight, TextLabel = Esp(v, v, "Grumble", Color3.new(0.85, 0.85, 0.85), nil, nil, nil, "Entity")
 			  table.insert(EspTable.Entities, {Highlight, TextLabel})
 								
@@ -4070,17 +4066,8 @@ local Connections = {
                     local Color = v.Main.AttachmentSwitch.ParticleEmitter.Enabled and Color3.fromRGB(235, 80, 80) or Color3.fromRGB(0, 175, 80)
 
 					v:SetAttribute("OverrideColor", Color)
-
-				if Toggles.ESPS_FadeAnim.Value then
-                    game:GetService("TweenService"):Create( v._LOLHAXHL, TweenInfo.new(2 / 3), { FillColor = Color } ):Play()
-                    game:GetService("TweenService"):Create( v._LOLHAXHL, TweenInfo.new(2 / 3), { OutlineColor = Color } ):Play()
-                    game:GetService("TweenService"):Create( v._LOLHAXBG.TextLabel, TweenInfo.new(2 / 3), { TextColor3 = Color } ):Play()
-				else
-					v._LOLHAXHL.FillColor = Color
-				    v._LOLHAXHL.OutlineColor = Color
-				    v._LOLHAXBG.TextLabel.TextColor3 = Color
-                end
-			end)
+					
+			    end)
 
                 v.Destroying:Once(function()
                     EnableChanged:Disconnect()
