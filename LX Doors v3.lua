@@ -4648,6 +4648,7 @@ end)
 end
 
 LocalPlayer:GetAttributeChangedSignal("CurrentRoom"):Connect(function()
+     Library:Notify("CurrentRoom is now: ", LocalPlayer:GetAttribute("CurrentRoom"))
     if not Rooms[ LocalPlayer:GetAttribute("CurrentRoom") ]:GetAttribute("RawName") then
 		repeat task.wait() print("gimme rawname pls") until Rooms[ LocalPlayer:GetAttribute("CurrentRoom") ]:GetAttribute("RawName")
 	end
