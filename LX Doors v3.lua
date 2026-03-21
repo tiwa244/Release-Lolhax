@@ -2016,96 +2016,79 @@ function BreakerThing(Breaker, Bool)
 end
 	
 function Library:Notify(options, description, duration, force)
-    -- Normalize input
-    local data
-    if type(options) == "table" then
-        data = options
-    else
-        data = {
-            Title = options,
-            Description = description,
-            Time = duration,
-            Force = force
-        }
-    end
+    -- normalize
+    local data = type(options) == "table" and options or {
+        Title = options,
+        Description = description,
+        Time = duration,
+        Force = force
+    }
 
-    -- Ddefautlrlr
     data.Title = tostring(data.Title or "Notification")
     data.Description = tostring(data.Description or "")
     data.Time = data.Time or 5
 
-    -- safer style check
-    local style = "Default"
-    if getgenv().UseLib and getgenv().UseLib.CurrentNotify then
-        style = getgenv().UseLib.CurrentNotify
-    end
+    -- style
+    local style = (getgenv().UseLib and getgenv().UseLib.CurrentNotify) or "Default"
 
     local SoundService = game:GetService("SoundService")
     local Debris = game:GetService("Debris")
 
-    local function PlayNotifySound(id)
+    local function PlaySound(id)
         local sound = Instance.new("Sound")
         sound.SoundId = id or "rbxassetid://4590662766"
-
-        -- safe volume
-        local volume = 1
-        if Options and Options.GN_NotificationSound_Volume then
-            volume = Options.GN_NotificationSound_Volume.Value
-        end
-
-        sound.Volume = volume
+        sound.Volume = (Options and Options.GN_NotificationSound_Volume and Options.GN_NotificationSound_Volume.Value) or 1
         sound.Parent = SoundService
         sound:Play()
         Debris:AddItem(sound, 2)
     end
 
-    local function SafeCall(func)
-        local ok, result = pcall(func)
+    local function SafeCall(fn)
+        local ok, err = pcall(fn)
         if not ok then
-            warn("[notify err:", result)
+            warn("[Notify Error]:", err)
         end
-        return result
     end
 
-    -- Notification routing
-    if style == "Linoria" or data.ForceLinoria then
-        PlayNotifySound()
+    -- unified payload
+    local payload = {
+        Title = data.Title,
+        Description = data.Description,
+        Time = data.Time,
+        Reason = data.Reason,
+        Force = data.Force
+    }
 
-        local message = data.LinoriaMessage or (data.Title .. " " .. data.Description)
+    -- routing
+    if style == "Linoria" or data.ForceLinoria then
+        PlaySound()
+
+        local msg = data.LinoriaMessage or (data.Title .. " " .. data.Description)
 
         if Linoria and Linoria.Notify then
             return SafeCall(function()
-                return Linoria:Notify(message, data.Time)
+                return Linoria:Notify(msg, data.Time)
             end)
         end
 
     elseif style == "Doors" then
         if Doors and Doors.Notify then
             return SafeCall(function()
-                return Doors:Notify({
-                    Title = data.Title,
-                    Description = data.Description,
-                    Time = data.Time,
-                    Reason = data.Reason
-                })
+                return Doors:Notify(payload)
             end)
         end
 
     elseif style == "Obsidian" then
         if Obsidian and Obsidian.Notify then
+            PlaySound()
+
             return SafeCall(function()
-                return Obsidian:Notify({
-                    Title = data.Title,
-                    Description = data.Description,
-                    Reason = data.Reason,
-                    Force = data.Force,
-                    SoundId = "rbxassetid://4590662766"
-                })
+                return Obsidian:Notify(payload)
             end)
         end
     end
 
-    -- Fallback system (always safe)
+    -- fallback
     return SafeCall(function()
         return Notify(data.Title, data.Description, data.Time, data.Force)
     end)
