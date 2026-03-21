@@ -4648,7 +4648,11 @@ end)
 end
 
 LocalPlayer:GetAttributeChangedSignal("CurrentRoom"):Connect(function()
-	if Script.IsMines and Script.IsBypassed and workspace.CurrentRooms[LocalPlayer:GetAttribute("CurrentRoom")]:GetAttribute("RawName") == "Mines_HaltHallway" then
+    if not Rooms[ LocalPlayer:GetAttribute("CurrentRoom") ]:GetAttribute("RawName") then
+		repeat task.wait() print("gimme rawname pls") until Rooms[ LocalPlayer:GetAttribute("CurrentRoom") ]:GetAttribute("RawName")
+	end
+						
+	if Script.IsMines and Script.IsBypassed == "true" and Rooms[ LocalPlayer:GetAttribute("CurrentRoom") ]:GetAttribute("RawName") == "Mines_HaltHallway" then
 	    Script.IsBypassed = false
 		local new = Instance.new("Folder", game.Workspace)
         new.Name = "_internal_lhx_acbypassprogress"
