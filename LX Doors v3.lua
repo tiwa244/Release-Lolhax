@@ -1857,6 +1857,10 @@ function Notify(TitleText, SubText, Duration, Force)
         Alignment = 0
     end
 
+	if TitleText == "[LOLHAX]" then
+		TitleText = ""
+	end
+
     local Main = Instance.new("Frame", NotificationHolder)
     Main.AnchorPoint = Vector2.new(Alignment, 0.5)
     Main.Size = UDim2.fromScale(0.19 * DPISize, 0.045 * DPISize)
@@ -1915,10 +1919,6 @@ function Notify(TitleText, SubText, Duration, Force)
         Sound.PlayOnRemove = true
         Sound:Destroy()
     end
-
-	if TitleText == "[LOLHAX]" then
-		TitleText = ""
-	end
 		
     local TimerType = typeof(Duration)
     local Timer = (TimerType == "number" and Duration) or (10 / 3)
