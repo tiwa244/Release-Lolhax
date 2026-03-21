@@ -4647,21 +4647,24 @@ end)
         end
 end
 
-local currentRoomModel = workspace.CurrentRooms:FindFirstChild(tostring(Script.CurrentRoom))
-if Script.IsMines and Script.Bypassed and currentRoomModel:GetAttribute("RawName") == "Mines_HaltHallway" then
-        Script.Bypassed = false
-        Library:Notify({
-            Title = "Anticheat Bypass",
-            Description = "Halt has broken anticheat bypass, please go on a ladder again to fix it.",
-            Reason = "Please go on a ladder again to fix it.",
-            SoundId = "rbxassetid://4590662766",
-            Time = 5,
+LocalPlayer:GetAttributeChangedSignal("CurrentRoom"):Connect(function()
+	if Script.IsMines and Script.IsBypassed and workspace.CurrentRooms[LocalPlayer:GetAttribute("CurrentRoom")]:GetAttribute("RawName") == "Mines_HaltHallway" then
+	    Script.IsBypassed = false
+		local new = Instance.new("Folder", game.Workspace) do
+        new.Name = "_internal_lhx_acbypassprogress"
 
-            LinoriaMessage = "Halt has broken anticheat bypass, please go on a ladder again to fix it."
-        })
+		-- acrual logic
+		Library:Notify({
+			Title = "Anticheat Bypass",
+			Description = "Halt has broken anticheat bypass, please go on a ladder again to fix it.",
+			Time = new,
 
-    end
-
+			LinoriaMessage = "Halt has broken anticheat bypass, please go on a ladder again to fix it."
+		})
+	end
+end)
+	     
+		
 -- my brain fried vo -- v
 
 Script.Functions.Minecart = {
