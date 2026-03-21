@@ -3351,6 +3351,28 @@ local Connections = {
         end
     end),
 
+    LocalPlayer:GetAttributeChangedSignal("CurrentRoom"):Connect(function()
+     Library:Notify("CurrentRoom is now: ", LocalPlayer:GetAttribute("CurrentRoom"))
+    if not Rooms[ LocalPlayer:GetAttribute("CurrentRoom") ]:GetAttribute("RawName") then
+		repeat task.wait() print("gimme rawname pls") until Rooms[ LocalPlayer:GetAttribute("CurrentRoom") ]:GetAttribute("RawName")
+	end
+						
+	if Script.IsMines and Script.IsBypassed == "true" and Rooms[ LocalPlayer:GetAttribute("CurrentRoom") ]:GetAttribute("RawName") == "Mines_HaltHallway" then
+	    Script.IsBypassed = false
+		local new = Instance.new("Folder", game.Workspace)
+        new.Name = "_internal_lhx_acbypassprogress"
+
+		-- acrual logic
+		Library:Notify({
+			Title = "Anticheat Bypass",
+			Description = "Halt has broken anticheat bypass, please go on a ladder again to fix it.",
+			Time = new,
+
+			LinoriaMessage = "Halt has broken anticheat bypass, please go on a ladder again to fix it."
+		})
+	end
+end),
+
     LocalPlayer.CharacterAdded:Connect(function(v)
         v:WaitForChild("Collision", 9e9)
 
