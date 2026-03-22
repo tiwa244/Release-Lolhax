@@ -4470,7 +4470,7 @@ CurrentRooms.DescendantAdded:Connect(function(v)
 end)
 
 local ClosetConnection = RunService.Heartbeat:Connect(function()
-	if not Toggles.ESPI_C_Closet.Value
+	if not Toggles.ESPI_C_Closet.Value then return end
     local current = Script.CurrentRoom or 0
 
     for v, data in pairs(ActiveClosets) do
