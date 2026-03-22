@@ -3423,6 +3423,21 @@ local Connections = {
            Library:Notify("Entity 'Halt' spawns in the next room!", "...")
         end
 
+		if Script.IsMines and Script.IsBypassed and v.Name == LocalPlayer:GetAttribute("CurrentRoom") and v:GetAttribute("RawName") == Mines_HaltHallway" then
+	       Script.IsBypassed = false
+		   local new = Instance.new("Folder", game.Workspace)
+           new.Name = "_internal_lhx_acbypassprogress"
+
+		   -- acrual logic
+		    Library:Notify({
+			  Title = "Anticheat Bypass",
+			  Description = "Halt has broken anticheat bypass, please go on a ladder again to fix it.",
+			  Time = new,
+
+			  LinoriaMessage = "Halt has broken anticheat bypass, please go on a ladder again to fix it."
+		   })
+		end
+
         if game.ReplicatedStorage.GameData.Floor.Value == "Hotel" and v.Name == "100" then
 			local BreakerAdded = v.ChildAdded:Connect(function(ElevatorBreaker)
 
@@ -4645,29 +4660,7 @@ end)
                 workspace:FindFirstChild("_internal_lhx_acbypassprogress"):Destroy()
             end)
         end
-end
-
-LocalPlayer:GetAttributeChangedSignal("CurrentRoom"):Connect(function()
-    if not Rooms[ LocalPlayer:GetAttribute("CurrentRoom") ]:GetAttribute("RawName") then
-		repeat task.wait() print("gimme rawname pls") until Rooms[ LocalPlayer:GetAttribute("CurrentRoom") ]:GetAttribute("RawName")
-	end
-						
-	if Script.IsMines and Script.IsBypassed == "true" and Rooms[ LocalPlayer:GetAttribute("CurrentRoom") ]:GetAttribute("RawName") == "Mines_HaltHallway" then
-	    Script.IsBypassed = false
-		local new = Instance.new("Folder", game.Workspace)
-        new.Name = "_internal_lhx_acbypassprogress"
-
-		-- acrual logic
-		Library:Notify({
-			Title = "Anticheat Bypass",
-			Description = "Halt has broken anticheat bypass, please go on a ladder again to fix it.",
-			Time = new,
-
-			LinoriaMessage = "Halt has broken anticheat bypass, please go on a ladder again to fix it."
-		})
-	end
-end)
-	     
+end	     
 		
 -- my brain fried vo -- v
 
