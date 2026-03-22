@@ -240,7 +240,7 @@ end
 Library.ForceCheckbox = true
 local Script = shared.Script
 Script.Functions = {}
-shared.Humanoid = game.Players.LocaltPlayer.Character.Humanoid
+shared.Humanoid = game.Players.LocalPlayer.Character.Humanoid
 Script.Functions.EnforceTypes = function(args, template)
     args = if typeof(args) == "table" then args else {}
 
