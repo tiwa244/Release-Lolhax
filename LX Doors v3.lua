@@ -237,12 +237,7 @@ if not shared.Script then
     }
 end
 
-if Toggles.ForceCheckbox.Value then
-    Library.ForceCheckbox = true
-else
-	Library.ForceCheckbox = false
-end
-
+Library.ForceCheckbox = true
 local Script = shared.Script
 Script.Functions = {}
 shared.Humanoid = game.Players.LocaltPlayer.Character.Humanoid
