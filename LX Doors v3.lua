@@ -220,7 +220,6 @@ elseif UIConfig.CurrentLib == "Obsidian" then
     }
 end
 
-
 if not shared.Script then
     shared.Script = {
         Functions = {},
@@ -754,9 +753,9 @@ ESPInteractables_Main:AddToggle("ESPI_M_Name", { Text = "Name", Default = false 
 ESPInteractables_Main:AddToggle("ESPI_M_Distance", { Text = "Distance", Default = false })
 ESPInteractables_Main:AddToggle("ESPI_M_Fill", { Text = "Highlight Fill", Default = false })
 ESPInteractables_Main:AddToggle("ESPI_M_CustomTC", { Text = "Custom Name Color", Tooltip = "Name Color for all interactables." })
-:AddColorPicker("ESPI_Color_TC", { Default = Color3.new(1, 1, 1), Title = "Custom NameTag Color" })
 ESPInteractables_Main:AddToggle("ESPI_M_Outline", { Text = "Highlight Outline", Default = false })
 ESPInteractables_Main:AddToggle("ESPI_M_CustomColor_Outline", { Text = "Custom Outline Color", Default = false })
+:AddColorPicker("ESPI_Color_TC", { Default = Color3.new(1, 1, 1), Title = "Custom NameTag Color" })
 :AddColorPicker("ESPI_Color_Outline", { Default = Color3.new(1, 1, 1), Title = "Custom Outline Color" })
 ESPInteractables_Main:AddToggle("ESPI_M_Tracers", { Text = "Tracers", Default = false, Tooltip = "Tracers."})
 ESPInteractables_Main:AddDropdown("ESPI_V_TracerPos", {
@@ -4463,7 +4462,7 @@ CurrentRooms.DescendantAdded:Connect(function(v)
     --
 
     task.delay(0.1, function()
-        --if not Toggles.ClosetESP.Value then return end
+        if not Toggles.ESPI_C_Closet.Value then return end
         if v and v.Parent then
             MonitorCloset(v)
         end
@@ -4471,6 +4470,7 @@ CurrentRooms.DescendantAdded:Connect(function(v)
 end)
 
 local ClosetConnection = RunService.Heartbeat:Connect(function()
+	if not Toggles.ESPI_C_Closet.Value
     local current = Script.CurrentRoom or 0
 
     for v, data in pairs(ActiveClosets) do
@@ -4648,11 +4648,8 @@ end)
 end
 
 LocalPlayer:GetAttributeChangedSignal("CurrentRoom"):Connect(function()
-    if not Rooms[ LocalPlayer:GetAttribute("CurrentRoom") ]:GetAttribute("RawName") then
-		repeat task.wait() print("gimme rawname pls") until Rooms[ LocalPlayer:GetAttribute("CurrentRoom") ]:GetAttribute("RawName")
-	end
-						
-	if Script.IsMines and Script.IsBypassed == "true" and Rooms[ LocalPlayer:GetAttribute("CurrentRoom") ]:GetAttribute("RawName") == "Mines_HaltHallway" then
+					
+	if Script.IsMines and Script.IsBypassed and workspace.CurrentRooms[LocalPlayer:GetAttribute("CurrentRoom")]:GetAttribute("RawName") == "Mines_HaltHallway" then
 	    Script.IsBypassed = false
 		local new = Instance.new("Folder", game.Workspace)
         new.Name = "_internal_lhx_acbypassprogress"
