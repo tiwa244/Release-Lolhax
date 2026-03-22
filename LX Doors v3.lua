@@ -3338,7 +3338,7 @@ local Connections = {
 	LocalPlayer:GetAttributeChangedSignal("CurrentRoom"):Connect(function()
 
 	if Toggles.DS_Debug.Value then Library:Notify("[LOLHAX]", "Current Room is now: " .. tostring(LocalPlayer:GetAttribute("CurrentRoom")), 4.5)
-	local currentRoomModel = Rooms:FindFirstChild(LocalPlayer:GetAttribute("CurrentRoom")
+	local currentRoomModel = Rooms:FindFirstChild(LocalPlayer:GetAttribute("CurrentRoom"))
 					
 	if Script.IsMines and Script.IsBypassed and currentRoomModel:GetAttribute("RawName") == "Mines_HaltHallway" then
 	    Script.IsBypassed = false
