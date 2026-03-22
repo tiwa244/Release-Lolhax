@@ -553,6 +553,7 @@ ErrorMessageOut = game:GetService("LogService").MessageOut:Connect(function(Mess
         task.delay(5, function()
             Library:Unload()
             getgenv().UsingLOLHAX = nil
+			print("[LOLHAX]", "Lolhax has experinced a critical error while loading and now will unload, the error has either been copied to your clipboard and printed in the console!", "please report this to the bug report server!: " .. Message)
         end)
     end
 
@@ -577,6 +578,7 @@ local Detection = game:GetService("TextChatService").MessageReceived:Connect(fun
         end
     end
 end)
+	
 -- UI vvv
 
 local GeneralAutomation = Tabs.General:AddLeftGroupbox("Automation")
@@ -3977,7 +3979,7 @@ local Connections = {
 					local String = "Find a hiding spot quickly!"
 
                     if v:GetAttribute("iterations") > 0 then
-						String = "Entity will rebound " .. v:GetAttribute("iterations") .. " times," .. String
+						String = "Entity will rebound " .. v:GetAttribute("iterations") .. " times, " .. String
 					end
                     if v:GetAttribute("damageAmount") <= 0 then
 						String = "Entity will not do damage."
