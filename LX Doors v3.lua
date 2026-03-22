@@ -3334,6 +3334,28 @@ local Connections = {
             end
         end
     end),
+
+	LocalPlayer:GetAttributeChangedSignal("CurrentRoom"):Connect(function()
+
+	if Toggles.DS_Debug.Value then Library:Notify("[LOLHAX]", "Current Room is now: " .. tostring(LocalPlayer:GetAttribute("CurrentRoom")), 4.5)
+	local currentRoomModel = Rooms:FindFirstChild(LocalPlayer:GetAttribute("CurrentRoom")
+					
+	if Script.IsMines and Script.IsBypassed and currentRoomModel:GetAttribute("RawName") == "Mines_HaltHallway" then
+	    Script.IsBypassed = false
+		local new = Instance.new("Folder", game.Workspace)
+        new.Name = "_internal_lhx_acbypassprogress"
+
+		-- accrual logic hruhv is it fixed
+		Library:Notify({
+			Title = "Anticheat Bypass",
+			Description = "Halt has broken anticheat bypass, please go on a ladder again to fix it.",
+			Time = new,
+
+			LinoriaMessage = "Halt has broken anticheat bypass, please go on a ladder again to fix it."
+		})
+		end
+	end
+end),
 	
     -- this is fucked.
     LocalPlayer.Character:GetAttributeChangedSignal("CanJump"):Connect(function()
@@ -4647,26 +4669,7 @@ end)
                 workspace:FindFirstChild("_internal_lhx_acbypassprogress"):Destroy()
             end)
         end
-end
-
-LocalPlayer:GetAttributeChangedSignal("CurrentRoom"):Connect(function()
-					
-	if Script.IsMines and Script.IsBypassed and workspace.CurrentRooms[LocalPlayer:GetAttribute("CurrentRoom")]:GetAttribute("RawName") == "Mines_HaltHallway" then
-	    Script.IsBypassed = false
-		local new = Instance.new("Folder", game.Workspace)
-        new.Name = "_internal_lhx_acbypassprogress"
-
-		-- acrual logic
-		Library:Notify({
-			Title = "Anticheat Bypass",
-			Description = "Halt has broken anticheat bypass, please go on a ladder again to fix it.",
-			Time = new,
-
-			LinoriaMessage = "Halt has broken anticheat bypass, please go on a ladder again to fix it."
-		})
-	end
-end)
-	     
+end     
 		
 -- my brain fried vo -- v
 
