@@ -6527,7 +6527,7 @@ task.spawn(function()
 
 	Toggles.ForceCheckbox:OnChanged(function(value)
 		Library.ForceCheckbox = value
-	end
+	end)
     
     Library.ToggleKeybind = Options.MenuKeybind
 
