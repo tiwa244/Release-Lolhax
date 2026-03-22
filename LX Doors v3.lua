@@ -6524,6 +6524,10 @@ task.spawn(function()
     Toggles.keybindmenu:OnChanged(function()
         Library.KeybindFrame.Visible = Toggles.keybindmenu.Value
     end)
+
+	Toggles.ForceCheckbox:OnChanged(function(value)
+		Library.ForceCheckbox = value
+	end
     
     Library.ToggleKeybind = Options.MenuKeybind
 
