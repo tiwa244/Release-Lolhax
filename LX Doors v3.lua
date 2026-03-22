@@ -1354,12 +1354,14 @@ MiscellaneousOther:AddButton({
     DoubleClick = true, 
 })
 MiscellaneousOther:AddButton({
-		Text = "Reset Avatar",
-		Func = function()
-            replicatesignal(game.Players.LocalPlayer.Kill)
-		end,
-	    DoubleClick = true,
-		Visible = LocalPlayer:GetAttribute("CurrentRoom") == "0"
+	Text = "Reset Avatar",
+	Func = function()
+        replicatesignal(game.Players.LocalPlayer.Kill)
+		Library:Notify("[LOLHAX]", "You might need to reload the script for speed modifier to\n work again",
+	end,
+	DoubleClick = true,
+	Visible = LocalPlayer:GetAttribute("CurrentRoom") == "0",
+	Disabled = Script.CurrentRoom ~= "0"
 })
 	
 -- Variables vvv
