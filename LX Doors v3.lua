@@ -237,9 +237,15 @@ if not shared.Script then
     }
 end
 
+if Toggles.ForceCheckbox.Value then
+    Library.ForceCheckbox = true
+else
+	Library.ForceCheckbox = false
+end
+
 local Script = shared.Script
 Script.Functions = {}
-shared.Humanoid = game.Players.LocalPlayer.Character.Humanoid
+shared.Humanoid = game.Players.LocaltPlayer.Character.Humanoid
 Script.Functions.EnforceTypes = function(args, template)
     args = if typeof(args) == "table" then args else {}
 
@@ -6468,10 +6474,9 @@ task.spawn(function()
 		Library.ShowCustomCursor = Value
 	end,
 })
-    Library.ForceCheckbox = false
     MenuProperties:AddToggle("ForceCheckbox", {
 	Text = "Force Checkbox",
-	Default = false,
+	Default = true,
 	Callback = function(Value)
 		Library.ForceCheckbox = Value
 	end,
