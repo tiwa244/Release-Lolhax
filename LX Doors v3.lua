@@ -6474,6 +6474,12 @@ task.spawn(function()
 	Default = true,
 	Callback = function(Value)
 		Library.ForceCheckbox = Value
+	    if LHXLoadFinish then
+			Library:Notify{(
+			  Title = "[LOLHAX]",
+			  Description = "Restart lolhax to apply changes."
+		})
+	   end
 	end,
 })
     MenuProperties:AddDropdown("UILib", {
@@ -6525,10 +6531,6 @@ task.spawn(function()
         Library.KeybindFrame.Visible = Toggles.keybindmenu.Value
     end)
 
-	Toggles.ForceCheckbox:OnChanged(function(value)
-		Library.ForceCheckbox = value
-	end)
-    
     Library.ToggleKeybind = Options.MenuKeybind
 
     ThemeManager:SetLibrary(Library)
