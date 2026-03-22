@@ -4380,7 +4380,7 @@ local HiddenSpots = {
 }
 
 local function MonitorCloset(v)
-
+    if not Toggles.ESPI_C_Closet.Value then return end
     if v:FindFirstChild("VV_MARKER") then return end
 
     -- Handle sideroom recursion cleaner
@@ -4471,6 +4471,7 @@ CurrentRooms.DescendantAdded:Connect(function(v)
 end)
 
 local ClosetConnection = RunService.Heartbeat:Connect(function()
+	if not Toggles.ESPI_C_Closet.Value then return end
     local current = Script.CurrentRoom or 0
 
     for v, data in pairs(ActiveClosets) do
