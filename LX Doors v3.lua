@@ -1353,7 +1353,15 @@ MiscellaneousOther:AddButton({
     end,
     DoubleClick = true, 
 })
-
+MicellaneousOther:AddButton({
+		Text = "Reset Avatar",
+		Func = function()
+            replicatesignal(game.Players.LocalPlayer.Kill)
+		end,
+	    DoubleClick = true,
+		Visible = LocalPlayer:GetAttribute("CurrentRoom") == "0"
+})
+	
 -- Variables vvv
 
 local A90Hook
