@@ -1353,7 +1353,7 @@ MiscellaneousOther:AddButton({
     end,
     DoubleClick = true, 
 })
-MicellaneousOther:AddButton({
+MiscellaneousOther:AddButton({
 		Text = "Reset Avatar",
 		Func = function()
             replicatesignal(game.Players.LocalPlayer.Kill)
