@@ -338,13 +338,14 @@ function ForceCheckboxSwitch(Value)
         return 
     end
 
-    if ChangeForceValue ~= config.ForceCheckbox then
+    if Value ~= config.ForceCheckbox then
         config.ForceCheckbox = Value
-		Library.ForceCheckbox = config.ForceCheckbox
         writefile(filename, HttpService:JSONEncode(config))
         print("saved ye " .. tostring(Value))
     end
 end
+
+Library.ForceCheckbox = config.ForceCheckbox
 
 -- err part
 local ErrorMessageOut
