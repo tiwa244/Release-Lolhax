@@ -4662,7 +4662,7 @@ end)
     end)
 
 
-    if value then
+    if Script.IsMines or Script.IsDaily or Script.IsBattle then
         if LocalPlayer.Character then
             Script.FeatureConnections.Character["AnticheatBypassTheMines"] = LocalPlayer.Character:GetAttributeChangedSignal("Climbing"):Connect(function()
                 if not Toggles.EB_TheMinesAnticheatBypass then return end
