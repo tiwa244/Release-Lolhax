@@ -626,7 +626,7 @@ GeneralAutomation:AddToggle("GA_MinecartInteract", { Text = "Minecart Interact S
 GeneralAutomation:AddToggle("GA_AnchorAutoSolve", { Text = "Anchor Automatic Solve", Default = false, Tooltip = "Automatically solves any anchor when close enough, if it's the designated one." })
 GeneralAutomation:AddToggle("GA_BreakerAutoSolve", { Text = "Automatic Breaker Solve", Default = false, Tooltip = "Automatically solves the hotel door 100 breaker minigame.", Disabled = not Script.IsHotel, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 GeneralAutomation:AddDropdown("GA_BreakerAutoSolveOption", { Text = "Automatic Breaker Solve Options", Values = { "Legit", "Exploit" }, Default = "Legit", Disabled = not Script.IsHotel, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore.", Tooltip = "Automatic Breaker Solve Options.", Multi = false })
-GeneralAutomation:AddToggle("GA_AutoHeartbeat", { Text = "Always Win Heartbeat Minigame", Default = false, Tooltip = "Always Win Heartbeat minigame.", Disabled = not Script.IsHotel, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
+--GeneralAutomation:AddToggle("GA_AutoHeartbeat", { Text = "Always Win Heartbeat Minigame", Default = false, Tooltip = "Always Win Heartbeat minigame.", Disabled = not Script.IsHotel, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 GeneralAutomation:AddDivider("Solve")
 GeneralAutomation:AddToggle("GA_AutoPadlockSolve", { Text = "Automatic Library Padlock", Default = false, Tooltip = "Automatically unlocks padlock with the code when near enough to the set distance.", Disabled = not Script.IsHotel, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 GeneralAutomation:AddSlider("GA_AutoPadlockSolve_Distance", { Text = "Automatic Padlock Distance", Default = 25, Min = 10, Max = 50, Rounding = 0, Compact = false, Tooltip = "Minimum distance for auto padlock solver to input the correct code.", Disabled = not Script.IsHotel, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
@@ -4251,11 +4251,11 @@ namecall = hookmetamethod(game, "__namecall", newcclosure(function(v, ...)
     if not Library.Unloaded then
         if Method == "FireServer" then
 
-			if v.Name == "ClutchHeartbeat" and Toggles.GA_AutoHeartbeat.Value then
+			--if v.Name == "ClutchHeartbeat" and Toggles.GA_AutoHeartbeat.Value then
 										
-                   return
+                  -- return
 										
-			end
+			--end
 
             if v.Name == "Crouch" and Toggles.EB_CrouchSpoof.Value then
 
