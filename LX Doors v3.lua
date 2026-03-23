@@ -2794,6 +2794,22 @@ local Connections = {
             end
         end
 
+		if game.ReplicatedStorage.GameData.Floor.Value == "Party" and Toggles.GA_AutoPowerup.Value then
+            for _, Room in Rooms:GetChildren() do
+				
+                if Room:FindFirstChild("ItemPads") then
+					for _, Powerup in Room.ItemPads:GetChildren() do
+
+                        if Powerup:FindFirstChild("Hitbox") and Powerup.Hitbox:FindFirstChild("TouchInterest") then
+							firetouchinterest(LocalPlayer.Character.HumanoidRootPart, Powerup.Hitbox, 1 and 0)
+						end
+
+					end
+				end
+
+			end
+		end
+
         if Toggles.GA_EatCandies.Value and Options.GA_EatCandies_K:GetState() then
             local Candy = LocalPlayer.Backpack:FindFirstChild("Candy")
 
