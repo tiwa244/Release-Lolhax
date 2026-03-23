@@ -268,7 +268,7 @@ function ForceCheckboxSwitch(Value)
         config.ForceCheckbox = Value
 		--Library.ForceCheckbox = Value
         writefile(filename, HttpService:JSONEncode(config))
-        --print("saved ye " .. Value)
+        print("saved ye " .. tostring(Value))
     end
 end
 	
