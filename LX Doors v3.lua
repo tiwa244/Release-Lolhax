@@ -266,7 +266,7 @@ function ForceCheckboxSwitch(Value)
 
     if ChangeForceValue ~= config.ForceCheckbox then
         config.ForceCheckbox = Value
-		Library.ForceCheckbox = Value
+		--Library.ForceCheckbox = Value
         writefile(filename, HttpService:JSONEncode(config))
         --print("saved ye " .. Value)
     end
@@ -593,6 +593,8 @@ local Detection = game:GetService("TextChatService").MessageReceived:Connect(fun
         end
     end
 end)
+
+Library.ForceCheckbox = config.ForceCheckbox
 	
 -- UI vvv
 
