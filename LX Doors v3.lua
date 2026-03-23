@@ -242,7 +242,6 @@ local mainUI
 local HttpService = game:GetService("HttpService")
 local foldername = "lolhax"
 local filename = foldername .. "/LibraryConfig.json"
-local LHXLoadFinish = false
 
 -- custom caption
 
