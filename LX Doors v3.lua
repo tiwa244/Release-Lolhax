@@ -720,7 +720,7 @@ local ExploitBypass = Tabs.Exploit:AddRightGroupbox("Bypass")
 ExploitBypass:AddToggle("EB_CrouchSpoof", { Text = "Crouch Spoof", Default = false, Tooltip = "Spoofs crouching, or in other words the game will think you're crouching. Useful for figure rooms." })
 ExploitBypass:AddToggle("EB_SpeedBypass", { Text = "Speed Bypass", Default = false, Tooltip = "Attempts to mitigate the speed anticheat." })
 ExploitBypass:AddToggle("EB_ACManipulate", { Text = "Anti-Cheat Manipulation", Default = false, Tooltip = "Will teleport to the opposite direction the camera is facing to manipulate the anticheat into rubberbanding you the opposite way." }):AddKeyPicker("EB_ACManipulate_K", { Default = "T", SyncToggleState = false, Mode = "Hold", Text = "Anti-Cheat Manipulate", NoUI = false, })
-ExploitBypass:AddToggle("EB_TheMinesAnticheatBypass", { Text = "Anticheat Bypass", Default = false, Tooltip = "Disables Anticheat in Mines.", Visible = Script.IsMines or Script.IsDaily, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })  
+ExploitBypass:AddToggle("EB_TheMinesAnticheatBypass", { Text = "Anticheat Bypass", Default = false, Tooltip = "Disables Anticheat in Mines.", Visible = Script.IsMines, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })  
 
 local ExploitRemovals = Tabs.Exploit:AddRightGroupbox("Removals")
 ExploitRemovals:AddToggle("ER_RemoveSeek", { Text = "Remove Seek Chase", Default = false, Tooltip = "Completely disables the entity 'Seek'.", Disabled = not Script.IsRetro, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
