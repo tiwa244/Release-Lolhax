@@ -76,6 +76,7 @@ local LHXLoadFinish = false
 
 if getgenv().UsingLOLHAX then print("[LOLHAX] Already Loaded!!!") return end
 
+-- setup things
 if not isfolder(foldername) then
     makefolder(foldername)
 end
@@ -166,8 +167,6 @@ local Repository, Library, Window, Tabs, Icons, ThemeManager, SaveManager, Linor
 if UIConfig.CurrentLib == "Linoria" then 
     Repository = "https://raw.githubusercontent.com/mstudio45/LinoriaLib/main/"
     Library = loadstring(game:HttpGet(Repository .. "Library.lua"))()
-    Toggles = Library.Toggles
-    Options = Library.Options
     
     ThemeManager = loadstring(game:HttpGet(Repository .. "addons/ThemeManager.lua"))()
     SaveManager =  loadstring(game:HttpGet(Repository .. "addons/SaveManager.lua"))()
@@ -197,8 +196,6 @@ elseif UIConfig.CurrentLib == "Obsidian" then
     Library:SetIconModule(Icons)
     ThemeManager = loadstring(game:HttpGet(Repository .. "addons/ThemeManager.lua"))()
     SaveManager =  loadstring(game:HttpGet(Repository .. "addons/SaveManager.lua"))()
-    Toggles = Library.Toggles
-    Options = Library.Options   
     
     Window = Library:CreateWindow({ 
         Title = "lolhax v3", 
@@ -220,9 +217,18 @@ elseif UIConfig.CurrentLib == "Obsidian" then
     }
 end
 
+Toggles = Library.Toggles
+Options = Library.Options
+Labels = Library.Labels
+
+-- vsriables yeah 
+
 if not shared.Script then
     shared.Script = {
         Functions = {},
+		Toggles = Toggles,
+		Options = Options,
+		Labels = Labels,
         Temp = {
            Bridges = {},
            PipeBridges = {},
@@ -240,22 +246,8 @@ end
 local Script = shared.Script
 Script.Functions = {}
 shared.Humanoid = game.Players.LocalPlayer.Character.Humanoid
-Script.Functions.EnforceTypes = function(args, template)
-    args = if typeof(args) == "table" then args else {}
 
-    for key, value in pairs(template) do
-        local argValue = args[key]
-
-        if argValue == nil or (value ~= nil and typeof(argValue) ~= typeof(value)) then
-            args[key] = value
-        elseif typeof(value) == "table" then
-            args[key] = Script.Functions.EnforceTypes(argValue, value)
-        end
-    end
-
-    return args
-end
-
+-- checkbox function
 function ForceCheckboxSwitch(Value)
     -- its not loaded so refhrn snd
     if not LHXLoadFinish then 
@@ -263,14 +255,15 @@ function ForceCheckboxSwitch(Value)
         return 
     end
 
-    if ChangeForceValue ~= config.ForceCheckbox then
+    if Value ~= config.ForceCheckbox then
         config.ForceCheckbox = Value
 		--Library.ForceCheckbox = Value
         writefile(filename, HttpService:JSONEncode(config))
         print("saved ye " .. tostring(Value))
     end
 end
-	
+
+-- doors notify
 local Doors = {}
 local mainUI
 
@@ -364,6 +357,7 @@ end
 
 function Doors:Warn(options) Doors:Alert(options) end
 
+-- currentroom 
 task.spawn(function()
     -- 
     repeat task.wait() until game:IsLoaded() and game.Players.LocalPlayer
@@ -394,6 +388,7 @@ task.spawn(function()
     end
 end)
 
+-- func
 function Script.Functions.CalculateHideTime(room: number)
     for _, range in ipairs(Script.HideTimeValues) do
         if room >= range.min and room <= range.max then
@@ -404,6 +399,7 @@ function Script.Functions.CalculateHideTime(room: number)
     return nil
 end
 
+-- tables v2 and variables if included
 Script.HideTimeValues = {
     {min = 1, max = 5, a = -1/6, b = 1, c = 20},
     {min = 6, max = 19, a = -1/13, b = 6, c = 19},
@@ -1599,6 +1595,22 @@ function LXSmth(Parent, Text)
             LXUser = {}  
         end)
     end
+end
+
+Script.Functions.EnforceTypes = function(args, template)
+    args = if typeof(args) == "table" then args else {}
+
+    for key, value in pairs(template) do
+        local argValue = args[key]
+
+        if argValue == nil or (value ~= nil and typeof(argValue) ~= typeof(value)) then
+            args[key] = value
+        elseif typeof(value) == "table" then
+            args[key] = Script.Functions.EnforceTypes(argValue, value)
+        end
+    end
+
+    return args
 end
 
 task.spawn(function()
