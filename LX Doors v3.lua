@@ -4627,7 +4627,7 @@ end)
             Script.Bypassed = false
           end
 
-        if value and Script.IsMines then
+        if value  then
             local progressPart = Instance.new("Folder", game.Workspace) do
                 progressPart.Name = "_internal_lhx_acbypassprogress"
             end
@@ -4662,11 +4662,11 @@ end)
     end)
 
 
-    if Script.IsMines then
+    if value then
         if LocalPlayer.Character then
             Script.FeatureConnections.Character["AnticheatBypassTheMines"] = LocalPlayer.Character:GetAttributeChangedSignal("Climbing"):Connect(function()
                 if not Toggles.EB_TheMinesAnticheatBypass then return end
-                if not Script.IsMines then return end
+                --
                 if not Toggles.EB_TheMinesAnticheatBypass.Value then return end
                 if not LocalPlayer.Character:GetAttribute("Climbing") then return end
 
