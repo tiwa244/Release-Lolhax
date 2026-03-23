@@ -6453,7 +6453,9 @@ task.spawn(function()
         game.ReplicatedStorage.RemotesFolder.ClimbLadder:FireServer()
         Script.IsBypassed = false
         LocalPlayer.Character:SetAttribute("CanJump", false)
+	if not Script.IsBattle then
         LocalPlayer.Character:SetAttribute("CanSlide", false)
+	end
         print("[LOLHAX] Unloaded!!")
         LocalPlayer.Character.HumanoidRootPart.CustomPhysicalProperties = OldAccel
 
