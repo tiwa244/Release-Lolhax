@@ -69,16 +69,7 @@
 local Loadtime = tick()
 local Linoria = loadstring(game:HttpGet('https://raw.githubusercontent.com/mstudio45/LinoriaLib/main/Library.lua'))()
 local Obsidian = loadstring(game:HttpGet('https://raw.githubusercontent.com/deividcomsono/Obsidian/main/Library.lua'))()
-local HttpService = game:GetService("HttpService")
-local foldername = "lolhax"
-local filename = foldername .. "/LibraryConfig.json"
-local LHXLoadFinish = false
-
 if getgenv().UsingLOLHAX then print("[LOLHAX] Already Loaded!!!") return end
-
-if not isfolder(foldername) then
-    makefolder(foldername)
-end
 
 -- lmao table here
 local config = {
@@ -87,74 +78,6 @@ local config = {
     CurrentNotify = "Obsidian",
     ForceCheckbox = false
 }
-
--- ask an ai what ts is
-if isfile(filename) then
-    local rawData = readfile(filename)
-    print("eh: ", rawData) -- this runs before what
-
-    local success, content = pcall(function()
-        return HttpService:JSONDecode(rawData)
-    end)
-
-    if success and type(content) == "table" then
-        for k, v in pairs(content) do
-            config[k] = v
-        end
-        print("saved")
-    else
-        warn("faild to save err: ", content)
-    end
-end
-
--- gojo satoru
-if not isfile(filename) then
-    writefile(filename, HttpService:JSONEncode(config))
-    print("created missig file lmao at: " .. filename)
-end
-
-local function SaveToFile()
-    writefile(filename, HttpService:JSONEncode(config))
-end
-local function SwitchLib(libName)
-    -- its not loaded so refhrn snd
-    if not LHXLoadFinish then 
-        print("ignored:", libName)
-        return 
-    end
-
-    if libName ~= config.CurrentLib then
-        config.CurrentLib = libName
-        writefile(filename, HttpService:JSONEncode(config))
-        print("saved ye " .. libname)
-    end
-end
-
-
-local function SwitchNotify(notifyName)
-    -- some gate idk
-    if not LHXLoadFinish then 
-        print("ignoring: " ..   notifyName ..  " sinc, its a config overwtie")
-        return 
-    end
-
-    -- only sace if dudude clicked a different style
-    if notifyName ~= config.CurrentNotify then
-        config.CurrentNotify = notifyName
-        
-        local success, err = pcall(function()
-            writefile(filename, HttpService:JSONEncode(config))
-        end)
-        
-        if success then
-            print("Successfully MANUALLY SAVED Notify: " .. notifyName)
-        else
-            warn("SAVE FAILED for Notify:", err)
-        end
-    else
-        print("nah, config overwrite denied")
-    end
-end
 
 getgenv().UseLib = config
 getgenv().SwitchLib = SwitchLib
@@ -407,7 +330,7 @@ function Script.Functions.CalculateHideTime(room: number)
 
     return nil
 end
-
+	
 Script.HideTimeValues = {
     {min = 1, max = 5, a = -1/6, b = 1, c = 20},
     {min = 6, max = 19, a = -1/13, b = 6, c = 19},
@@ -447,7 +370,7 @@ Script.CutsceneExclude = {
     "Elevator1",
     "MinesFinale"
 }
-	
+
 local LoremIpsumNonsense = { -- idk copied lmao
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
     "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
@@ -560,6 +483,12 @@ do
     end
 end
 
+local HttpService = game:GetService("HttpService")
+local foldername = "lolhax"
+local filename = foldername .. "/LibraryConfig.json"
+local LHXLoadFinish = false
+
+-- err part
 local ErrorMessageOut
 ErrorMessageOut = game:GetService("LogService").MessageOut:Connect(function(Message, Type)
 
@@ -1630,6 +1559,80 @@ task.spawn(function()
         end
     until Library.Unloaded
 end)
+
+if not isfolder(foldername) then
+    makefolder(foldername)
+end
+
+-- ask an ai what ts is
+if isfile(filename) then
+    local rawData = readfile(filename)
+    print("eh: ", rawData) -- this runs before what
+
+    local success, content = pcall(function()
+        return HttpService:JSONDecode(rawData)
+    end)
+
+    if success and type(content) == "table" then
+        for k, v in pairs(content) do
+            config[k] = v
+        end
+        print("saved")
+    else
+        warn("faild to save err: ", content)
+    end
+end
+
+-- gojo satoru
+if not isfile(filename) then
+    writefile(filename, HttpService:JSONEncode(config))
+    print("created missig file lmao at: " .. filename)
+end
+
+function SaveToFile()
+    writefile(filename, HttpService:JSONEncode(config))
+end
+	
+function SwitchLib(libName)
+    -- its not loaded so refhrn snd
+    if not LHXLoadFinish then 
+        print("ignored:", libName)
+        return 
+    end
+
+    if libName ~= config.CurrentLib then
+        config.CurrentLib = libName
+        writefile(filename, HttpService:JSONEncode(config))
+        print("saved ye " .. libname)
+    end
+end
+
+
+function SwitchNotify(notifyName)
+    -- some gate idk
+    if not LHXLoadFinish then 
+        print("ignoring: " ..   notifyName ..  " sinc, its a config overwtie")
+        return 
+    end
+
+    -- only sace if dudude clicked a different style
+    if notifyName ~= config.CurrentNotify then
+        config.CurrentNotify = notifyName
+        
+        local success, err = pcall(function()
+            writefile(filename, HttpService:JSONEncode(config))
+        end)
+        
+        if success then
+            print("Successfully MANUALLY SAVED Notify: " .. notifyName)
+        else
+            warn("SAVE FAILED for Notify:", err)
+        end
+    else
+        print("nah, config overwrite denied")
+    end
+end
+	
 -- this is modified version of the lolhaxv2 get player function!
 
 function HasItem(Item)
