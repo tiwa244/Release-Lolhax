@@ -76,10 +76,6 @@ local LHXLoadFinish = false
 
 if getgenv().UsingLOLHAX then print("[LOLHAX] Already Loaded!!!") return end
 
-if not isfolder(foldername) then
-    makefolder(foldername)
-end
-
 -- lmao table here
 local config = {
     Use2Lib = true,
@@ -87,92 +83,6 @@ local config = {
     CurrentNotify = "Obsidian",
     ForceCheckbox = false
 }
-
--- setup thingsss vvv
-
-if isfile(filename) then
-    local rawData = readfile(filename)
-    print("eh: ", rawData) -- this runs before what
-
-    local success, content = pcall(function()
-        return HttpService:JSONDecode(rawData)
-    end)
-
-    if success and type(content) == "table" then
-        for k, v in pairs(content) do
-            config[k] = v
-        end
-        print("saved")
-    else
-        warn("faild to save err: ", content)
-    end
-end
-
--- gojo satoru
-if not isfile(filename) then
-    writefile(filename, HttpService:JSONEncode(config))
-    print("created missig file lmao at: " .. filename)
-end
-
-function SaveToFile()
-    writefile(filename, HttpService:JSONEncode(config))
-end
-
-function SwitchLib(libName)
-    -- its not loaded so refhrn snd
-    if not LHXLoadFinish then 
-        print("ignored:", libName)
-        return 
-    end
-
-    if libName ~= config.CurrentLib then
-        config.CurrentLib = libName
-        writefile(filename, HttpService:JSONEncode(config))
-        print("saved ye " .. libname)
-    end
-end
-
-function ForceCheckboxSwitch(Value)
-    -- its not loaded so refhrn snd
-    if not LHXLoadFinish then 
-        print("ignored:", Value)
-        return 
-    end
-
-    if Value ~= config.ForceCheckbox then
-        config.ForceCheckbox = Value
-		--Library.ForceCheckbox = Value
-        writefile(filename, HttpService:JSONEncode(config))
-        print("saved ye " .. tostring(Value))
-    end
-end
-
-function SwitchNotify(notifyName)
-    -- some gate idk
-    if not LHXLoadFinish then 
-        print("ignoring: " ..   notifyName ..  " sinc, its a config overwtie")
-        return 
-    end
-
-    -- only sace if dudude clicked a different style
-    if notifyName ~= config.CurrentNotify then
-        config.CurrentNotify = notifyName
-        
-        local success, err = pcall(function()
-            writefile(filename, HttpService:JSONEncode(config))
-        end)
-        
-        if success then
-            --print("Successfully MANUALLY SAVED Notify: " .. notifyName)
-        else
-            warn("save failed for Notify:", err)
-        end
-    else
-        --print("nah, config overwrite denied")
-    end
-end
-
--- Ui Setup vvv
 
 getgenv().UseLib = config
 getgenv().SwitchLib = SwitchLib
@@ -1480,6 +1390,92 @@ task.spawn(function()
         end
     until Library.Unloaded
 end)
+
+if not isfolder(foldername) then
+    makefolder(foldername)
+end
+
+if isfile(filename) then
+    local rawData = readfile(filename)
+    print("eh: ", rawData) -- this runs before what
+
+    local success, content = pcall(function()
+        return HttpService:JSONDecode(rawData)
+    end)
+
+    if success and type(content) == "table" then
+        for k, v in pairs(content) do
+            config[k] = v
+        end
+        print("saved")
+    else
+        warn("faild to save err: ", content)
+    end
+end
+
+-- gojo satoru
+if not isfile(filename) then
+    writefile(filename, HttpService:JSONEncode(config))
+    print("created missig file lmao at: " .. filename)
+end
+
+function SaveToFile()
+    writefile(filename, HttpService:JSONEncode(config))
+end
+
+function SwitchLib(libName)
+    -- its not loaded so refhrn snd
+    if not LHXLoadFinish then 
+        print("ignored:", libName)
+        return 
+    end
+
+    if libName ~= config.CurrentLib then
+        config.CurrentLib = libName
+        writefile(filename, HttpService:JSONEncode(config))
+        print("saved ye " .. libname)
+    end
+end
+
+function ForceCheckboxSwitch(Value)
+    -- its not loaded so refhrn snd
+    if not LHXLoadFinish then 
+        print("ignored:", Value)
+        return 
+    end
+
+    if Value ~= config.ForceCheckbox then
+        config.ForceCheckbox = Value
+		--Library.ForceCheckbox = Value
+        writefile(filename, HttpService:JSONEncode(config))
+        print("saved ye " .. tostring(Value))
+    end
+end
+
+function SwitchNotify(notifyName)
+    -- some gate idk
+    if not LHXLoadFinish then 
+        print("ignoring: " ..   notifyName ..  " sinc, its a config overwtie")
+        return 
+    end
+
+    -- only sace if dudude clicked a different style
+    if notifyName ~= config.CurrentNotify then
+        config.CurrentNotify = notifyName
+        
+        local success, err = pcall(function()
+            writefile(filename, HttpService:JSONEncode(config))
+        end)
+        
+        if success then
+            --print("Successfully MANUALLY SAVED Notify: " .. notifyName)
+        else
+            warn("save failed for Notify:", err)
+        end
+    else
+        --print("nah, config overwrite denied")
+    end
+end
 
 Script.Functions.EnforceTypes = function(args, template)
     args = if typeof(args) == "table" then args else {}
