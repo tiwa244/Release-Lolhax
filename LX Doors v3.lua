@@ -6475,7 +6475,7 @@ task.spawn(function()
 	Callback = function(Value)
 		Library.ForceCheckbox = Value
 	    if LHXLoadFinish then
-			Library:Notify{(
+			Library:Notify({
 			  Title = "[LOLHAX]",
 			  Description = "Restart lolhax to apply changes."
 		})
