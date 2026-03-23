@@ -168,7 +168,6 @@ if UIConfig.CurrentLib == "Linoria" then
     Library = loadstring(game:HttpGet(Repository .. "Library.lua"))()
     Toggles = Library.Toggles
     Options = Library.Options
-
     
     ThemeManager = loadstring(game:HttpGet(Repository .. "addons/ThemeManager.lua"))()
     SaveManager =  loadstring(game:HttpGet(Repository .. "addons/SaveManager.lua"))()
