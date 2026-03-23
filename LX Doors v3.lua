@@ -89,77 +89,7 @@ local config = {
     ForceCheckbox = false
 }
 
--- ask an ai what ts is
-if isfile(filename) then
-    local rawData = readfile(filename)
-    print("eh: ", rawData) -- this runs before what
-
-    local success, content = pcall(function()
-        return HttpService:JSONDecode(rawData)
-    end)
-
-    if success and type(content) == "table" then
-        for k, v in pairs(content) do
-            config[k] = v
-        end
-        print("saved")
-    else
-        warn("faild to save err: ", content)
-    end
-end
-
--- gojo satoru
-if not isfile(filename) then
-    writefile(filename, HttpService:JSONEncode(config))
-    print("created missig file lmao at: " .. filename)
-end
-
-local function SaveToFile()
-    writefile(filename, HttpService:JSONEncode(config))
-end
-local function SwitchLib(libName)
-    -- its not loaded so refhrn snd
-    if not LHXLoadFinish then 
-        print("ignored:", libName)
-        return 
-    end
-
-    if libName ~= config.CurrentLib then
-        config.CurrentLib = libName
-        writefile(filename, HttpService:JSONEncode(config))
-        print("saved ye " .. libname)
-    end
-end
-
-
-local function SwitchNotify(notifyName)
-    -- some gate idk
-    if not LHXLoadFinish then 
-        print("ignoring: " ..   notifyName ..  " sinc, its a config overwtie")
-        return 
-    end
-
-    -- only sace if dudude clicked a different style
-    if notifyName ~= config.CurrentNotify then
-        config.CurrentNotify = notifyName
-        
-        local success, err = pcall(function()
-            writefile(filename, HttpService:JSONEncode(config))
-        end)
-        
-        if success then
-            print("Successfully MANUALLY SAVED Notify: " .. notifyName)
-        else
-            warn("SAVE FAILED for Notify:", err)
-        end
-    else
-        print("nah, config overwrite denied")
-    end
-end
-
 getgenv().UseLib = config
-getgenv().SwitchLib = SwitchLib
-getgenv().SwitchNotify = SwitchNotify
 
 local UIConfig = getgenv().UseLib
 local Repository, Library, Window, Tabs, Icons, ThemeManager, SaveManager, LinoriaNotify, Toggles, Options -- Defined at the top so they don't "vanish"
@@ -263,99 +193,9 @@ function ForceCheckboxSwitch(Value)
     end
 end
 
--- doors notify
+-- doors notify variables
 local Doors = {}
 local mainUI
-
-function Doors:Notify(unsafeOptions)
-    assert(typeof(unsafeOptions) == "table", "Expected a table as options argument but got " .. typeof(unsafeOptions))
-
-    mainUI = mainUI or game.Players.LocalPlayer.PlayerGui:WaitForChild("GlobalUI", 2.5)
-    if not mainUI then return end
-
-    local options = Script.Functions.EnforceTypes(unsafeOptions, {
-        Title = "Notification",
-        Description = "No Text",
-        Reason = "",
-        NotificationType = "NOTIFICATION",
-        Image = "6023426923",
-        Color = nil,
-        Time = nil,
-
-        TweenDuration = 0.8
-    })
-
-    local acheivement = mainUI.AchievementsHolder.Achievement:Clone()
-    acheivement.Size = UDim2.new(0, 0, 0, 0)
-    acheivement.Frame.Position = UDim2.new(1.1, 0, 0, 0)
-    acheivement.Name = "LiveAchievement"
-    acheivement.Visible = true
-
-    acheivement.Frame.TextLabel.Text = options.NotificationType
-
-    if options.Color ~= nil then
-        acheivement.Frame.TextLabel.TextColor3 = options.Color
-        acheivement.Frame.UIStroke.Color = options.Color
-        acheivement.Frame.Glow.ImageColor3 = options.Color
-    end
-    
-    acheivement.Frame.Details.Desc.Text = tostring(options.Description)
-    acheivement.Frame.Details.Title.Text = tostring(options.Title)
-    acheivement.Frame.Details.Reason.Text = tostring(options.Reason or "")
-
-    if options.Image:match("rbxthumb://") or options.Image:match("rbxassetid://") then
-        acheivement.Frame.ImageLabel.Image = tostring(options.Image or "rbxassetid://0")
-    else
-        acheivement.Frame.ImageLabel.Image = "rbxassetid://" .. tostring(options.Image or "0")
-    end
-
-    acheivement.Parent = mainUI.AchievementsHolder
-    acheivement.Sound.SoundId = "rbxassetid://10469938989"
-
-    acheivement.Sound.Volume = 1
-
-        acheivement.Sound:Play()
-
-    task.spawn(function()
-        acheivement:TweenSize(UDim2.new(1, 0, 0.2, 0), "In", "Quad", options.TweenDuration, true)
-    
-        task.wait(0.8)
-    
-        acheivement.Frame:TweenPosition(UDim2.new(0, 0, 0, 0), "Out", "Quad", 0.5, true)
-    
-        game.TweenService:Create(acheivement.Frame.Glow, TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.In),{
-            ImageTransparency = 1
-        }):Play()
-    
-        if options.Time ~= nil then
-            if typeof(options.Time) == "number" then
-                task.wait(options.Time)
-            elseif typeof(options.Time) == "Instance" then
-                options.Time.Destroying:Wait()
-            end
-        else
-            task.wait(5)
-        end
-    
-        acheivement.Frame:TweenPosition(UDim2.new(1.1, 0, 0, 0), "In", "Quad", 0.5, true)
-        task.wait(0.5)
-        acheivement:TweenSize(UDim2.new(1, 0, -0.1, 0), "InOut", "Quad", 0.5, true)
-        task.wait(0.5)
-        acheivement:Destroy()
-    end)
-end
-
-function Doors:Alert(options)
-    assert(typeof(options) == "table", "Expected a table as options argument but got " .. typeof(options))
-
-    options["NotificationType"] = "WARNING"
-    options["Color"] = Color3.new(1, 0, 0)
-    options["TweenDuration"] = 0.3
-
-    Doors:Notify(options)
-end
-
-function Doors:Warn(options) Doors:Alert(options) end
 
 -- currentroom 
 task.spawn(function()
@@ -1612,6 +1452,164 @@ Script.Functions.EnforceTypes = function(args, template)
 
     return args
 end
+
+if isfile(filename) then
+    local rawData = readfile(filename)
+    print("eh: ", rawData) -- this runs before what
+
+    local success, content = pcall(function()
+        return HttpService:JSONDecode(rawData)
+    end)
+
+    if success and type(content) == "table" then
+        for k, v in pairs(content) do
+            config[k] = v
+        end
+        print("saved")
+    else
+        warn("faild to save err: ", content)
+    end
+end
+
+-- gojo satoru
+if not isfile(filename) then
+    writefile(filename, HttpService:JSONEncode(config))
+    print("created missig file lmao at: " .. filename)
+end
+
+local function SaveToFile()
+    writefile(filename, HttpService:JSONEncode(config))
+end
+
+local function SwitchLib(libName)
+    -- its not loaded so refhrn snd
+    if not LHXLoadFinish then 
+        print("ignored:", libName)
+        return 
+    end
+
+    if libName ~= config.CurrentLib then
+        config.CurrentLib = libName
+        writefile(filename, HttpService:JSONEncode(config))
+        print("saved ye " .. libName)
+    end
+end
+
+
+local function SwitchNotify(notifyName)
+    -- some gate idk
+    if not LHXLoadFinish then 
+        print("ignoring: " ..   notifyName ..  " sinc, its a config overwtie")
+        return 
+    end
+
+    -- only sace if dudude clicked a different style
+    if notifyName ~= config.CurrentNotify then
+        config.CurrentNotify = notifyName
+        
+        local success, err = pcall(function()
+            writefile(filename, HttpService:JSONEncode(config))
+        end)
+        
+        if success then
+            print("Successfully MANUALLY SAVED Notify: " .. notifyName)
+        else
+            warn("SAVE FAILED for Notify:", err)
+        end
+    else
+        print("nah, config overwrite denied")
+    end
+end
+
+function Doors:Notify(unsafeOptions)
+    assert(typeof(unsafeOptions) == "table", "Expected a table as options argument but got " .. typeof(unsafeOptions))
+
+    mainUI = mainUI or game.Players.LocalPlayer.PlayerGui:WaitForChild("GlobalUI", 2.5)
+    if not mainUI then return end
+
+    local options = Script.Functions.EnforceTypes(unsafeOptions, {
+        Title = "Notification",
+        Description = "No Text",
+        Reason = "",
+        NotificationType = "NOTIFICATION",
+        Image = "6023426923",
+        Color = nil,
+        Time = nil,
+
+        TweenDuration = 0.8
+    })
+
+    local acheivement = mainUI.AchievementsHolder.Achievement:Clone()
+    acheivement.Size = UDim2.new(0, 0, 0, 0)
+    acheivement.Frame.Position = UDim2.new(1.1, 0, 0, 0)
+    acheivement.Name = "LiveAchievement"
+    acheivement.Visible = true
+
+    acheivement.Frame.TextLabel.Text = options.NotificationType
+
+    if options.Color ~= nil then
+        acheivement.Frame.TextLabel.TextColor3 = options.Color
+        acheivement.Frame.UIStroke.Color = options.Color
+        acheivement.Frame.Glow.ImageColor3 = options.Color
+    end
+    
+    acheivement.Frame.Details.Desc.Text = tostring(options.Description)
+    acheivement.Frame.Details.Title.Text = tostring(options.Title)
+    acheivement.Frame.Details.Reason.Text = tostring(options.Reason or "")
+
+    if options.Image:match("rbxthumb://") or options.Image:match("rbxassetid://") then
+        acheivement.Frame.ImageLabel.Image = tostring(options.Image or "rbxassetid://0")
+    else
+        acheivement.Frame.ImageLabel.Image = "rbxassetid://" .. tostring(options.Image or "0")
+    end
+
+    acheivement.Parent = mainUI.AchievementsHolder
+    acheivement.Sound.SoundId = "rbxassetid://10469938989"
+
+    acheivement.Sound.Volume = 1
+
+        acheivement.Sound:Play()
+
+    task.spawn(function()
+        acheivement:TweenSize(UDim2.new(1, 0, 0.2, 0), "In", "Quad", options.TweenDuration, true)
+    
+        task.wait(0.8)
+    
+        acheivement.Frame:TweenPosition(UDim2.new(0, 0, 0, 0), "Out", "Quad", 0.5, true)
+    
+        game.TweenService:Create(acheivement.Frame.Glow, TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.In),{
+            ImageTransparency = 1
+        }):Play()
+    
+        if options.Time ~= nil then
+            if typeof(options.Time) == "number" then
+                task.wait(options.Time)
+            elseif typeof(options.Time) == "Instance" then
+                options.Time.Destroying:Wait()
+            end
+        else
+            task.wait(5)
+        end
+    
+        acheivement.Frame:TweenPosition(UDim2.new(1.1, 0, 0, 0), "In", "Quad", 0.5, true)
+        task.wait(0.5)
+        acheivement:TweenSize(UDim2.new(1, 0, -0.1, 0), "InOut", "Quad", 0.5, true)
+        task.wait(0.5)
+        acheivement:Destroy()
+    end)
+end
+
+function Doors:Alert(options)
+    assert(typeof(options) == "table", "Expected a table as options argument but got " .. typeof(options))
+
+    options["NotificationType"] = "WARNING"
+    options["Color"] = Color3.new(1, 0, 0)
+    options["TweenDuration"] = 0.3
+
+    Doors:Notify(options)
+end
+
+function Doors:Warn(options) Doors:Alert(options) end
 
 task.spawn(function()
     repeat task.wait() 
