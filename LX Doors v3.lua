@@ -88,7 +88,8 @@ local config = {
     ForceCheckbox = false
 }
 
--- ask an ai what ts is
+-- setup thingsss vvv
+
 if isfile(filename) then
     local rawData = readfile(filename)
     print("eh: ", rawData) -- this runs before what
@@ -113,10 +114,11 @@ if not isfile(filename) then
     print("created missig file lmao at: " .. filename)
 end
 
-local function SaveToFile()
+function SaveToFile()
     writefile(filename, HttpService:JSONEncode(config))
 end
-local function SwitchLib(libName)
+
+function SwitchLib(libName)
     -- its not loaded so refhrn snd
     if not LHXLoadFinish then 
         print("ignored:", libName)
@@ -130,8 +132,22 @@ local function SwitchLib(libName)
     end
 end
 
+function ForceCheckboxSwitch(Value)
+    -- its not loaded so refhrn snd
+    if not LHXLoadFinish then 
+        print("ignored:", Value)
+        return 
+    end
 
-local function SwitchNotify(notifyName)
+    if Value ~= config.ForceCheckbox then
+        config.ForceCheckbox = Value
+		--Library.ForceCheckbox = Value
+        writefile(filename, HttpService:JSONEncode(config))
+        print("saved ye " .. tostring(Value))
+    end
+end
+
+function SwitchNotify(notifyName)
     -- some gate idk
     if not LHXLoadFinish then 
         print("ignoring: " ..   notifyName ..  " sinc, its a config overwtie")
@@ -147,14 +163,16 @@ local function SwitchNotify(notifyName)
         end)
         
         if success then
-            print("Successfully MANUALLY SAVED Notify: " .. notifyName)
+            --print("Successfully MANUALLY SAVED Notify: " .. notifyName)
         else
-            warn("SAVE FAILED for Notify:", err)
+            warn("save failed for Notify:", err)
         end
     else
-        print("nah, config overwrite denied")
+        --print("nah, config overwrite denied")
     end
 end
+
+-- Ui Setup vvv
 
 getgenv().UseLib = config
 getgenv().SwitchLib = SwitchLib
@@ -166,8 +184,6 @@ local Repository, Library, Window, Tabs, Icons, ThemeManager, SaveManager, Linor
 if UIConfig.CurrentLib == "Linoria" then 
     Repository = "https://raw.githubusercontent.com/mstudio45/LinoriaLib/main/"
     Library = loadstring(game:HttpGet(Repository .. "Library.lua"))()
-    Toggles = Library.Toggles
-    Options = Library.Options
     
     ThemeManager = loadstring(game:HttpGet(Repository .. "addons/ThemeManager.lua"))()
     SaveManager =  loadstring(game:HttpGet(Repository .. "addons/SaveManager.lua"))()
@@ -197,8 +213,6 @@ elseif UIConfig.CurrentLib == "Obsidian" then
     Library:SetIconModule(Icons)
     ThemeManager = loadstring(game:HttpGet(Repository .. "addons/ThemeManager.lua"))()
     SaveManager =  loadstring(game:HttpGet(Repository .. "addons/SaveManager.lua"))()
-    Toggles = Library.Toggles
-    Options = Library.Options   
     
     Window = Library:CreateWindow({ 
         Title = "lolhax v3", 
@@ -220,6 +234,10 @@ elseif UIConfig.CurrentLib == "Obsidian" then
     }
 end
 
+Toggles = Library.Toggles
+Options = Library.Options
+Labels = Library.Labels
+
 if not shared.Script then
     shared.Script = {
         Functions = {},
@@ -228,7 +246,6 @@ if not shared.Script then
            PipeBridges = {},
            CollisionSize = Vector3.new(5.5, 3, 3),
            Guidance = {},
-           PaintingDebounce = {},
            VoidGlitchNotifiedRooms = {},
         },
         Humanoid = {},
@@ -254,21 +271,6 @@ Script.Functions.EnforceTypes = function(args, template)
     end
 
     return args
-end
-
-function ForceCheckboxSwitch(Value)
-    -- its not loaded so refhrn snd
-    if not LHXLoadFinish then 
-        print("ignored:", Value)
-        return 
-    end
-
-    if ChangeForceValue ~= config.ForceCheckbox then
-        config.ForceCheckbox = Value
-		--Library.ForceCheckbox = Value
-        writefile(filename, HttpService:JSONEncode(config))
-        print("saved ye " .. tostring(Value))
-    end
 end
 	
 local Doors = {}
