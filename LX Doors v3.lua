@@ -69,6 +69,7 @@
 local Loadtime = tick()
 local Linoria = loadstring(game:HttpGet('https://raw.githubusercontent.com/mstudio45/LinoriaLib/main/Library.lua'))()
 local Obsidian = loadstring(game:HttpGet('https://raw.githubusercontent.com/deividcomsono/Obsidian/main/Library.lua'))()
+local LHXLoadFinish = false
 if getgenv().UsingLOLHAX then print("[LOLHAX] Already Loaded!!!") return end
 
 -- lmao table here
@@ -156,13 +157,13 @@ function ForceCheckboxSwitch(Value)
 
     if ChangeForceValue ~= config.ForceCheckbox then
         config.ForceCheckbox = Value
-		--Library.ForceCheckbox = Value
+		Library.ForceCheckbox = Value
         writefile(filename, HttpService:JSONEncode(config))
         print("saved ye " .. tostring(Value))
     end
 end
 
-Library.ForceCheckbox = config.ForceCheckbox
+--Library.ForceCheckbox = config.ForceCheckbox
 
 -- Variablesssss
 
