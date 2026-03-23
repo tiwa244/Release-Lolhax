@@ -112,6 +112,8 @@ if UIConfig.CurrentLib == "Linoria" then
         Config = Window:AddTab("Config") 
     }
 
+	Library.ForceCheckbox = config.ForceCheckbox or true
+
 elseif UIConfig.CurrentLib == "Obsidian" then
     Repository = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/"
     Library = loadstring(game:HttpGet(Repository .. "Library.lua"))()
@@ -139,6 +141,8 @@ elseif UIConfig.CurrentLib == "Obsidian" then
         Misc = Window:AddTab("Miscellaneous", "triangle-alert", "Miscellaneous features."), 
         Config = Window:AddTab("Config", "settings", "UI Config And Settings.") 
     }
+
+	Library.ForceCheckbox = config.ForceCheckbox or true
 end
 
 Toggles = Library.Toggles
@@ -383,8 +387,6 @@ local Detection = game:GetService("TextChatService").MessageReceived:Connect(fun
         end
     end
 end)
-
-Library.ForceCheckbox = config.ForceCheckbox
 
 -- UI vvv
 
