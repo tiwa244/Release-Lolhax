@@ -144,6 +144,7 @@ end
 Toggles = Library.Toggles
 Options = Library.Options
 Labels = Library.Labels
+Library.ForceCheckbox = config.ForceCheckbox
 
 -- Variablesssss
 
@@ -344,8 +345,6 @@ function ForceCheckboxSwitch(Value)
         print("saved ye " .. tostring(Value))
     end
 end
-
-Library.ForceCheckbox = config.ForceCheckbox
 
 -- err part
 local ErrorMessageOut
