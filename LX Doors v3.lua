@@ -366,6 +366,23 @@ local Detection = game:GetService("TextChatService").MessageReceived:Connect(fun
     end
 end)
 
+-- checkbox part
+
+function ForceCheckboxSwitch(Value)
+    -- its not loaded so refhrn snd
+    if not LHXLoadFinish then 
+        print("ignored:", Value)
+        return 
+    end
+
+    if ChangeForceValue ~= config.ForceCheckbox then
+        config.ForceCheckbox = Value
+		--Library.ForceCheckbox = Value
+        writefile(filename, HttpService:JSONEncode(config))
+        print("saved ye " .. tostring(Value))
+    end
+end
+
 Library.ForceCheckbox = config.ForceCheckbox
 	
 -- UI vvv
@@ -1442,7 +1459,7 @@ function SwitchLib(libName)
     if libName ~= config.CurrentLib then
         config.CurrentLib = libName
         writefile(filename, HttpService:JSONEncode(config))
-        print("saved ye " .. libname)
+        print("saved ye " .. libName)
     end
 end
 
@@ -1486,21 +1503,6 @@ Script.Functions.EnforceTypes = function(args, template)
     end
 
     return args
-end
-
-function ForceCheckboxSwitch(Value)
-    -- its not loaded so refhrn snd
-    if not LHXLoadFinish then 
-        print("ignored:", Value)
-        return 
-    end
-
-    if ChangeForceValue ~= config.ForceCheckbox then
-        config.ForceCheckbox = Value
-		--Library.ForceCheckbox = Value
-        writefile(filename, HttpService:JSONEncode(config))
-        print("saved ye " .. tostring(Value))
-    end
 end
 	
 function Doors:Notify(unsafeOptions)
