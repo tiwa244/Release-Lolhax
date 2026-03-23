@@ -235,7 +235,28 @@ local LoremIpsumNonsense = { -- idk copied lmao
     "Sapiente delectus, ut aut reiciendis voluptatibus maiores alias.",
     "Ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti."
 }
-	
+
+-- funcs and other stuffs
+
+function ForceCheckboxSwitch(Value)
+    -- its not loaded so refhrn snd
+    if not LHXLoadFinish then 
+        print("ignored:", Value)
+        return 
+    end
+
+    if ChangeForceValue ~= config.ForceCheckbox then
+        config.ForceCheckbox = Value
+		--Library.ForceCheckbox = Value
+        writefile(filename, HttpService:JSONEncode(config))
+        print("saved ye " .. tostring(Value))
+    end
+end
+
+Library.ForceCheckbox = config.ForceCheckbox
+
+-- custom caption
+
 local lhxnxt_custom_captions = Instance.new("ScreenGui")
 do
     local Frame = Instance.new("Frame", lhxnxt_custom_captions)
@@ -320,6 +341,7 @@ do
     end
 end
 
+-- some variables
 local Doors = {}
 local mainUI
 local HttpService = game:GetService("HttpService")
@@ -365,25 +387,6 @@ local Detection = game:GetService("TextChatService").MessageReceived:Connect(fun
         end
     end
 end)
-
--- checkbox part
-
-function ForceCheckboxSwitch(Value)
-    -- its not loaded so refhrn snd
-    if not LHXLoadFinish then 
-        print("ignored:", Value)
-        return 
-    end
-
-    if ChangeForceValue ~= config.ForceCheckbox then
-        config.ForceCheckbox = Value
-		--Library.ForceCheckbox = Value
-        writefile(filename, HttpService:JSONEncode(config))
-        print("saved ye " .. tostring(Value))
-    end
-end
-
-Library.ForceCheckbox = config.ForceCheckbox
 	
 -- UI vvv
 
