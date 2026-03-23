@@ -116,7 +116,6 @@ end
 local function SaveToFile()
     writefile(filename, HttpService:JSONEncode(config))
 end
-
 local function SwitchLib(libName)
     -- its not loaded so refhrn snd
     if not LHXLoadFinish then 
@@ -131,19 +130,6 @@ local function SwitchLib(libName)
     end
 end
 
-function ForceCheckbox(Value)
-    -- its not loaded so refhrn snd
-    if not LHXLoadFinish then 
-        print("ignored:", Value)
-        return 
-    end
-
-    if ChangeForceValue ~= config.ForceCheckbox then
-        config.ForceCheckbox = Value
-        writefile(filename, HttpService:JSONEncode(config))
-        print("saved ye " .. Value)
-    end
-end
 
 local function SwitchNotify(notifyName)
     -- some gate idk
@@ -252,7 +238,6 @@ if not shared.Script then
     }
 end
 
-Library.ForceCheckbox = true
 local Script = shared.Script
 Script.Functions = {}
 shared.Humanoid = game.Players.LocalPlayer.Character.Humanoid
@@ -272,7 +257,21 @@ Script.Functions.EnforceTypes = function(args, template)
     return args
 end
 
+function ForceCheckboxSwitch(Value)
+    -- its not loaded so refhrn snd
+    if not LHXLoadFinish then 
+        print("ignored:", Value)
+        return 
+    end
 
+    if ChangeForceValue ~= config.ForceCheckbox then
+        config.ForceCheckbox = Value
+		Library.ForceCheckbox = Value
+        writefile(filename, HttpService:JSONEncode(config))
+        print("saved ye " .. Value)
+    end
+end
+	
 local Doors = {}
 local mainUI
 
