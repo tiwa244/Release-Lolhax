@@ -84,7 +84,8 @@ end
 local config = {
     Use2Lib = true,
     CurrentLib = "Obsidian",
-    CurrentNotify = "Obsidian"
+    CurrentNotify = "Obsidian",
+    ForceCheckbox = false
 }
 
 -- ask an ai what ts is
@@ -126,7 +127,21 @@ local function SwitchLib(libName)
     if libName ~= config.CurrentLib then
         config.CurrentLib = libName
         writefile(filename, HttpService:JSONEncode(config))
-        print("saved ye " .. libName)
+        print("saved ye " .. libname)
+    end
+end
+
+function ForceCheckbox(Value)
+    -- its not loaded so refhrn snd
+    if not LHXLoadFinish then 
+        print("ignored:", Value)
+        return 
+    end
+
+    if ChangeForceValue ~= config.ForceCheckbox then
+        config.ForceCheckbox = Value
+        writefile(filename, HttpService:JSONEncode(config))
+        print("saved ye " .. Value)
     end
 end
 
@@ -6471,9 +6486,9 @@ task.spawn(function()
 })
     MenuProperties:AddToggle("ForceCheckbox", {
 	Text = "Force Checkbox",
-	Default = true,
+	Default = config.ForceCheckbox,
 	Callback = function(Value)
-		Library.ForceCheckbox = Value
+		ForceCheckboxSwitch(Value)
 	    if LHXLoadFinish then
 			Library:Notify({
 			  Title = "[LOLHAX]",
