@@ -147,11 +147,6 @@ elseif UIConfig.CurrentLib == "Obsidian" then
     }
 end
 
-if getgenv().UseLib.ForceCheckbox == "true" then
-	Library.ForceCheckbox = true
-else
-	Library.ForceCheckbox = false
-end
 
 Toggles = Library.Toggles
 Options = Library.Options
@@ -185,17 +180,19 @@ shared.Humanoid = game.Players.LocalPlayer.Character.Humanoid
 
 -- checkbox function
 function ForceCheckboxSwitch(Value)
-    -- its not loaded so refhrn snd
-    --if not LHXLoadFinish then 
-        --print("ignored:", Value)
-        --return 
-    --end
+    -- Always update the config table
+    getgenv().UseLib.ForceCheckbox = Value
 
-    if Value ~= config.ForceCheckbox then
-        config.ForceCheckbox = Value
-		--Library.ForceCheckbox = Value
-        writefile(filename, HttpService:JSONEncode(config))
-        print("saved ye " .. tostring(Value))
+    -- Save to file
+    if isfile(filename) then
+        writefile(filename, HttpService:JSONEncode(getgenv().UseLib))
+    end
+
+    -- Only print/save after the UI finishes loading
+    if LHXLoadFinish then
+        print("ForceCheckbox updated to:", Value)
+    else
+        print("ForceCheckbox queued, will apply after load:", Value)
     end
 end
 
