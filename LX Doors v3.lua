@@ -180,10 +180,10 @@ shared.Humanoid = game.Players.LocalPlayer.Character.Humanoid
 -- checkbox function
 function ForceCheckboxSwitch(Value)
     -- its not loaded so refhrn snd
-    if not LHXLoadFinish then 
-        print("ignored:", Value)
-        return 
-    end
+    --if not LHXLoadFinish then 
+        --print("ignored:", Value)
+        --return 
+    --end
 
     if Value ~= config.ForceCheckbox then
         config.ForceCheckbox = Value
