@@ -69,7 +69,6 @@
 local Loadtime = tick()
 local Linoria = loadstring(game:HttpGet('https://raw.githubusercontent.com/mstudio45/LinoriaLib/main/Library.lua'))()
 local Obsidian = loadstring(game:HttpGet('https://raw.githubusercontent.com/deividcomsono/Obsidian/main/Library.lua'))()
-local LHXLoadFinish = false
 if getgenv().UsingLOLHAX then print("[LOLHAX] Already Loaded!!!") return end
 
 -- lmao table here
@@ -145,25 +144,6 @@ end
 Toggles = Library.Toggles
 Options = Library.Options
 Labels = Library.Labels
-
--- checkbox thing needednnsns
-
-function ForceCheckboxSwitch(Value)
-    -- its not loaded so refhrn snd
-    if not LHXLoadFinish then 
-        print("ignored:", Value)
-        return 
-    end
-
-    if ChangeForceValue ~= config.ForceCheckbox then
-        config.ForceCheckbox = Value
-		Library.ForceCheckbox = Value
-        writefile(filename, HttpService:JSONEncode(config))
-        print("saved ye " .. tostring(Value))
-    end
-end
-
---Library.ForceCheckbox = config.ForceCheckbox
 
 -- Variablesssss
 
@@ -256,6 +236,14 @@ local LoremIpsumNonsense = { -- idk copied lmao
     "Ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti."
 }
 
+local LHXLoadFinish = false
+local Doors = {}
+local mainUI
+local HttpService = game:GetService("HttpService")
+local foldername = "lolhax"
+local filename = foldername .. "/LibraryConfig.json"
+local LHXLoadFinish = false
+
 -- custom caption
 
 local lhxnxt_custom_captions = Instance.new("ScreenGui")
@@ -342,13 +330,24 @@ do
     end
 end
 
--- some variables
-local Doors = {}
-local mainUI
-local HttpService = game:GetService("HttpService")
-local foldername = "lolhax"
-local filename = foldername .. "/LibraryConfig.json"
-local LHXLoadFinish = false
+-- funcs
+
+function ForceCheckboxSwitch(Value)
+    -- its not loaded so refhrn snd
+    if not LHXLoadFinish then 
+        print("ignored:", Value)
+        return 
+    end
+
+    if ChangeForceValue ~= config.ForceCheckbox then
+        config.ForceCheckbox = Value
+		--Library.ForceCheckbox = Value
+        writefile(filename, HttpService:JSONEncode(config))
+        print("saved ye " .. tostring(Value))
+    end
+end
+
+Library.ForceCheckbox = config.ForceCheckbox
 
 -- err part
 local ErrorMessageOut
