@@ -268,7 +268,7 @@ function ForceCheckboxSwitch(Value)
         config.ForceCheckbox = Value
 		Library.ForceCheckbox = Value
         writefile(filename, HttpService:JSONEncode(config))
-        print("saved ye " .. Value)
+        --print("saved ye " .. Value)
     end
 end
 	
@@ -6584,6 +6584,7 @@ task.spawn(function()
 
     Options.UILib:SetValue(config.CurrentLib)
     Options.NotifyStyle:SetValue(config.CurrentNotify)
+    Toggles.ForceCheckbox:SetValue(config.ForceCheckbox)						
 
     ErrorMessageOut:Disconnect()
     LHXLoadFinish = true
