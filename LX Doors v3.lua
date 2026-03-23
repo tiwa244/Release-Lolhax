@@ -145,6 +145,25 @@ Toggles = Library.Toggles
 Options = Library.Options
 Labels = Library.Labels
 
+-- checkbox thing needednnsns
+
+function ForceCheckboxSwitch(Value)
+    -- its not loaded so refhrn snd
+    if not LHXLoadFinish then 
+        print("ignored:", Value)
+        return 
+    end
+
+    if ChangeForceValue ~= config.ForceCheckbox then
+        config.ForceCheckbox = Value
+		--Library.ForceCheckbox = Value
+        writefile(filename, HttpService:JSONEncode(config))
+        print("saved ye " .. tostring(Value))
+    end
+end
+
+Library.ForceCheckbox = config.ForceCheckbox
+
 -- Variablesssss
 
 if not shared.Script then
@@ -235,25 +254,6 @@ local LoremIpsumNonsense = { -- idk copied lmao
     "Sapiente delectus, ut aut reiciendis voluptatibus maiores alias.",
     "Ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti."
 }
-
--- funcs and other stuffs
-
-function ForceCheckboxSwitch(Value)
-    -- its not loaded so refhrn snd
-    if not LHXLoadFinish then 
-        print("ignored:", Value)
-        return 
-    end
-
-    if ChangeForceValue ~= config.ForceCheckbox then
-        config.ForceCheckbox = Value
-		--Library.ForceCheckbox = Value
-        writefile(filename, HttpService:JSONEncode(config))
-        print("saved ye " .. tostring(Value))
-    end
-end
-
-Library.ForceCheckbox = config.ForceCheckbox
 
 -- custom caption
 
