@@ -128,7 +128,7 @@ function SwitchLib(libName)
     if libName ~= config.CurrentLib then
         config.CurrentLib = libName
         writefile(filename, HttpService:JSONEncode(config))
-        print("saved ye " .. libname)
+        print("saved ye " .. libName)
     end
 end
 
