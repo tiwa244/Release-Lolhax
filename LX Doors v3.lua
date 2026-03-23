@@ -147,6 +147,12 @@ elseif UIConfig.CurrentLib == "Obsidian" then
     }
 end
 
+if getgenv().UseLib.ForceCheckbox == "true" then
+	Library.ForceCheckbox = true
+else
+	Library.ForceCheckbox = false
+end
+
 Toggles = Library.Toggles
 Options = Library.Options
 Labels = Library.Labels
