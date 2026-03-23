@@ -163,11 +163,11 @@ getgenv().SwitchNotify = SwitchNotify
 local UIConfig = getgenv().UseLib
 local Repository, Library, Window, Tabs, Icons, ThemeManager, SaveManager, LinoriaNotify, Toggles, Options -- Defined at the top so they don't "vanish"
 
+-- Ui setup vvv
+
 if UIConfig.CurrentLib == "Linoria" then 
     Repository = "https://raw.githubusercontent.com/mstudio45/LinoriaLib/main/"
     Library = loadstring(game:HttpGet(Repository .. "Library.lua"))()
-    Toggles = Library.Toggles
-    Options = Library.Options
     
     ThemeManager = loadstring(game:HttpGet(Repository .. "addons/ThemeManager.lua"))()
     SaveManager =  loadstring(game:HttpGet(Repository .. "addons/SaveManager.lua"))()
@@ -197,8 +197,6 @@ elseif UIConfig.CurrentLib == "Obsidian" then
     Library:SetIconModule(Icons)
     ThemeManager = loadstring(game:HttpGet(Repository .. "addons/ThemeManager.lua"))()
     SaveManager =  loadstring(game:HttpGet(Repository .. "addons/SaveManager.lua"))()
-    Toggles = Library.Toggles
-    Options = Library.Options   
     
     Window = Library:CreateWindow({ 
         Title = "lolhax v3", 
@@ -219,6 +217,12 @@ elseif UIConfig.CurrentLib == "Obsidian" then
         Config = Window:AddTab("Config", "settings", "UI Config And Settings.") 
     }
 end
+
+Toggles = Library.Toggles
+Options = Library.Options
+Labels = Library.Labels
+
+-- Variablesssss
 
 if not shared.Script then
     shared.Script = {
