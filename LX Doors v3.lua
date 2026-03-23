@@ -144,7 +144,6 @@ end
 Toggles = Library.Toggles
 Options = Library.Options
 Labels = Library.Labels
-Library.ForceCheckbox = config.ForceCheckbox
 
 -- Variablesssss
 
@@ -384,7 +383,9 @@ local Detection = game:GetService("TextChatService").MessageReceived:Connect(fun
         end
     end
 end)
-	
+
+Library.ForceCheckbox = config.ForceCheckbox
+
 -- UI vvv
 
 local GeneralAutomation = Tabs.General:AddLeftGroupbox("Automation")
