@@ -175,9 +175,6 @@ end
 -- Ui Setup vvv
 
 getgenv().UseLib = config
-getgenv().SwitchLib = SwitchLib
-getgenv().SwitchNotify = SwitchNotify
-
 local UIConfig = getgenv().UseLib
 local Repository, Library, Window, Tabs, Icons, ThemeManager, SaveManager, LinoriaNotify, Toggles, Options -- Defined at the top so they don't "vanish"
 
