@@ -3372,16 +3372,16 @@ local Connections = {
 
 LocalPlayer:GetAttributeChangedSignal("CurrentRoom"):Connect(function()
 
-	if Toggles.DS_Debug.Value then Library:Notify("[LOLHAX]", "Current Room is now: " .. tostring(LocalPlayer:GetAttribute("CurrentRoom")), 4.5)
+	if Toggles.DS_Debug.Value then Library:Notify("[LOLHAX]", "Current Room is now: " .. tostring(LocalPlayer:GetAttribute("CurrentRoom")), 4.5) end
 
-	if Script.IsHotel and  LocalPlayer:GetAttribute("CurrentRoom") == 12 or LocalPlayer:GetAttribute("CurrentRoom") == "12" then
+	if Toggles.DS_Debug.Value and LocalPlayer:GetAttribute("CurrentRoom") == 12 or LocalPlayer:GetAttribute("CurrentRoom") == "12" then
 		local test = Instance.new("Folder", workspace)
 		test.Name = "_testing"
 		testing = test
 
 		Library:Notify("This is a test notification of the currentroom attribute!!: " .. LocalPlayer:GetAttribute("CurrentRoom"), "Hehe", testing)
 
-		task.delay(30, function()
+		task.delay(5, function()
 		  test:Destroy()
 		  testing = nil
 		end)
@@ -3416,9 +3416,8 @@ LocalPlayer:GetAttributeChangedSignal("CurrentRoom"):Connect(function()
 			LinoriaMessage = "Halt has broken anticheat bypass, please go on a ladder again to fix it."
 		})
 		end
-	end
-end),
-	
+	end),
+		
     -- this is fucked.
     LocalPlayer.Character:GetAttributeChangedSignal("CanJump"):Connect(function()
         LocalPlayer.Character:SetAttribute("CanJump", Toggles.ES_AlwaysJump.Value or CanJump)     
