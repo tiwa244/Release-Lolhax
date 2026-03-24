@@ -3374,7 +3374,20 @@ local Connections = {
 
 	if Toggles.DS_Debug.Value then Library:Notify("[LOLHAX]", "Current Room is now: " .. tostring(LocalPlayer:GetAttribute("CurrentRoom")), 4.5)
 
-	if Script.IsMines and Script.Bypassed and LocalPlayer:GetAttribute("CurrentRoom") == "43" then
+	if Script.CurrentRoom == 12 then
+		local test = Instance.new("Folder", workspace)
+		test.Name = "_testing"
+		testing = test
+
+		Library:Notify("This is a test notification of the currentroom attribute!!: " .. Script.CurrentRoom, "Hehe", testing)
+
+		task.delay(30, function()
+		  test:Destroy()
+		  testing = nil
+		end)
+	end
+
+	if Script.IsMines and Script.Bypassed and Script.CurrentRoom == "43" or Script.CurrentRoom == 43 then
 		Script.Bypassed = false
 		local newfr = Instance.new("Folder", game.Workspace)
 		newfr.Name = "_internal_lhx_acbypassprogress"
@@ -3388,11 +3401,8 @@ local Connections = {
 	})
 	end
 
-	repeat task.wait() until Rooms[tostring(Script.CurrentRoom)]
-
-	task.wait(1)
 					
-	if Script.IsMines and Script.Bypassed and Rooms[tostring(LocalPlayer:GetAttribute("CurrentRoom"))] == "Mines_HaltHallway" then
+	if Script.Bypassed and Rooms[tostring(Script.CurrentRoom)]:GetAttribute("RawName") == "Mines_HaltHallway" then
 	    Script.Bypassed = false
 		local new = Instance.new("Folder", game.Workspace)
         new.Name = "_internal_lhx_acbypassprogress"
