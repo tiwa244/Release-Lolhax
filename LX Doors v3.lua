@@ -3373,7 +3373,6 @@ local Connections = {
 	LocalPlayer:GetAttributeChangedSignal("CurrentRoom"):Connect(function()
 
 	if Toggles.DS_Debug.Value then Library:Notify("[LOLHAX]", "Current Room is now: " .. tostring(LocalPlayer:GetAttribute("CurrentRoom")), 4.5)
-	local currentRoomModel = Rooms:FindFirstChild(LocalPlayer:GetAttribute("CurrentRoom"))
 
 	if Script.IsMines and Script.Bypassed and LocalPlayer:GetAttribute("CurrentRoom") == "43" then
 		Script.Bypassed = false
@@ -3388,8 +3387,12 @@ local Connections = {
 			LinoriaMessage = "'Seek Chase 1' has broken anticheat bypass, please go on a ladder again to fix it.",
 	})
 	end
+
+	repeat task.wait() until Rooms[tostring(Script.CurrentRoom)]
+
+	task.wait(1)
 					
-	if Script.IsMines and Script.Bypassed and currentRoomModel:GetAttribute("RawName") == "Mines_HaltHallway" then
+	if Script.IsMines and Script.Bypassed and Rooms[tostring(LocalPlayer:GetAttribute("CurrentRoom"))] == "Mines_HaltHallway" then
 	    Script.Bypassed = false
 		local new = Instance.new("Folder", game.Workspace)
         new.Name = "_internal_lhx_acbypassprogress"
