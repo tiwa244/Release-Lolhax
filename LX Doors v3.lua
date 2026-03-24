@@ -3303,6 +3303,42 @@ local Connections = {
 
         task.wait()
 
+	if Toggles.DS_Debug.Value then Library:Notify("[LOLHAX]", "Current Room is now: " .. tostring(LocalPlayer:GetAttribute("CurrentRoom")), 4.5)
+
+	if Script.IsMines and Script.Bypassed and LocalPlayer:GetAttribute("CurrentRoom") == "43" then
+		Script.Bypassed = false
+		local newfr = Instance.new("Folder", game.Workspace)
+		newfr.Name = "_internal_lhx_acbypassprogress"
+
+		Library:Notify({
+			Title = "Anticheat Bypass",
+			Description = "'Seek Chase 1' has broken anticheat bypass, please go on a ladder again to fix it.",
+			Time = newfr,
+
+			LinoriaMessage = "'Seek Chase 1' has broken anticheat bypass, please go on a ladder again to fix it.",
+	})
+	end
+
+	repeat task.wait() until Rooms[tostring(Script.CurrentRoom)]
+
+	task.wait(1)
+					
+	if Script.IsMines and Script.Bypassed and Rooms[tostring(LocalPlayer:GetAttribute("CurrentRoom"))] == "Mines_HaltHallway" then
+	    Script.Bypassed = false
+		local new = Instance.new("Folder", game.Workspace)
+        new.Name = "_internal_lhx_acbypassprogress"
+
+		-- accrual logic hruhv is it fixed
+		Library:Notify({
+			Title = "Anticheat Bypass",
+			Description = "Halt has broken anticheat bypass, please go on a ladder again to fix it.",
+			Time = new,
+
+			LinoriaMessage = "Halt has broken anticheat bypass, please go on a ladder again to fix it."
+		})
+		end
+	end
+
         for _, v in Rooms[LocalPlayer:GetAttribute("CurrentRoom")].Assets:GetChildren() do
             if v:IsA("Model") then
 
@@ -3370,45 +3406,6 @@ local Connections = {
         end
     end),
 
-	LocalPlayer:GetAttributeChangedSignal("CurrentRoom"):Connect(function()
-
-	if Toggles.DS_Debug.Value then Library:Notify("[LOLHAX]", "Current Room is now: " .. tostring(LocalPlayer:GetAttribute("CurrentRoom")), 4.5)
-
-	if Script.IsMines and Script.Bypassed and LocalPlayer:GetAttribute("CurrentRoom") == "43" then
-		Script.Bypassed = false
-		local newfr = Instance.new("Folder", game.Workspace)
-		newfr.Name = "_internal_lhx_acbypassprogress"
-
-		Library:Notify({
-			Title = "Anticheat Bypass",
-			Description = "'Seek Chase 1' has broken anticheat bypass, please go on a ladder again to fix it.",
-			Time = newfr,
-
-			LinoriaMessage = "'Seek Chase 1' has broken anticheat bypass, please go on a ladder again to fix it.",
-	})
-	end
-
-	repeat task.wait() until Rooms[tostring(Script.CurrentRoom)]
-
-	task.wait(1)
-					
-	if Script.IsMines and Script.Bypassed and Rooms[tostring(LocalPlayer:GetAttribute("CurrentRoom"))] == "Mines_HaltHallway" then
-	    Script.Bypassed = false
-		local new = Instance.new("Folder", game.Workspace)
-        new.Name = "_internal_lhx_acbypassprogress"
-
-		-- accrual logic hruhv is it fixed
-		Library:Notify({
-			Title = "Anticheat Bypass",
-			Description = "Halt has broken anticheat bypass, please go on a ladder again to fix it.",
-			Time = new,
-
-			LinoriaMessage = "Halt has broken anticheat bypass, please go on a ladder again to fix it."
-		})
-		end
-	end
-end),
-	
     -- this is fucked.
     LocalPlayer.Character:GetAttributeChangedSignal("CanJump"):Connect(function()
         LocalPlayer.Character:SetAttribute("CanJump", Toggles.ES_AlwaysJump.Value or CanJump)     
