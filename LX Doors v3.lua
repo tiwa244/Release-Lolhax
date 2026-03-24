@@ -3374,7 +3374,7 @@ local Connections = {
 
 	if Toggles.DS_Debug.Value then Library:Notify("[LOLHAX]", "Current Room is now: " .. tostring(LocalPlayer:GetAttribute("CurrentRoom")), 4.5)
 
-	if Script.CurrentRoom == 12 then
+	if Script.CurrentRoom == "12" then
 		local test = Instance.new("Folder", workspace)
 		test.Name = "_testing"
 		testing = test
