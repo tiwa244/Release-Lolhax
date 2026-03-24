@@ -6479,7 +6479,7 @@ task.spawn(function()
         Linoria:Unload()
         Obsidian:Unload()
         game.ReplicatedStorage.RemotesFolder.ClimbLadder:FireServer()
-        Script.IsBypassed = false
+        Script.Bypassed = false
         LocalPlayer.Character:SetAttribute("CanJump", false)
 	if not Script.IsBattle then
         LocalPlayer.Character:SetAttribute("CanSlide", false)
