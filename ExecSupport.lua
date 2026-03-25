@@ -6,6 +6,8 @@ end
 if not shared.Workspace then
   shared.Workspace = workspace
 end
+local totalTests = 0
+local passedTests = 0
 
 local executorName = string.split(identifyexecutor() or "None", " ")[1]
 local brokenFeatures = {
@@ -16,6 +18,8 @@ local brokenFeatures = {
 
 function test(name: string, func: () -> (), shouldCallback: boolean)
     if typeof(brokenFeatures[executorName]) == "table" and table.find(brokenFeatures[executorName], name) then return false end -- garbage executor 🤯
+
+	totalTests =+ 1 -- holy shit
     
     local success, errorMessage = false, nil
     if shouldCallback ~= false then
@@ -23,6 +27,10 @@ function test(name: string, func: () -> (), shouldCallback: boolean)
     else
         success = typeof(func) == "function"
     end
+
+	if success then
+		passedTests =+ 1
+	end
     
     ExecutorSupportInfo[name] = string.format("%s [%s]%s", (if success then "✅" else "❌"), name, (if errorMessage then (": " .. tostring(errorMessage)) else ""))
     ExecutorSupport[name] = success
@@ -194,4 +202,7 @@ for name, result in pairs(ExecutorSupport) do
     end
 end
 
+local percent = math.floor((passedTests / math.max(totalTests, 1)) * 100)
+print(string.format("⚒️ Total Working: %d/%d", passedTests, totalTests, percent))
+		
 return ExecutorSupport
