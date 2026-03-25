@@ -6378,7 +6378,7 @@ task.spawn(function()
 		Title = "Load successful.",
 		Description = "Loading finished in ".. string.format("%.2f", tick() - Loadtime) .." seconds.", 
 		Duration = 10 / 3,
-		Force = true
+		Force = false
 	  })
 	end
 			
