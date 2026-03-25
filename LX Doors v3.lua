@@ -2493,6 +2493,8 @@ TracerConnection = RunService.RenderStepped:Connect(function()
     end
 end)
 
+table.insert(Connections, TracerConnection)
+	
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 
@@ -3432,22 +3434,7 @@ local Connections = {
 
 			LinoriaMessage = "'Seek Chase 2' has broken anticheat bypass, please go on a ladder again to fix it."
 		})
-    end
-
-	if Script.IsMines and Script.Bypassed and LocalPlayer:GetAttribute("CurrentRoom") == 51 then
-		Script.Bypassed = false
-		local idk2 = Instance.new("Folder", shared.Script.Workspace or Workspace)
-		idk2.Name = "_internal_lhx_acbypassprogress"
-
-		Library:Notify({
-			Title = "Anticheat Bypass",
-			Description = "'Grumble Cutscene 2' has broken anticheat bypass, please go on a ladder again to fix it.",
-			Time = idk2,
-
-		    LinoriaMessage = "'Grumble Cutscene 2' has broken anticheat bypass, please go on a ladder again to fix it."
-		})
-    end
-					
+    end	
 					
 	if Script.Bypassed and Rooms[LocalPlayer:GetAttribute("CurrentRoom")]:GetAttribute("RawName") == "Mines_HaltHallway" then
 	    Script.Bypassed = false
@@ -3965,6 +3952,20 @@ end),
 
                     RemoveEspSmooth(NextAnchor)
                     v.Console.Button.ActivateEventPrompt:GetAttributeChangedSignal("Interactions"):Wait()
+
+					if v.Console.Button.ActivateEventPrompt:GetAttribute("Interactions") == 5 and Script.Bypassed then
+						Script.Bypassed = false
+		                local idk2 = Instance.new("Folder", shared.Script.Workspace or Workspace)
+		                idk2.Name = "_internal_lhx_acbypassprogress"
+
+		                Library:Notify({
+			               Title = "Anticheat Bypass",
+			               Description = "'Grumble Cutscene 2' has broken anticheat bypass, please go on a ladder again to fix it.",
+			               Time = idk2,
+
+		                   LinoriaMessage = "'Grumble Cutscene 2' has broken anticheat bypass, please go on a ladder again to fix it."
+						})
+					end
 
                     table.clear(Anchors)
                 end
@@ -5920,6 +5921,20 @@ for _, v in Rooms:GetDescendants() do
                     NextAnchor.AttributeChanged:Wait()
                     RemoveEspSmooth(NextAnchor)
                     v.Console.Button.ActivateEventPrompt.AttributeChanged:Wait()
+
+					if v.Console.Button.ActivateEventPrompt:GetAttribute("Interactions") == 5 and Script.Bypassed then
+						Script.Bypassed = false
+		                local idk2 = Instance.new("Folder", shared.Script.Workspace or Workspace)
+		                idk2.Name = "_internal_lhx_acbypassprogress"
+
+		                Library:Notify({
+			               Title = "Anticheat Bypass",
+			               Description = "'Grumble Cutscene 2' has broken anticheat bypass, please go on a ladder again to fix it.",
+			               Time = idk2,
+
+		                   LinoriaMessage = "'Grumble Cutscene 2' has broken anticheat bypass, please go on a ladder again to fix it."
+						})
+				    end
 
                     table.clear(Anchors)
                 end
