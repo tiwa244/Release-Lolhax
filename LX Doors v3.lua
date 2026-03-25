@@ -1991,7 +1991,7 @@ function Library:Notify(options)
     local function PlaySound(id)
         local sound = Instance.new("Sound")
         sound.SoundId = id or "rbxassetid://4590662766"
-        sound.Volume = (Options and Options.GN_NotificationSound_Volume and Options.GN_NotificationSound_Volume.Value) or 1
+        sound.Volume = (Options.GN_NotificationSound_Volume and Options.GN_NotificationSound_Volume.Value) or 1
         sound.Parent = SoundService
         sound:Play()
         Debris:AddItem(sound, 2)
@@ -2004,39 +2004,17 @@ function Library:Notify(options)
         end
     end
 
-    -- routing
     if style == "Linoria" then
-        PlaySound()
-
-        local msg = options.LinoriaMessage or (options.Title .. " " .. options.Description)
-
-        if Linoria and Linoria.Notify then
-            return SafeCall(function()
-                return Linoria:Notify(msg, options.Time)
-            end)
-        end
-
-    elseif style == "Doors" then
-        if Doors and Doors.Notify then
-            return SafeCall(function()
-                return Doors:Notify(options)
-            end)
-        end
-
-    elseif style == "Obsidian" then
-        if Obsidian and Obsidian.Notify then
-            PlaySound()
-
-            return SafeCall(function()
-                return Obsidian:Notify(options, options.Force)
-            end)
-        end
-    end
-
-    -- fallback
-    return SafeCall(function()
-        return Notify(options, options.Time or 5)
-    end)
+		PlaySound()
+		Linoria:Notify(options)
+	elseif style == "Obsidian" then
+		PlaySound()
+		Obsidian:Notify(options)
+	elseif style == "Doors" then
+		Doors:Notify(options)
+	elseif style == "Default" then
+		Notify(options)
+	end
 end
 
 local FRAME_NAME = "lhx_doorframe"
