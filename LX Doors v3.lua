@@ -4688,7 +4688,7 @@ local AirConditionerManager = LocalPlayer:GetAttributeChangedSignal("CurrentRoom
 
 	if Toggles.DS_Debug.Value then Library:Notify("[LOLHAX]", "Current Room is now: " .. tostring(LocalPlayer:GetAttribute("CurrentRoom")), 4.5) end
 
-	if Script.IsMines and Script.Bypassed and LocalPlayer:GetAttribute("CurrentRoom") == "43" then
+	if Script.IsMines and Script.Bypassed and LocalPlayer:GetAttribute("CurrentRoom") == 43 then
 		Script.Bypassed = false
 		local newfr = Instance.new("Folder", game.Workspace)
 		newfr.Name = "_internal_lhx_acbypassprogress"
@@ -4708,7 +4708,7 @@ local AirConditionerManager = LocalPlayer:GetAttributeChangedSignal("CurrentRoom
 		local new = Instance.new("Folder", game.Workspace)
         new.Name = "_internal_lhx_acbypassprogress"
 
-		-- accrual logic hruhv is it fixed
+		-- it works yay
 		Library:Notify({
 			Title = "Anticheat Bypass",
 			Description = "Halt has broken anticheat bypass, please go on a ladder again to fix it.",
