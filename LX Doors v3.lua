@@ -1981,18 +1981,12 @@ function BreakerThing(Breaker, Bool)
     Breaker.Sound:Play()
 end
 	
-function Library:Notify(options, description, duration, force)
-    -- normalize
-    local data = type(options) == "table" and options or {
-        Title = options,
-        Description = description,
-        Time = duration,
-        Force = force
-    }
-
+function Library:Notify(options)
+	data = options
     data.Title = tostring(data.Title or "Notification")
     data.Description = tostring(data.Description or "")
     data.Time = data.Time or 5
+	data.Force = data.Force or true
 
     -- style
     local style = (getgenv().UseLib and getgenv().UseLib.CurrentNotify) or "Default"
@@ -2017,13 +2011,7 @@ function Library:Notify(options, description, duration, force)
     end
 
     -- unified payload
-    local payload = {
-        Title = data.Title,
-        Description = data.Description,
-        Time = data.Time,
-        Reason = data.Reason,
-        Force = data.Force
-    }
+    
 
     -- routing
     if style == "Linoria" or data.ForceLinoria then
@@ -2033,14 +2021,14 @@ function Library:Notify(options, description, duration, force)
 
         if Linoria and Linoria.Notify then
             return SafeCall(function()
-                return Linoria:Notify(msg, data.Time)
+                return Linoria:Notify(options)
             end)
         end
 
     elseif style == "Doors" then
         if Doors and Doors.Notify then
             return SafeCall(function()
-                return Doors:Notify(payload)
+                return Doors:Notify(options)
             end)
         end
 
@@ -2049,14 +2037,14 @@ function Library:Notify(options, description, duration, force)
             PlaySound()
 
             return SafeCall(function()
-                return Obsidian:Notify(payload)
-            end)
+                return Obsidian:Notify(options)
+		     end)
         end
     end
 
     -- fallback
     return SafeCall(function()
-        return Notify(data.Title, data.Description, data.Time, data.Force)
+        return Notify(options)
     end)
 end
 
