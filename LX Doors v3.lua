@@ -2005,10 +2005,10 @@ function Library:Notify(options)
     end
 
     -- routing
-    if style == "Linoria" or data.ForceLinoria then
+    if style == "Linoria" or options.ForceLinoria then
         PlaySound()
 
-        local msg = data.LinoriaMessage or (data.Title .. " " .. data.Description)
+        local msg = options.LinoriaMessage or (options.Title .. " " .. options.Description)
 
         if Linoria and Linoria.Notify then
             return SafeCall(function()
