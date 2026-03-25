@@ -2765,7 +2765,7 @@ local Connections = {
             LocalPlayer.Character:PivotTo(LocalPlayer.Character:GetPivot() + workspace.CurrentCamera.CFrame.LookVector * Vector3.new(1, 0, 1) * -100)
         end
 		if Toggles.GA_DoorReach.Value and Rooms[LocalPlayer:GetAttribute("CurrentRoom")] then
-            local door = Rooms[Script.CurrentRoom and Script.LatestRoom.Value]:FindFirstChild("Door")
+            local door = Rooms[Script.LatestRoom.Value]:FindFirstChild("Door")
 
             if door and door:FindFirstChild("ClientOpen") then
                 door.ClientOpen:FireServer()
@@ -6641,7 +6641,7 @@ task.spawn(function()
     DebugStuff:AddToggle("DS_BSRPC", { Text = "Bloxstrap RPC", Default = true })
     DebugStuff:AddLabel("Floor: " .. game.ReplicatedStorage.GameData.Floor.Value)
     DebugStuff:AddLabel("lolhax version: 3.0.2.8b")
-	DebugStuff:AddLabel("lolhax commit message: fixed door reach holy jolyjjoly")
+	DebugStuff:AddLabel("lolhax commit message: test jew door Reach holy holy")
 
     local RPCRoomChange = game.ReplicatedStorage.GameData.LatestRoom:GetPropertyChangedSignal("Value"):Connect(function() updateRPC(Toggles.DS_BSRPC.Value) end)
     table.insert(Connections, RPCRoomChange)
