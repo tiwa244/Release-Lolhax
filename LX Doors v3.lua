@@ -2765,7 +2765,7 @@ local Connections = {
             LocalPlayer.Character:PivotTo(LocalPlayer.Character:GetPivot() + workspace.CurrentCamera.CFrame.LookVector * Vector3.new(1, 0, 1) * -100)
         end
 		if Toggles.GA_DoorReach.Value and Rooms[LocalPlayer:GetAttribute("CurrentRoom")] then
-            local door = Rooms[Script.LatestRoom.Value]:FindFirstChild("Door")
+            local door = Rooms[Script.CurrentRoom]:FindFirstChild("Door")
 
             if door and door:FindFirstChild("ClientOpen") then
                 door.ClientOpen:FireServer()
