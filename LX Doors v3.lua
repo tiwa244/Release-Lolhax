@@ -3419,8 +3419,36 @@ local Connections = {
 	})
 	end
 
+	if Script.Bypassed and Rooms[LocalPlayer:GetAttribute("CurrentRoom")]:GetAttribute("RawName") == "Sewer_SeekChaseX" then
+		Script.Bypassed = false
+		local idk = Instance.new("Folder", shared.Script.Workspace or Workspace)
+		idk.Name = "_internal_lhx_acbypassprogress"
+
+		Library:Notify({
+			Title = "Anticheat Bypass",
+			Description = "'Seek Chase 2' has broken anticheat bypass, please go on a ladder again to fix it.",
+			Time = idk,
+
+			LinoriaMessage = "'Seek Chase 2' has broken anticheat bypass, please go on a ladder again to fix it."
+		})
+    end
+
+	if Script.IsMines and Script.Bypassed and LocalPlayer:GetAttribute("CurrentRoom") == 51 then
+		Script.Bypassed = false
+		local idk2 = Instance.new("Folder", shared.Script.Workspace or Workspace)
+		idk2.Name = "_internal_lhx_acbypassprogress"
+
+		Library:Notify({
+			Title = "Anticheat Bypass",
+			Description = "'Grumble Cutscene 2' has broken anticheat bypass, please go on a ladder again to fix it.",
+			Time = idk2,
+
+		    LinoriaMessage = "'Grumble Cutscene 2' has broken anticheat bypass, please go on a ladder again to fix it."
+		})
+    end
 					
-	if Script.IsMines and Script.Bypassed and Rooms[LocalPlayer:GetAttribute("CurrentRoom")]:GetAttribute("RawName") == "Mines_HaltHallway" then
+					
+	if Script.Bypassed and Rooms[LocalPlayer:GetAttribute("CurrentRoom")]:GetAttribute("RawName") == "Mines_HaltHallway" then
 	    Script.Bypassed = false
 		local new = Instance.new("Folder", game.Workspace)
         new.Name = "_internal_lhx_acbypassprogress"
@@ -3433,8 +3461,8 @@ local Connections = {
 
 			LinoriaMessage = "Halt has broken anticheat bypass, please go on a ladder again to fix it."
 		})
-	   end
-   end),
+	end
+end),
 
     LocalPlayer.PlayerGui.ChildAdded:Connect(function(v)
         if v.Name == "MainUI" then
