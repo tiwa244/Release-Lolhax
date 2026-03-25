@@ -1003,7 +1003,7 @@ local Items = {
     {Tag="LibraryBooks", Text="Library Book", Color=Color3.fromRGB(0,255,127), Color2=Color3.new(1,1,1), Color4=Color3.fromRGB(0,255,127)},
     {Tag="GateButtons", Text="Gate Buttons", Color=Color3.new(1,1,1), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
     {Tag="BreakerPoles", Text="Breaker Pole", Color=Color3.fromRGB(81,81,81), NoText=false, Color2=Color3.fromRGB(255,255,255), Color4=Color3.fromRGB(81,81,81)},
-    {Tag="Anchors", Text="Anchor", Color=Color3.new(0.5,0.25,1), NoText=false, Color2=Color3.new(0.5,0.25,1), Color4=Color3.new(0.5,0.25,1)},
+    {Tag="Anchors", Text="Anchor", Color=Color3.new(0.5,0.25,1), NoText=false, Color2=Color3.new(0.5,0.25,1), Color4=Color3.new(0.5,0.25,1), NewColor=Color3.new(0.5, 0.25, 1), NewColor2=Color3.new(0.5, 0.25, 1, NewColor3=Color3.new(0.5, 0.25, 1)},
     {Tag="BackroomsLevers", Text="Timer Lever", Color=Color3.fromRGB(82,82,82), Color2=Color3.fromRGB(255,255,255), Color4=Color3.fromRGB(82,82,82)},
     {Tag="MiscPickups", Text="Misc Items", Color=Color3.new(1,1,1), NoText=false, Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
     {Tag="Closet", Text="Closet", Color=Color3.fromRGB(0,255,127), Color2=Color3.new(1,1,1), Color4=Color3.fromRGB(0,255,127)},
@@ -1162,7 +1162,7 @@ VisualsWorld:AddToggle("VW_Ambience", { Text = "Ambience", Default = false, Tool
 VisualsWorld:AddToggle("VW_NoFog", { Text = "Remove Fog", Default = false, Tooltip = "Removes map fog if available." })
 VisualsWorld:AddDivider("Visuals")
 VisualsWorld:AddToggle("VW_SeekPath", { Text = "Visualise Seek Path", Tooltip = "Show Correct Seek path as nodes", Disabled =not Script.IsMines, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore."})
-VisualsWorld:AddToggle("VW_SeekPathFake", { Text = "Visualise Fake Seek Path", Default = false, Tooltip = "Shows Fake Seek Path.", Disabled =not Script.IsMines, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
+--:AddToggle("VW_SeekPathFake", { Text = "Visualise Fake Seek Path", Default = false, Tooltip = "Shows Fake Seek Path.", Disabled =not Script.IsMines, DisabledTooltip = "This feature is not for this floor, or doesn't work anymore." })
 VisualsWorld:AddToggle("VW_RushNodes", {Text = "Show Rush Nodes", Tooltip = "Shows the path Rush and Ambush will take when moving."})
 
 local VisualsRemovals = Tabs.Visuals:AddRightGroupbox("Removals")
@@ -2765,7 +2765,7 @@ local Connections = {
             LocalPlayer.Character:PivotTo(LocalPlayer.Character:GetPivot() + workspace.CurrentCamera.CFrame.LookVector * Vector3.new(1, 0, 1) * -100)
         end
 		if Toggles.GA_DoorReach.Value and Rooms[LocalPlayer:GetAttribute("CurrentRoom")] then
-            local door = Rooms[Script.CurrentRoom]:FindFirstChild("Door")
+            local door = Rooms[Script.LatestRoom.Value]:FindFirstChild("Door")
 
             if door and door:FindFirstChild("ClientOpen") then
                 door.ClientOpen:FireServer()
@@ -6641,7 +6641,7 @@ task.spawn(function()
     DebugStuff:AddToggle("DS_BSRPC", { Text = "Bloxstrap RPC", Default = true })
     DebugStuff:AddLabel("Floor: " .. game.ReplicatedStorage.GameData.Floor.Value)
     DebugStuff:AddLabel("lolhax version: 3.0.2.8b")
-	DebugStuff:AddLabel("lolhax commit message: test jew door Reach holy holy")
+	DebugStuff:AddLabel("lolhax commit message: better door reach idk")
 
     local RPCRoomChange = game.ReplicatedStorage.GameData.LatestRoom:GetPropertyChangedSignal("Value"):Connect(function() updateRPC(Toggles.DS_BSRPC.Value) end)
     table.insert(Connections, RPCRoomChange)
