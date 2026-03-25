@@ -543,7 +543,7 @@ if game.ReplicatedStorage.GameData.Floor.Value == "Mines" then
                 for i = 1, 11 do
                     task.spawn(function()
                         game.ReplicatedStorage.RemotesFolder.RequestAsset:InvokeServer("Remote")
-                        print("Disabled Rush and ambush on mines mf")
+                        print("Disabled Rush and ambush on mines mf btw u should know that it will break seek minecart and grumble so Iajaj")
                     end)
                 end
             end)
@@ -2709,7 +2709,7 @@ local Connections = {
             LocalPlayer.Character:PivotTo(LocalPlayer.Character:GetPivot() + workspace.CurrentCamera.CFrame.LookVector * Vector3.new(1, 0, 1) * -100)
         end
 		if Toggles.GA_DoorReach.Value and Rooms[LocalPlayer:GetAttribute("CurrentRoom")] then
-            local door = Rooms[Script.CurrentRoom and Script.LatestRoom.Value]:FindFirstChild("Door")
+            local door = Rooms[Script.CurrentRoom]:FindFirstChild("Door")
 
             if door and door:FindFirstChild("ClientOpen") then
                 door.ClientOpen:FireServer()
