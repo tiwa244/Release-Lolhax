@@ -1002,7 +1002,7 @@ local Items = {
     {Tag="GateLevers", Text="Gate Lever", Color=Color3.new(1,1,1), NoText=false, Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
     {Tag="LibraryBooks", Text="Library Book", Color=Color3.fromRGB(0,255,127), Color2=Color3.new(1,1,1), Color4=Color3.fromRGB(0,255,127)},
     {Tag="GateButtons", Text="Gate Buttons", Color=Color3.new(1,1,1), Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
-    {Tag="BreakerPoles", Text="Breaker Pole", Color=Color3.fromRGB(81,81,81), NoText=false, Color2=Color3.fromRGB(255,255,255), Color4=Color3.fromRGB(81,81,81), NewColor3 = Color3.fromRGB(81,81,81)},
+    {Tag="BreakerPoles", Text="Breaker Pole", Color=Color3.fromRGB(81,81,81), NoText=false, Color2=Color3.fromRGB(255,255,255), Color4=Color3.fromRGB(81,81,81), NewColor=Color3.fromRGB(81,81,81), NewColor3 = Color3.fromRGB(81,81,81)},
     {Tag="Anchors", Text="Anchor", Color=Color3.new(0.5,0.25,1), NoText=false, Color2=Color3.new(0.5,0.25,1), Color4=Color3.new(0.5,0.25,1), NewColor=Color3.new(0.5, 0.25, 1), NewColor2=Color3.new(0.5, 0.25, 1), NewColor3=Color3.new(0.5, 0.25, 1)},
     {Tag="BackroomsLevers", Text="Timer Lever", Color=Color3.fromRGB(82,82,82), Color2=Color3.fromRGB(255,255,255), Color4=Color3.fromRGB(82,82,82)},
     {Tag="MiscPickups", Text="Misc Items", Color=Color3.new(1,1,1), NoText=false, Color2=Color3.new(1,1,1), Color4=Color3.new(1,1,1)},
@@ -2709,7 +2709,7 @@ local Connections = {
             LocalPlayer.Character:PivotTo(LocalPlayer.Character:GetPivot() + workspace.CurrentCamera.CFrame.LookVector * Vector3.new(1, 0, 1) * -100)
         end
 		if Toggles.GA_DoorReach.Value and Rooms[LocalPlayer:GetAttribute("CurrentRoom")] then
-            local door = Rooms[Script.CurrentRoom]:FindFirstChild("Door")
+            local door = Rooms[Script.LatestRoom.Value]:FindFirstChild("Door")
 
             if door and door:FindFirstChild("ClientOpen") then
                 door.ClientOpen:FireServer()
