@@ -150,7 +150,6 @@ if not canFirePrompt then
     end
 else
     fireproximityprompt = fireproximityprompt
-    forcefireproximityprompt = fireproximityprompt
 end
 
 if not isnetworkowner then
