@@ -6570,7 +6570,7 @@ task.spawn(function()
     DebugStuff:AddToggle("DS_BSRPC", { Text = "Bloxstrap RPC", Default = true })
     DebugStuff:AddLabel("Floor: " .. game.ReplicatedStorage.GameData.Floor.Value)
     DebugStuff:AddLabel("lolhax version: 3.0.2.8b")
-	DebugStuff:AddLabel("lolhax commit message: dai dai dai")
+	DebugStuff:AddLabel("lolhax commit message: m")
 
     local RPCRoomChange = game.ReplicatedStorage.GameData.LatestRoom:GetPropertyChangedSignal("Value"):Connect(function() updateRPC(Toggles.DS_BSRPC.Value) end)
     table.insert(Connections, RPCRoomChange)
@@ -6585,6 +6585,6 @@ task.spawn(function()
 
     ErrorMessageOut:Disconnect()
     LHXLoadFinish = true
-    Library:Notify("Load successful.", "Loading finished in ".. string.format("%.2f", tick() - Loadtime) .." seconds.", 10 / 3)
+    Library:Notify("Load successful.", "Loading finished in ".. string.format("%.2f", tick() - Loadtime) .." seconds.", 10 / 3, false)
     print("[LOLHAX] Load successful.", "Loading finished in ".. string.format("%.2f", tick() - Loadtime) .." seconds.")
 end)
