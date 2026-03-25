@@ -1982,6 +1982,7 @@ function BreakerThing(Breaker, Bool)
 end
 	
 function Library:Notify(options)
+	options = options
     -- style
     local style = (getgenv().UseLib and getgenv().UseLib.CurrentNotify) or "Default"
 
