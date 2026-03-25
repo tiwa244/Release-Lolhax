@@ -1852,7 +1852,7 @@ function Notify(TitleText, SubText, Duration, Force)
     Title.Position = UDim2.fromScale(0.135, 0.35)
     Title.Size = UDim2.fromScale(100, 0.35)
     Title.Font = Enum.Font.SourceSans
-    Title.Text = "[LOLHAX] " .. TitleText
+    Title.Text = "[LOLHAX] " .. tostring(TitleText)
     Title.TextScaled = true
     Title.TextSize = 1
     Title.TextStrokeTransparency = 0.5
