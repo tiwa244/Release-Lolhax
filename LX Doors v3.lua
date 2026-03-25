@@ -2004,11 +2004,7 @@ function Library:Notify(options)
     -- routing
     if style == "Linoria" then
         PlaySound()
-
-        if Linoria and Linoria.Notify then
-            return SafeCall(function()
-                return Linoria:Notify(options)
-            end)
+            Linoria:Notify(options)
         end
 
     elseif style == "Doors" then
