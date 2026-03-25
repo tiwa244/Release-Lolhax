@@ -6377,7 +6377,7 @@ task.spawn(function()
 	  Library:Notify({
 		Title = "Load successful.",
 		Description = "Loading finished in ".. string.format("%.2f", tick() - Loadtime) .." seconds.", 
-		Duration = 10 / 3
+		Duration = 10 / 3,
 		Force = true
 	  })
 	end
