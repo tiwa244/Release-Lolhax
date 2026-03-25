@@ -19,7 +19,7 @@ local brokenFeatures = {
 function test(name: string, func: () -> (), shouldCallback: boolean)
     if typeof(brokenFeatures[executorName]) == "table" and table.find(brokenFeatures[executorName], name) then return false end -- garbage executor 🤯
 
-	totalTests =+ 1 -- holy shit
+	totalTests += 1 -- holy shit
     
     local success, errorMessage = false, nil
     if shouldCallback ~= false then
@@ -29,7 +29,7 @@ function test(name: string, func: () -> (), shouldCallback: boolean)
     end
 
 	if success then
-		passedTests =+ 1
+		passedTests += 1
 	end
     
     ExecutorSupportInfo[name] = string.format("%s [%s]%s", (if success then "✅" else "❌"), name, (if errorMessage then (": " .. tostring(errorMessage)) else ""))
