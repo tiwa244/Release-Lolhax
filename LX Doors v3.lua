@@ -2764,8 +2764,8 @@ local Connections = {
         if Toggles.EB_ACManipulate.Value and Options.EB_ACManipulate_K:GetState() then
             LocalPlayer.Character:PivotTo(LocalPlayer.Character:GetPivot() + workspace.CurrentCamera.CFrame.LookVector * Vector3.new(1, 0, 1) * -100)
         end
-		if Toggles.GA_DoorReach.Value and workspace.CurrentRooms:FindFirstChild(Script.CurrentRoom) then
-            local door = workspace.CurrentRooms[Script.CurrentRoom + 1]:FindFirstChild("Door")
+		if Toggles.GA_DoorReach.Value and Rooms[LocalPlayer:GetAttribute("CurrentRoom")] then
+            local door = Rooms[LocalPlayer:GetAttribute("CurrentRoom") or game.ReplicatedStorage.GameData.LatestRoom.Value]:FindFirstChild("Door")
 
             if door and door:FindFirstChild("ClientOpen") then
                 door.ClientOpen:FireServer()
@@ -6501,7 +6501,7 @@ task.spawn(function()
         FlyConnection = nil
     end
         Fly:Disable()
-		toggleNoclip(false)
+		disableNoclip()
         RemoveAllTracers()
         RemoveAllArrows()
         getgenv().UsingLOLHAX = false
