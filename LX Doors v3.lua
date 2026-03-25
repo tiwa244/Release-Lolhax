@@ -1822,6 +1822,10 @@ function Notify(TitleText, SubText, Duration, Force)
         Alignment = 0
     end
 
+	if TitleText == "[LOLHAX]" then
+		TitleText = ""
+     end
+
     local Main = Instance.new("Frame", NotificationHolder)
     Main.AnchorPoint = Vector2.new(Alignment, 0.5)
     Main.Size = UDim2.fromScale(0.19 * DPISize, 0.045 * DPISize)
@@ -1848,7 +1852,7 @@ function Notify(TitleText, SubText, Duration, Force)
     Title.Position = UDim2.fromScale(0.135, 0.35)
     Title.Size = UDim2.fromScale(100, 0.35)
     Title.Font = Enum.Font.SourceSans
-    Title.Text = "[LOLHAX] " .. tostring(TitleText)
+    Title.Text = "[LOLHAX] " .. TitleText
     Title.TextScaled = true
     Title.TextSize = 1
     Title.TextStrokeTransparency = 0.5
@@ -2004,8 +2008,12 @@ function Library:Notify(options)
     -- routing
     if style == "Linoria" then
         PlaySound()
-            Linoria:Notify(options)
-        end
+
+        if Linoria and Linoria.Notify then
+            return SafeCall(function()
+                return Linoria:Notify(options)
+            end)
+	    end
 
     elseif style == "Doors" then
         if Doors and Doors.Notify then
