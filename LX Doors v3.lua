@@ -554,6 +554,7 @@ if game.ReplicatedStorage.GameData.Floor.Value == "Mines" then
 end
 ExploitTroll:AddToggle("Spamtoolz", { Text = "Spam others Tools", Default = false, Tooltip = "Will basically use up the other person tools by spamming!" }):AddKeyPicker("Spamtoolz_X", { Default = "G", SyncToggleState = false, Mode = "Hold", Text = "Spam others Tools", NoUI = false, })
 ExploitTroll:AddInput("WhitelistKoolpeople",{Default = "", Numeric = false, Finished = true, ClearTextOnFocus = true, Text = "Whitelist for spamtools", Callback = function() 
+if not Toggles.Spamtoolz.Value then return end
 task.spawn(function()   
     for _,Player in pairs(game.Players:GetPlayers()) do
         if Value == Player.Name and not plr == LocalPlayer.Name then
