@@ -144,10 +144,6 @@ if not canFirePrompt then
     fireproximityprompt = function(...)
         return fireProximityPrompt(...)
     end
-
-    forcefireproximityprompt = function(prompt)
-        return fireProximityPrompt(prompt, true)
-    end
 else
     fireproximityprompt = fireproximityprompt
 end
@@ -175,6 +171,13 @@ firetouchinterest = firetouchinterest or firetouchtransmitter
     edited by tiwa244 idkdkd
     yogurt
     gurtyo
+  info::
+	this was stripped to work with basic scripts
+	including jigglehax (lolhax)
+	stuff idk
+	some functions are deleted
+	this is just basic btw
+	return
 ]]--
     
 --// Load \\--
