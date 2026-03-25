@@ -3953,7 +3953,7 @@ end),
                     RemoveEspSmooth(NextAnchor)
                     v.Console.Button.ActivateEventPrompt:GetAttributeChangedSignal("Interactions"):Wait()
 
-					if v.Console.Button.ActivateEventPrompt:GetAttribute("Interactions") == 5 and Script.Bypassed then
+					if v.Console.Button.ActivateEventPrompt:GetAttribute("Interactions") == 5 and Script.Bypassed and next(Anchors) == nil then
 						Script.Bypassed = false
 		                local idk2 = Instance.new("Folder", shared.Script.Workspace or Workspace)
 		                idk2.Name = "_internal_lhx_acbypassprogress"
@@ -5922,7 +5922,7 @@ for _, v in Rooms:GetDescendants() do
                     RemoveEspSmooth(NextAnchor)
                     v.Console.Button.ActivateEventPrompt.AttributeChanged:Wait()
 
-					if v.Console.Button.ActivateEventPrompt:GetAttribute("Interactions") == 5 and Script.Bypassed then
+					if v.Console.Button.ActivateEventPrompt:GetAttribute("Interactions") == 5 and Script.Bypassed and next(Anchors) == nil then
 						Script.Bypassed = false
 		                local idk2 = Instance.new("Folder", shared.Script.Workspace or Workspace)
 		                idk2.Name = "_internal_lhx_acbypassprogress"
