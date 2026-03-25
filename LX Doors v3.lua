@@ -6511,6 +6511,7 @@ task.spawn(function()
         Script.Bypassed = false
 	if not Script.IsBattle then
         LocalPlayer.Character:SetAttribute("CanJump", false)
+    end
 	if not Script.IsBattle then
         LocalPlayer.Character:SetAttribute("CanSlide", false)
 	end
@@ -6639,7 +6640,8 @@ task.spawn(function()
     DebugStuff:AddToggle("DS_Debug", { Text = "Enable Debug Mode", Default = false, })
     DebugStuff:AddToggle("DS_BSRPC", { Text = "Bloxstrap RPC", Default = true })
     DebugStuff:AddLabel("Floor: " .. game.ReplicatedStorage.GameData.Floor.Value)
-    DebugStuff:AddLabel("lolhax version: 3.0.2.5b")
+    DebugStuff:AddLabel("lolhax version: 3.0.2.7b")
+	DebugStuff:AddLabel("lolhax commit message: most things are fixed (yay), but its still in beta so")
 
     local RPCRoomChange = game.ReplicatedStorage.GameData.LatestRoom:GetPropertyChangedSignal("Value"):Connect(function() updateRPC(Toggles.DS_BSRPC.Value) end)
     table.insert(Connections, RPCRoomChange)
