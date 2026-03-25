@@ -1982,10 +1982,6 @@ function BreakerThing(Breaker, Bool)
 end
 	
 function Library:Notify(options)
-	-- somethings??
-	options = options
-	options.Time = options.Time or 5
-	options.Force = options.Force
     -- style
     local style = (getgenv().UseLib and getgenv().UseLib.CurrentNotify) or "Default"
 
@@ -2032,14 +2028,14 @@ function Library:Notify(options)
             PlaySound()
 
             return SafeCall(function()
-                return Obsidian:Notify(options)
+                return Obsidian:Notify(options, options.Force)
             end)
         end
     end
 
     -- fallback
     return SafeCall(function()
-        return Notify(options)
+        return Notify(options, options.Time or 5)
     end)
 end
 
