@@ -2492,8 +2492,6 @@ TracerConnection = RunService.RenderStepped:Connect(function()
         end
     end
 end)
-
-table.insert(Connections, TracerConnection)
 	
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -6516,6 +6514,7 @@ task.spawn(function()
         FlyConnection = nil
     end
         Fly:Disable()
+		toggleNoclip(false)
         RemoveAllTracers()
         RemoveAllArrows()
         getgenv().UsingLOLHAX = false
@@ -6523,7 +6522,9 @@ task.spawn(function()
         Obsidian:Unload()
         game.ReplicatedStorage.RemotesFolder.ClimbLadder:FireServer()
         Script.Bypassed = false
+    if not Script.IsBattle then
         LocalPlayer.Character:SetAttribute("CanJump", false)
+	end
 	if not Script.IsBattle then
         LocalPlayer.Character:SetAttribute("CanSlide", false)
 	end
@@ -6653,6 +6654,7 @@ task.spawn(function()
     DebugStuff:AddToggle("DS_BSRPC", { Text = "Bloxstrap RPC", Default = true })
     DebugStuff:AddLabel("Floor: " .. game.ReplicatedStorage.GameData.Floor.Value)
     DebugStuff:AddLabel("lolhax version: 3.0.2.5b")
+	DebugStuff:AddLabel("lolhax commit message: anchor test?? w chat")
 
     local RPCRoomChange = game.ReplicatedStorage.GameData.LatestRoom:GetPropertyChangedSignal("Value"):Connect(function() updateRPC(Toggles.DS_BSRPC.Value) end)
     table.insert(Connections, RPCRoomChange)
