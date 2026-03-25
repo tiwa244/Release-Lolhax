@@ -1981,7 +1981,7 @@ function BreakerThing(Breaker, Bool)
     Breaker.Sound:Play()
 end
 	
-function Library:Notify(options)
+function Library:Notify(options, options.Title, options.Description, options.Duration, options.Force)
     -- style
     local style = (getgenv().UseLib and getgenv().UseLib.CurrentNotify) or "Default"
 
@@ -2006,14 +2006,14 @@ function Library:Notify(options)
 
     if style == "Linoria" then
 		PlaySound()
-		Linoria:Notify(options, options.Force)
+		Linoria:Notify(options, options.Title, options.Description, options.Duration, options.Force)
 	elseif style == "Obsidian" then
 		PlaySound()
-		Obsidian:Notify(options, options.Force)
+		Obsidian:Notify(options, options.Title, options.Description, options.Duration, options.Force)
 	elseif style == "Doors" then
-		Doors:Notify(options)
+		Doors:Notify(options, options.Title, options.Description, options.Duration, options.Force)
 	elseif style == "Default" then
-		Notify(options, options.Time or 5)
+		Notify(options, options.Title, options.Description, options.Duration, options.Force)
 	end
 end
 
