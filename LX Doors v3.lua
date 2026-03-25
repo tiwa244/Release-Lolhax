@@ -4680,28 +4680,28 @@ Toggles.VR_NoCutscenes:OnChanged(function(value)
     end
 end)
 
-    Toggles.EB_TheMinesAnticheatBypass:OnChanged(function(value)
+Toggles.EB_TheMinesAnticheatBypass:OnChanged(function(value)
 
-          if not Toggles.EB_TheMinesAnticheatBypass.Value then
-            game.ReplicatedStorage.RemotesFolder.ClimbLadder:FireServer()
-            Script.Bypassed = false
-          end
+    if not Toggles.EB_TheMinesAnticheatBypass.Value then
+        game.ReplicatedStorage.RemotesFolder.ClimbLadder:FireServer()
+        Script.Bypassed = false
+    end
 
-        if value and Script.IsMines then
-            local progressPart = Instance.new("Folder", game.Workspace) do
-                progressPart.Name = "_internal_lhx_acbypassprogress"
-            end
+     if value and Script.IsMines and not Library.Unloaded then
+        local progressPart = Instance.new("Folder", game.Workspace) do
+             progressPart.Name = "_internal_lhx_acbypassprogress"
+     end
 
     if Library.IsMobile then
-                Library:Notify({
-                    Title = "Anticheat bypass",
-                    Description = "To bypass the anticheat, you must interact with a ladder. \nDo not move while on the ladder.",
-                    Reason = "Ladder ESP has been enabled, do not move while on the ladder.",
-                    SoundId = "rbxassetid://4590662766",
+            Library:Notify({
+                Title = "Anticheat bypass",
+                Description = "To bypass the anticheat, you must interact with a ladder. \nDo not move while on the ladder.",
+                Reason = "Ladder ESP has been enabled, do not move while on the ladder.",
+                SoundId = "rbxassetid://4590662766",
 
-                    LinoriaMessage = "To bypass the anticheat, you must interact with a ladder. \nDo not move while on the ladder.",
-                    Time = progressPart
-                })
+                LinoriaMessage = "To bypass the anticheat, you must interact with a ladder. \nDo not move while on the ladder.",
+                Time = progressPart
+            })
             else
                 Library:Notify({
                     Title = "Anticheat bypass",
@@ -4727,6 +4727,7 @@ end)
             Script.FeatureConnections.Character["AnticheatBypassTheMines"] = LocalPlayer.Character:GetAttributeChangedSignal("Climbing"):Connect(function()
                 if not Toggles.EB_TheMinesAnticheatBypass then return end
 				if not Script.IsMines then return end
+				if Library.Unloaded then return end
                 if not Toggles.EB_TheMinesAnticheatBypass.Value then return end
                 if not LocalPlayer.Character:GetAttribute("Climbing") then return end
 
@@ -4745,8 +4746,8 @@ end)
                 })
                 workspace:FindFirstChild("_internal_lhx_acbypassprogress"):Destroy()
             end)
-        end
-end     
+	    end
+    end
 		
 -- my brain fried vo -- v
 
@@ -6501,6 +6502,7 @@ task.spawn(function()
         FlyConnection = nil
     end
         Fly:Disable()
+		toggleNoclip(false)
         RemoveAllTracers()
         RemoveAllArrows()
         getgenv().UsingLOLHAX = false
@@ -6508,6 +6510,7 @@ task.spawn(function()
         Obsidian:Unload()
         game.ReplicatedStorage.RemotesFolder.ClimbLadder:FireServer()
         Script.Bypassed = false
+	if not Script.IsBattle then
         LocalPlayer.Character:SetAttribute("CanJump", false)
 	if not Script.IsBattle then
         LocalPlayer.Character:SetAttribute("CanSlide", false)
