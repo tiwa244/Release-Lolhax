@@ -1982,7 +1982,10 @@ function BreakerThing(Breaker, Bool)
 end
 	
 function Library:Notify(options)
+	-- somethings??
 	options = options
+	options.Time = options.Time or 5
+	options.Force = options.Force
     -- style
     local style = (getgenv().UseLib and getgenv().UseLib.CurrentNotify) or "Default"
 
@@ -2006,14 +2009,14 @@ function Library:Notify(options)
     end
 
     -- routing
-    if style == "Linoria" or options.ForceLinoria then
+    if style == "Linoria" then
         PlaySound()
 
         local msg = options.LinoriaMessage or (options.Title .. " " .. options.Description)
 
         if Linoria and Linoria.Notify then
             return SafeCall(function()
-                return Linoria:Notify(msg, data.Time)
+                return Linoria:Notify(msg, options.Time)
             end)
         end
 
