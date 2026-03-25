@@ -1981,19 +1981,7 @@ function BreakerThing(Breaker, Bool)
     Breaker.Sound:Play()
 end
 	
-function Library:Notify(options, description, duration, force)
-    -- normalize
-    local data = type(options) == "table" and options or {
-        Title = options,
-        Description = description,
-        Time = duration,
-        Force = force
-    }
-
-    data.Title = tostring(data.Title or "Notification")
-    data.Description = tostring(data.Description or "")
-    data.Time = data.Time or 5
-
+function Library:Notify(options)
     -- style
     local style = (getgenv().UseLib and getgenv().UseLib.CurrentNotify) or "Default"
 
@@ -2016,15 +2004,6 @@ function Library:Notify(options, description, duration, force)
         end
     end
 
-    -- unified payload
-    local payload = {
-        Title = data.Title,
-        Description = data.Description,
-        Time = data.Time,
-        Reason = data.Reason,
-        Force = data.Force
-    }
-
     -- routing
     if style == "Linoria" or data.ForceLinoria then
         PlaySound()
@@ -2040,7 +2019,7 @@ function Library:Notify(options, description, duration, force)
     elseif style == "Doors" then
         if Doors and Doors.Notify then
             return SafeCall(function()
-                return Doors:Notify(payload)
+                return Doors:Notify(options)
             end)
         end
 
@@ -2049,14 +2028,14 @@ function Library:Notify(options, description, duration, force)
             PlaySound()
 
             return SafeCall(function()
-                return Obsidian:Notify(payload)
+                return Obsidian:Notify(options)
             end)
         end
     end
 
     -- fallback
     return SafeCall(function()
-        return Notify(data.Title, data.Description, data.Time, data.Force)
+        return Notify(options)
     end)
 end
 
