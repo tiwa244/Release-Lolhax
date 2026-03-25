@@ -2764,6 +2764,13 @@ local Connections = {
         if Toggles.EB_ACManipulate.Value and Options.EB_ACManipulate_K:GetState() then
             LocalPlayer.Character:PivotTo(LocalPlayer.Character:GetPivot() + workspace.CurrentCamera.CFrame.LookVector * Vector3.new(1, 0, 1) * -100)
         end
+		if Toggles.GA_DoorReach.Value and workspace.CurrentRooms:FindFirstChild(Script.CurrentRoom) then
+            local door = workspace.CurrentRooms[Script.CurrentRoom + 1]:FindFirstChild("Door")
+
+            if door and door:FindFirstChild("ClientOpen") then
+                door.ClientOpen:FireServer()
+            end
+		end
         if Main_Game then
             if Options.VV_FieldOfView.Value ~= 0 then
                 Main_Game.fovtarget = Options.VV_FieldOfView.Value
@@ -6147,14 +6154,6 @@ Toggles.GA_PromptClip:OnChanged(function(value)
         PromptConnection = workspace.CurrentRooms.DescendantAdded:Connect(apply)
     end
 end)
-
- if Toggles.GA_DoorReach.Value and workspace.CurrentRooms:FindFirstChild(Script.CurrentRoom) then
-            local door = workspace.CurrentRooms[Script.CurrentRoom + 1]:FindFirstChild("Door")
-
-            if door and door:FindFirstChild("ClientOpen") then
-                door.ClientOpen:FireServer()
-            end
-        end
 
 Toggles.MM_Walkspeed:OnChanged(function()
     task.wait()
