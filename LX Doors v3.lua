@@ -3335,7 +3335,7 @@ local Connections = {
 
 	if Toggles.DS_Debug.Value then Library:Notify({
 			Title = "[LOLHAX]",
-			Description = "CurrentRoom is now: " .. tostring(LocalPlayer:GetAttribute("CurrentRoom"))
+			Description = "CurrentRoom is now: " .. tostring(LocalPlayer:GetAttribute("CurrentRoom")),
 			Reason = "",
 
 			Time = 4.5
