@@ -1982,7 +1982,6 @@ function BreakerThing(Breaker, Bool)
 end
 	
 function Library:Notify(options)
-	options.Force = true
     -- style
     local style = (getgenv().UseLib and getgenv().UseLib.CurrentNotify) or "Default"
 
@@ -3334,7 +3333,14 @@ local Connections = {
 
    LocalPlayer:GetAttributeChangedSignal("CurrentRoom"):Connect(function()
 
-	if Toggles.DS_Debug.Value then Library:Notify("[LOLHAX]", "Current Room is now: " .. tostring(LocalPlayer:GetAttribute("CurrentRoom")), 4.5) end
+	if Toggles.DS_Debug.Value then Library:Notify({
+			Title = "[LOLHAX]",
+			Description = "CurrentRoom is now: " .. tostring(LocalPlayer:GetAttribute("CurrentRoom"))
+			Reason = "",
+
+			Time = 4.5
+      })
+end
 
 	if Script.IsMines and Script.Bypassed and LocalPlayer:GetAttribute("CurrentRoom") == 43 then
 		Script.Bypassed = false
@@ -6579,6 +6585,6 @@ task.spawn(function()
 
     ErrorMessageOut:Disconnect()
     LHXLoadFinish = true
-    Library:Notify("Load successful.", "Loading finished in ".. string.format("%.2f", tick() - Loadtime) .." seconds.", 10 / 3, true)
+    Library:Notify("Load successful.", "Loading finished in ".. string.format("%.2f", tick() - Loadtime) .." seconds.", 10 / 3)
     print("[LOLHAX] Load successful.", "Loading finished in ".. string.format("%.2f", tick() - Loadtime) .." seconds.")
 end)
