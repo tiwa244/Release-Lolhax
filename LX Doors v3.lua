@@ -1822,10 +1822,6 @@ function Notify(TitleText, SubText, Duration, Force)
         Alignment = 0
     end
 
-	if TitleText == "[LOLHAX]" then
-		TitleText = ""
-	end
-
     local Main = Instance.new("Frame", NotificationHolder)
     Main.AnchorPoint = Vector2.new(Alignment, 0.5)
     Main.Size = UDim2.fromScale(0.19 * DPISize, 0.045 * DPISize)
@@ -6377,6 +6373,15 @@ task.spawn(function()
         }) .. "}")
     end
 
+	function NotifyLoadMessage()
+	  Library:Notify({
+		Title = "Load successful.",
+		Description = "Loading finished in ".. string.format("%.2f", tick() - Loadtime) .." seconds.", 
+		Duration = 10 / 3
+		Force = true
+	end
+			
+
     local MenuProperties = Tabs.Config:AddLeftGroupbox("Menu", "settings")
     MenuProperties:AddButton("Unload", function()
         Library:Unload()
@@ -6585,6 +6590,6 @@ task.spawn(function()
 
     ErrorMessageOut:Disconnect()
     LHXLoadFinish = true
-    Library:Notify("Load successful.", "Loading finished in ".. string.format("%.2f", tick() - Loadtime) .." seconds.", 10 / 3, false)
+    NotifyLoadMessage()
     print("[LOLHAX] Load successful.", "Loading finished in ".. string.format("%.2f", tick() - Loadtime) .." seconds.")
 end)
