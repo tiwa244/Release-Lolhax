@@ -4684,7 +4684,7 @@ end)
         end
 end     
 
-LocalPlayer:GetAttributeChangedSignal("CurrentRoom"):Connect(function()
+local AirConditionerManager = LocalPlayer:GetAttributeChangedSignal("CurrentRoom"):Connect(function()
 
 	if Toggles.DS_Debug.Value then Library:Notify("[LOLHAX]", "Current Room is now: " .. tostring(LocalPlayer:GetAttribute("CurrentRoom")), 4.5) end
 
@@ -4719,6 +4719,8 @@ LocalPlayer:GetAttributeChangedSignal("CurrentRoom"):Connect(function()
 	end
 end)
 
+table.insert(Connections, AirConditionerManager)
+				
 -- my brain fried vo -- v
 
 Script.Functions.Minecart = {
