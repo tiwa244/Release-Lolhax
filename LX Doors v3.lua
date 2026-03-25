@@ -3370,55 +3370,6 @@ local Connections = {
         end
     end),
 
-	LocalPlayer:GetAttributeChangedSignal("CurrentRoom"):Connect(function()
-
-	if Toggles.DS_Debug.Value then Library:Notify("[LOLHAX]", "Current Room is now: " .. tostring(LocalPlayer:GetAttribute("CurrentRoom")), 4.5)
-
-	if Script.CurrentRoom == 12 then
-		local test = Instance.new("Folder", workspace)
-		test.Name = "_testing"
-		testing = test
-
-		Library:Notify("This is a test notification of the currentroom attribute!!: " .. Script.CurrentRoom, "Hehe", testing)
-
-		task.delay(30, function()
-		  test:Destroy()
-		  testing = nil
-		end)
-	end
-
-	if Script.IsMines and Script.Bypassed and Script.CurrentRoom == "43" or Script.CurrentRoom == 43 then
-		Script.Bypassed = false
-		local newfr = Instance.new("Folder", game.Workspace)
-		newfr.Name = "_internal_lhx_acbypassprogress"
-
-		Library:Notify({
-			Title = "Anticheat Bypass",
-			Description = "'Seek Chase 1' has broken anticheat bypass, please go on a ladder again to fix it.",
-			Time = newfr,
-
-			LinoriaMessage = "'Seek Chase 1' has broken anticheat bypass, please go on a ladder again to fix it.",
-	})
-	end
-
-					
-	if Script.Bypassed and Rooms[tostring(Script.CurrentRoom)]:GetAttribute("RawName") == "Mines_HaltHallway" then
-	    Script.Bypassed = false
-		local new = Instance.new("Folder", game.Workspace)
-        new.Name = "_internal_lhx_acbypassprogress"
-
-		-- accrual logic hruhv is it fixed
-		Library:Notify({
-			Title = "Anticheat Bypass",
-			Description = "Halt has broken anticheat bypass, please go on a ladder again to fix it.",
-			Time = new,
-
-			LinoriaMessage = "Halt has broken anticheat bypass, please go on a ladder again to fix it."
-		})
-		end
-	end
-end),
-	
     -- this is fucked.
     LocalPlayer.Character:GetAttributeChangedSignal("CanJump"):Connect(function()
         LocalPlayer.Character:SetAttribute("CanJump", Toggles.ES_AlwaysJump.Value or CanJump)     
@@ -3449,6 +3400,41 @@ end),
         ClonedCollision.CustomPhysicalProperties = PhysicalProperties.new(0.01, 0.7, 0, 1, 1)
         ClonedCollision.CollisionCrouch:Destroy()
     end),
+
+   LocalPlayer:GetAttributeChangedSignal("CurrentRoom"):Connect(function()
+
+	if Toggles.DS_Debug.Value then Library:Notify("[LOLHAX]", "Current Room is now: " .. tostring(LocalPlayer:GetAttribute("CurrentRoom")), 4.5) end
+
+	if Script.IsMines and Script.Bypassed and LocalPlayer:GetAttribute("CurrentRoom") == 43 then
+		Script.Bypassed = false
+		local newfr = Instance.new("Folder", game.Workspace)
+		newfr.Name = "_internal_lhx_acbypassprogress"
+
+		Library:Notify({
+			Title = "Anticheat Bypass",
+			Description = "'Seek Chase 1' has broken anticheat bypass, please go on a ladder again to fix it.",
+			Time = newfr,
+
+			LinoriaMessage = "'Seek Chase 1' has broken anticheat bypass, please go on a ladder again to fix it.",
+	})
+	end
+
+					
+	if Script.IsMines and Script.Bypassed and Rooms[LocalPlayer:GetAttribute("CurrentRoom")]:GetAttribute("RawName") == "Mines_HaltHallway" then
+	    Script.Bypassed = false
+		local new = Instance.new("Folder", game.Workspace)
+        new.Name = "_internal_lhx_acbypassprogress"
+
+		-- it works yay
+		Library:Notify({
+			Title = "Anticheat Bypass",
+			Description = "Halt has broken anticheat bypass, please go on a ladder again to fix it.",
+			Time = new,
+
+			LinoriaMessage = "Halt has broken anticheat bypass, please go on a ladder again to fix it."
+		})
+	   end
+   end),
 
     LocalPlayer.PlayerGui.ChildAdded:Connect(function(v)
         if v.Name == "MainUI" then
