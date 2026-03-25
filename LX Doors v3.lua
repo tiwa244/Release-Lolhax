@@ -2006,14 +2006,14 @@ function Library:Notify(options)
 
     if style == "Linoria" then
 		PlaySound()
-		Linoria:Notify(options)
+		Linoria:Notify(options, options.Force)
 	elseif style == "Obsidian" then
 		PlaySound()
-		Obsidian:Notify(options)
+		Obsidian:Notify(options, options.Force)
 	elseif style == "Doors" then
 		Doors:Notify(options)
 	elseif style == "Default" then
-		Notify(options)
+		Notify(options, options.Time or 5)
 	end
 end
 
