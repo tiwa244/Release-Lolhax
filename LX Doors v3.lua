@@ -3388,10 +3388,10 @@ local Connections = {
 
 		Library:Notify({
 			Title = "Anticheat Bypass",
-			Description = "'Seek Chase 1' has broken anticheat bypass, please go on a ladder again to fix it.",
+			Description = '"Seek Chase 1" has broken anticheat bypass, please go on a ladder again to fix it.',
 			Time = newfr,
 
-			LinoriaMessage = "'Seek Chase 1' has broken anticheat bypass, please go on a ladder again to fix it.",
+			LinoriaMessage = '"Seek Chase 1" has broken anticheat bypass, please go on a ladder again to fix it.',
 	})
 	end
 
@@ -3402,10 +3402,10 @@ local Connections = {
 
 		Library:Notify({
 			Title = "Anticheat Bypass",
-			Description = "'Seek Chase 2' has broken anticheat bypass, please go on a ladder again to fix it.",
+			Description = '"Seek Chase 2" has broken anticheat bypass, please go on a ladder again to fix it.',
 			Time = idk,
 
-			LinoriaMessage = "'Seek Chase 2' has broken anticheat bypass, please go on a ladder again to fix it."
+			LinoriaMessage = '"Seek Chase 2" has broken anticheat bypass, please go on a ladder again to fix it.'
 		})
     end
 
@@ -3453,10 +3453,10 @@ end
 
 		Library:Notify({
 			Title = "Anticheat Bypass",
-			Description = "'Grumble Cutscene 2' has broken anticheat bypass, please go on a ladder again to fix it.",
+			Description = '"Grumble Cutscene 2" has broken anticheat bypass, please go on a ladder again to fix it.',
 			Time = idk2,
 
-		    LinoriaMessage = "'Grumble Cutscene 2' has broken anticheat bypass, please go on a ladder again to fix it."
+		    LinoriaMessage = '"Grumble Cutscene 2" has broken anticheat bypass, please go on a ladder again to fix it.'
 		})
 	end
 					
