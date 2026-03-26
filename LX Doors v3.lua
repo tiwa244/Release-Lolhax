@@ -3493,7 +3493,7 @@ end),
     Rooms.ChildAdded:Connect(function(v)
         repeat task.wait() until v:GetAttribute("RawName")
 
-        if v:GetAttribute("RawName") == "Mines_HaltHallway" and Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["Halt"] then
+        if v:GetAttribute("RawName") == "Mines_HaltHallway" or v:GetAttribute("RawName") == "Hotel_HaltHallway" and Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["Halt"] then
            Library:Notify({
 			 Title = "Entity 'Halt' spawns in the next room!",
 			 Description = "..."
