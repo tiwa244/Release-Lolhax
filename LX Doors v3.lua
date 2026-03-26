@@ -3408,21 +3408,7 @@ local Connections = {
 
 			LinoriaMessage = "'Seek Chase 2' has broken anticheat bypass, please go on a ladder again to fix it."
 		})
-    end
-
-	if Script.IsMines and Script.Bypassed and LocalPlayer:GetAttribute("CurrentRoom") == 51 then
-		Script.Bypassed = false
-		local idk2 = Instance.new("Folder", shared.Script.Workspace or Workspace)
-		idk2.Name = "_internal_lhx_acbypassprogress"
-
-		Library:Notify({
-			Title = "Anticheat Bypass",
-			Description = "'Grumble Cutscene 2' has broken anticheat bypass, please go on a ladder again to fix it.",
-			Time = idk2,
-
-		    LinoriaMessage = "'Grumble Cutscene 2' has broken anticheat bypass, please go on a ladder again to fix it."
-		})
-    end
+	end
 					
 					
 	if Script.Bypassed and Rooms[LocalPlayer:GetAttribute("CurrentRoom")]:GetAttribute("RawName") == "Mines_HaltHallway" then
@@ -3946,6 +3932,22 @@ end),
 
                     repeat task.wait() until NextAnchor:GetAttribute("Activated")
 
+					local FiredAllAnchors = false
+					if not FiredAllAnchors and AllAnchorsActivated() then
+                      if Script.IsMines and Script.Bypassed and LocalPlayer:GetAttribute("CurrentRoom") == 51 then
+                         FiredAllAnchors = true
+                         Script.Bypassed = false
+
+                         local idk2 = Instance.new("Folder", shared.Script.Workspace or workspace)
+                         idk2.Name = "_internal_lhx_acbypassprogress"
+
+                         Library:Notify({
+                            Title = "Anticheat Bypass",
+                            Description = "'Grumble Cutscene 2' broke anticheat bypass, go on a ladder again.",
+                            Time = idk2
+                          })
+                       end
+					end
                     RemoveEspSmooth(NextAnchor)
                     v.Console.Button.ActivateEventPrompt:GetAttributeChangedSignal("Interactions"):Wait()
 
@@ -5159,11 +5161,8 @@ function Script.Functions.Minecart.DrawNodes(room: Model)
         changeNodeColor(realNode, espRealColor)
     end
 
- if Toggles.VW_SeekPathFake.Value then
-    for idx, fakeNode in ipairs(nodesList.fake) do
-        changeNodeColor(fakeNode, Script.MinecartPathNodeColor.Red)
-       end
-    end
+    --for idx, fakeNode in ipairs(nodesList.fake) do
+        --changeNodeColor(fakeNode, Script.MinecartPathNodeColor.Red)
 end
 
 Toggles.VW_SeekPath:OnChanged(function(value)
@@ -5935,6 +5934,23 @@ for _, v in Rooms:GetDescendants() do
                         local Highlight, TextLabel = Esp(NextAnchor, NextAnchor.AnchorBase, "Anchor "..NextAnchor.Sign.TextLabel.Text, Color3.new(0.5, 0.25, 1), nil, nil, "Anchors", "Interactable")
                         table.insert(EspTable.Interactables.Anchors, {Highlight, TextLabel})
                     end
+
+					local FiredAllAnchors = false
+					if not FiredAllAnchors and AllAnchorsActivated() then
+                      if Script.IsMines and Script.Bypassed and LocalPlayer:GetAttribute("CurrentRoom") == 51 then
+                         FiredAllAnchors = true
+                         Script.Bypassed = false
+
+                         local idk2 = Instance.new("Folder", shared.Script.Workspace or workspace)
+                         idk2.Name = "_internal_lhx_acbypassprogress"
+
+                         Library:Notify({
+                            Title = "Anticheat Bypass",
+                            Description = "'Grumble Cutscene 2' broke anticheat bypass, go on a ladder again.",
+                            Time = idk2
+                          })
+                       end
+					end
 
                     NextAnchor.AttributeChanged:Wait()
                     RemoveEspSmooth(NextAnchor)
