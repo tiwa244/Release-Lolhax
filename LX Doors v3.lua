@@ -3410,7 +3410,18 @@ local Connections = {
 		})
     end
 
-	if Script.IsMines and Script.Bypassed and LocalPlayer:GetAttribute("CurrentRoom") == 51 then
+	function AllAnchorsActivated()
+       for _, obj in pairs(Rooms[LocalPlayer:GetAttribute("CurrentRoom")]._NestHandler:GetChildren()) do
+        if obj.Name == "MinesAnchor" then
+            if not obj:GetAttribute("Activated") then
+                return false
+            end
+         end
+      end
+     return true
+	end
+
+	if Script.IsMines and Script.Bypassed and LocalPlayer:GetAttribute("CurrentRoom") == 51 and AllAnchorsActivated() then
 		Script.Bypassed = false
 		local idk2 = Instance.new("Folder", shared.Script.Workspace or Workspace)
 		idk2.Name = "_internal_lhx_acbypassprogress"
@@ -3422,8 +3433,7 @@ local Connections = {
 
 		    LinoriaMessage = "'Grumble Cutscene 2' has broken anticheat bypass, please go on a ladder again to fix it."
 		})
-    end
-					
+	end
 					
 	if Script.Bypassed and Rooms[LocalPlayer:GetAttribute("CurrentRoom")]:GetAttribute("RawName") == "Mines_HaltHallway" then
 	    Script.Bypassed = false
