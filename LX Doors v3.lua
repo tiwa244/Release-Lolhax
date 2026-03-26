@@ -504,7 +504,7 @@ GeneralNotifying:AddButton("Test Notify", function()
     Library:Notify({
 		Title = "This is a test notification.",
 		Description = LoremIpsumNonsense[math.random(1, #LoremIpsumNonsense)],
-	    Duration = 3,
+	    Time = 3,
 		Force = true
 	})
 end)
@@ -3379,7 +3379,7 @@ local Connections = {
 		Library:Notify({
 		Title = "[LOLHAX]",
 		Description = "Current Room is now: " .. tostring(LocalPlayer:GetAttribute("CurrentRoom")), 
-		Duration = 4.5
+		Time = 4.5
 		})
 	end
 
@@ -3924,7 +3924,7 @@ end),
                             Library:Notify({
 								Title = "Anchor code solved.",
 								Description = "The code for Anchor "..NextAnchor.Sign.TextLabel.Text.." is '".. Solved .."'.",
-								Duration = 10
+								Time = 10
 							})
                         end
 
@@ -4165,7 +4165,7 @@ end),
                     Library:Notify({
 						Title = "Entity 'Blitz' has spawned!",
 						Description = "Blitz can rebound and pause in place at random, Find a hiding spot quickly!",
-						Duration = 5
+						Time = 5
 					})
                 end
 
@@ -5913,7 +5913,7 @@ for _, v in Rooms:GetDescendants() do
                             Library:Notify({
 								Title = "Anchor code solved.",
 								Description = "The code for Anchor "..NextAnchor.Sign.TextLabel.Text.." is '".. Solved .."'.", 
-								Duration = 10
+								Time = 10
 							})
                         end
 
