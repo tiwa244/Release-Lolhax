@@ -515,7 +515,8 @@ local TimeLabel = GeneralSession:AddLabel("Local Time: " .. os.date("%X"))
 GeneralSession:AddLabel("Player Name: " .. LocalPlayer.Name)
 local FloorLabel = GeneralSession:AddLabel("Floor: " .. game.ReplicatedStorage.GameData.Floor.Value)
 task.spawn(function()
-    while task.wait(1) do
+    while not Library.Unloaded do
+		task.wait(1)
         TimeLabel:SetText("Local Time: " .. os.date("%X"))
     end
 end)
