@@ -3423,7 +3423,7 @@ local Connections = {
      return true
 	end
 
-	if Script.IsMines and Script.Bypassed and LocalPlayer:GetAttribute("CurrentRoom") == 51 and Rooms[50]._NestHandler.Console.Button:GetAttribute("Interactions") >= 6 and AllAnchorsActivated() then
+	if Script.IsMines and Script.Bypassed and LocalPlayer:GetAttribute("CurrentRoom") == 51 and Rooms[50]._NestHandler.Console.Button.ActivateEventPrompt:GetAttribute("Interactions") >= 6 and AllAnchorsActivated() then
 		Script.Bypassed = false
 		local idk2 = Instance.new("Folder", shared.Script.Workspace or Workspace)
 		idk2.Name = "_internal_lhx_acbypassprogress"
