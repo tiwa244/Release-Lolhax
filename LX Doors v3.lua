@@ -3412,7 +3412,9 @@ local Connections = {
 	function AllAnchorsActivated()
        for _, obj in pairs(Rooms[50]._NestHandler:GetChildren()) do
         if obj.Name == "MinesAnchor" then
+		    if Toggles.DS_Debug.Value then
 			print(obj, obj:GetAttribute("Activated"))
+		    end
             if not obj:GetAttribute("Activated") then
                 return false
             end
@@ -3421,7 +3423,7 @@ local Connections = {
      return true
 	end
 
-	if Script.IsMines and Script.Bypassed and LocalPlayer:GetAttribute("CurrentRoom") == 51 and AllAnchorsActivated() then
+	if Script.IsMines and Script.Bypassed and LocalPlayer:GetAttribute("CurrentRoom") == 51 and Rooms[50]._NestHandler.Console.Button:GetAttribute("Interactions") >= 6 and AllAnchorsActivated() then
 		Script.Bypassed = false
 		local idk2 = Instance.new("Folder", shared.Script.Workspace or Workspace)
 		idk2.Name = "_internal_lhx_acbypassprogress"
