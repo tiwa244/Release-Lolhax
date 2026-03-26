@@ -498,7 +498,12 @@ GeneralNotifying:AddSlider("GN_NotificationOffset_X", { Text = "X Offset", Defau
 GeneralNotifying:AddSlider("GN_NotificationOffset_Y", { Text = "Y Offset", Default = 0, Min = -1, Max = 1, Rounding = 2, Compact = true })
 GeneralNotifying:AddSlider("GN_NotificationDPISize", { Text = "Size Multiplier", Default = 1, Min = 0.8, Max = 3, Rounding = 1, Compact = true })
 GeneralNotifying:AddButton("Test Notify", function()
-    Library:Notify("This is a test notification.", LoremIpsumNonsense[math.random(1, #LoremIpsumNonsense)], 3, true)
+    Library:Notify({
+		Title = "This is a test notification.",
+		Description = LoremIpsumNonsense[math.random(1, #LoremIpsumNonsense)],
+	    Duration = 3,
+		Force = true
+	})
 end)
 local GeneralSession = Tabs.General:AddRightGroupbox("Session Info")
 
@@ -2679,7 +2684,10 @@ local CameraAdded = workspace.CurrentCamera.ChildAdded:Connect(function(v)
 
     if v.Name == "Screech" then
         if Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["Screech"] then
-            Library:Notify("Entity 'Screech' has spawned!", "Look around and look at it quickly!")
+            Library:Notify({
+				Title = "Entity 'Screech' has spawned!", 
+				Description = "Look around and look at it quickly!"
+			})
         end
     elseif v.Name == "LiveSanity" then
         task.delay(0.2, function()
