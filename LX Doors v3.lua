@@ -3423,30 +3423,29 @@ local Connections = {
      return true
 	end
 
-	function GrumbleNearby(threshold)
+function GrumbleNearby(threshold)
     threshold = threshold or 100
 
-    for _, obj in pairs(Rooms[50]:GetDescendants()) do
-        if obj.Name:find("Grumble") then
-            local part = obj.PrimaryPart or obj.Root
+    -- direct reference to the Grumble model
+    local grumbleModel = Rooms[50]._NestHandler:FindFirstChild("_QueenGrumbleNest")
+    if grumbleModel and grumbleModel:IsA("Model") then
+        local part = grumbleModel.PrimaryPart or grumbleModel:FindFirstChild("Root")
+        if part then
+            local distance = (LocalPlayer.Character.HumanoidRootPart.Position - part.Position).Magnitude
 
-            if part then
-                local distance = (LocalPlayer.Character.HumanoidRootPart.Position - part.Position).Magnitude
+            if Toggles.DS_Debug.Value then
+                print("Grumble:", grumbleModel, "Distance:", distance)
+            end
 
-                if Toggles.DS_Debug.Value then
-                    print("Grumble:", obj, "Distance:", distance)
-                end
-
-                if distance <= threshold then
-                    return true, obj
-                end
+            if distance <= threshold then
+                return true, grumbleModel
             end
         end
     end
 
     return false
-end 
-
+end
+				
 	if Script.IsMines and Script.Bypassed and LocalPlayer:GetAttribute("CurrentRoom") == 51 and GrumbleNearby(100) and AllAnchorsActivated() then
 		Script.Bypassed = false
 		local idk2 = Instance.new("Folder", shared.Script.Workspace or Workspace)
