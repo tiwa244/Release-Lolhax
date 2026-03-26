@@ -4006,7 +4006,10 @@ end),
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
                 if Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["Dread"] then
-                    Library:Notify("Entity 'Dread' has spawned!", "Open the next door quickly!")
+                    Library:Notify({
+					  Title = "Entity 'Dread' has spawned!", 
+					  Description = "Open the next door quickly!"
+					})
                 end
 
 			elseif v.Name == "CustomEntity" then
@@ -4041,7 +4044,10 @@ end),
 						String = "Entity will not do damage."
                     end
 
-                    Library:Notify("Entity 'Custom Rush' has spawned!", String)
+                    Library:Notify({
+					  Title = "Entity 'Custom Rush' has spawned!", 
+					  Description = String
+					})
 			   end
 
             elseif v.Name == "RushMoving" then
@@ -4073,8 +4079,11 @@ end),
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
                 if Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["Ambush"] then
-                    Library:Notify("Entity 'Ambush' has spawned!", "Ambush can rebound 2 - 4 times, find a hiding spot quickly!")
-            end
+                    Library:Notify({
+					  Title = "Entity 'Ambush' has spawned!", 
+					  Description = "Ambush can rebound 2 - 4 times, find a hiding spot quickly!"
+					})
+                end
 
             elseif v.Name == "A60" then
 
@@ -4087,7 +4096,10 @@ end),
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
                 if Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["A-60"] then
-                    Library:Notify("Entity 'A-60' has spawned!", "Find a hiding spot quickly!")
+                    Library:Notify({
+						Title = "Entity 'A-60' has spawned!", 
+						Description = "Find a hiding spot quickly!"
+					})
                 end
 
             elseif v.Name == "A120" then
@@ -4101,7 +4113,10 @@ end),
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
                 if Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["A-120"] then
-                    Library:Notify("Entity 'A-120' has spawned!", "Find a hiding spot quickly!")
+                    Library:Notify({
+						Title = "Entity 'A-120' has spawned!", 
+						Description = "Find a hiding spot quickly!"
+					})
                 end
 
             elseif v.Name == "BackdoorRush" then
@@ -4117,7 +4132,11 @@ end),
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
                 if Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["Blitz"] then
-                    Library:Notify("Entity 'Blitz' has spawned!", "Blitz can rebound and pause in place at random, Find a hiding spot quickly!", 5)
+                    Library:Notify({
+						Title = "Entity 'Blitz' has spawned!",
+						Description = "Blitz can rebound and pause in place at random, Find a hiding spot quickly!"
+						Duration = 5
+					})
                 end
 
                 local EnableChanged = v.Main.AttachmentSwitch.ParticleEmitter:GetPropertyChangedSignal("Enabled"):Connect(function()
@@ -4142,7 +4161,10 @@ end),
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
                 if Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["Eyes"] then
-                    Library:Notify("Entity 'Eyes' has spawned!", "Avoid looking at it!")
+                    Library:Notify({
+					  Title = "Entity 'Eyes' has spawned!",
+					  Description = "Avoid looking at it!"
+					})
                 end
 
             elseif v.Name == "BackdoorLookman" then
@@ -4156,7 +4178,10 @@ end),
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
 
                 if Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["Lookman"] then
-                    Library:Notify("Entity 'Lookman' has spawned!", "Avoid looking at it!")
+                    Library:Notify({
+					  Title = "Entity 'Lookman' has spawned!",
+					  Description = "Avoid looking at it!"
+					})
                 end
 
             end
