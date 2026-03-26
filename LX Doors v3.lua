@@ -3413,6 +3413,7 @@ local Connections = {
 	function AllAnchorsActivated()
        for _, obj in pairs(Rooms[LocalPlayer:GetAttribute("CurrentRoom")]._NestHandler:GetChildren()) do
         if obj.Name == "MinesAnchor" then
+			print(obj, obj:GetAttribute("Activated"))
             if not obj:GetAttribute("Activated") then
                 return false
             end
