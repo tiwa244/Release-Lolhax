@@ -2029,11 +2029,12 @@ function Library:Notify(options, description, duration, force)
     if style == "Linoria" or data.ForceLinoria then
         PlaySound()
 
-        local msg = data.LinoriaMessage or (data.Title .. " " .. data.Description)
+        local linoriaMessage = options["LinoriaMessage"] or options.Description
+        options.Description = linoriaMessage
 
         if Linoria and Linoria.Notify then
             return SafeCall(function()
-                return Linoria:Notify(msg, data.Time)
+                return Linoria:Notify(options)
             end)
         end
 
