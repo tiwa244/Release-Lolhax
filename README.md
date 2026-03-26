@@ -20,7 +20,7 @@ captions has rounded corners now if you use the obisidan library, and new esp we
 
 ## Coming Soon ##
 
-features: custom nametag for player esp entity esp and interactables esp
+fixes: probabaly, the door 51 anchor fix anticheat bypass, in mines? very soon so yeah
 
 maybe in the next 9 centuries: auto win heartbeat
 
