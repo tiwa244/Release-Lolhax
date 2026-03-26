@@ -3819,7 +3819,7 @@ end),
             
               v:WaitForChild("Handle", 9e9)
 
-              local Highlight, TextLabel = Esp(v, v, "Hint Paper", Options.ESPI_C_LibraryBooks_F.Value, Options.ESPI_C_LibraryBooks_O.Value, Options.ESPI_C_LibraryBooks_TC.Value, "LibraryBooks", "Interactable")
+              local Highlight, TextLabel = Esp(v, v, "Hint Paper", Options.ESPI_C_HintPaper_F.Value, Options.ESPI_C_HintPaper_O.Value, Options.ESPI_C_HintPaper_TC.Value, "HintPaper", "Interactable")
               table.insert(EspTable.Interactables, {Highlight, TextLabel})
 
             elseif v.Name == "LiveBreakerPolePickup" then
