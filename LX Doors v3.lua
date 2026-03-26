@@ -88,7 +88,7 @@ local config = {
     ForceCheckbox = false
 }
 
--- setup thingsss vvv
+--// ui setupsss \\--
 
 if isfile(filename) then
     local rawData = readfile(filename)
@@ -231,10 +231,13 @@ elseif UIConfig.CurrentLib == "Obsidian" then
     }
 end
 
+Labels = Library.Labels
+Buttons = Library.Buttons
 Toggles = Library.Toggles
 Options = Library.Options
-Labels = Library.Labels
+Tooltips = Library.Tooltips
 
+--// Variables vv? \\--
 if not shared.Script then
     shared.Script = {
         Functions = {},
