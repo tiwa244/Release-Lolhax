@@ -2029,12 +2029,11 @@ function Library:Notify(options, description, duration, force)
     if style == "Linoria" or data.ForceLinoria then
         PlaySound()
 
-        local linoriaMessage = options["LinoriaMessage"] or options["Description"]
-        options["Description"] = linoriaMessage
-
+        local msg = data.LinoriaMessage or (data.Title ..  " "  .. data.Description)
+			
         if Linoria and Linoria.Notify then
             return SafeCall(function()
-                return Linoria:Notify(options)
+                return Linoria:Notify(msg, data.Time)
             end)
         end
 
@@ -2050,7 +2049,7 @@ function Library:Notify(options, description, duration, force)
             PlaySound()
 
             return SafeCall(function()
-                return Obsidian:Notify(payload)
+                return Obsidian:Notify(options)
             end)
         end
     end
