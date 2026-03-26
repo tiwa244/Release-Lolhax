@@ -4161,7 +4161,7 @@ end),
                 if Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["Blitz"] then
                     Library:Notify({
 						Title = "Entity 'Blitz' has spawned!",
-						Description = "Blitz can rebound and pause in place at random, Find a hiding spot quickly!"
+						Description = "Blitz can rebound and pause in place at random, Find a hiding spot quickly!",
 						Duration = 5
 					})
                 end
@@ -6660,7 +6660,7 @@ task.spawn(function()
     DebugStuff:AddToggle("DS_BSRPC", { Text = "Bloxstrap RPC", Default = true })
     DebugStuff:AddLabel("Floor: " .. game.ReplicatedStorage.GameData.Floor.Value)
     DebugStuff:AddLabel("lolhax version: 3.0.2.8b")
-	DebugStuff:AddLabel("lolhax commit message: dai dai dai")
+	DebugStuff:AddLabel("lolhax commit message: blud got a notificiation rewrite")
 
     local RPCRoomChange = game.ReplicatedStorage.GameData.LatestRoom:GetPropertyChangedSignal("Value"):Connect(function() updateRPC(Toggles.DS_BSRPC.Value) end)
     table.insert(Connections, RPCRoomChange)
