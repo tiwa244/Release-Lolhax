@@ -3932,6 +3932,15 @@ end),
 
                     repeat task.wait() until NextAnchor:GetAttribute("Activated")
 
+					function AllAnchorsActivated()
+                       for _, anchor in pairs(Anchors) do
+                          if not anchor:GetAttribute("Activated") then
+                            return false
+                           end
+                         end
+                       return true
+				    end
+
 					local FiredAllAnchors = false
 					if not FiredAllAnchors and AllAnchorsActivated() then
                       if Script.IsMines and Script.Bypassed and LocalPlayer:GetAttribute("CurrentRoom") == 51 then
@@ -5934,6 +5943,15 @@ for _, v in Rooms:GetDescendants() do
                         local Highlight, TextLabel = Esp(NextAnchor, NextAnchor.AnchorBase, "Anchor "..NextAnchor.Sign.TextLabel.Text, Color3.new(0.5, 0.25, 1), nil, nil, "Anchors", "Interactable")
                         table.insert(EspTable.Interactables.Anchors, {Highlight, TextLabel})
                     end
+
+					function AllAnchorsActivated()
+                       for _, anchor in pairs(Anchors) do
+                          if not anchor:GetAttribute("Activated") then
+                            return false
+                           end
+                         end
+                       return true
+					end
 
 					local FiredAllAnchors = false
 					if not FiredAllAnchors and AllAnchorsActivated() then
