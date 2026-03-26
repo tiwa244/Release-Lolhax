@@ -4021,7 +4021,10 @@ end),
                 end)
 
                 if Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["Gloombat Swarm"] then
-                    Notify(v:GetAttribute("WaitForOpen") and "A gloombat swarm will occur in the next few rooms." or "A gloombat swarm has spawned!", "Keep off all light sources and keep going!")
+                    Library:Notify({
+					  Title = v:GetAttribute("WaitForOpen") and "A gloombat swarm will occur in the next few rooms." or "A gloombat swarm has spawned!", 
+					  Description = "Keep off all light sources and keep going!"
+					})
                 end
 
             elseif v.Name == "Dread" then
