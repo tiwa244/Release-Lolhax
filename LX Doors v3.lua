@@ -2029,8 +2029,8 @@ function Library:Notify(options, description, duration, force)
     if style == "Linoria" or data.ForceLinoria then
         PlaySound()
 
-        local msg = data.LinoriaMessage or (data.Title ..  " "  .. data.Description)
-			
+        local msg = data.LinoriaMessage or (data.Title .. " " .. data.Description)
+
         if Linoria and Linoria.Notify then
             return SafeCall(function()
                 return Linoria:Notify(msg, data.Time)
@@ -3355,7 +3355,13 @@ local Connections = {
 
    LocalPlayer:GetAttributeChangedSignal("CurrentRoom"):Connect(function()
 
-	if Toggles.DS_Debug.Value then Library:Notify("[LOLHAX]", "Current Room is now: " .. tostring(LocalPlayer:GetAttribute("CurrentRoom")), 4.5) end
+	if Toggles.DS_Debug.Value then
+		Library:Notify({
+		Title = "[LOLHAX]",
+		Description = "Current Room is now: " .. tostring(LocalPlayer:GetAttribute("CurrentRoom")), 
+		Duration = 4.5
+		})
+	end
 
 	if Script.IsMines and Script.Bypassed and LocalPlayer:GetAttribute("CurrentRoom") == 43 then
 		Script.Bypassed = false
@@ -6392,6 +6398,15 @@ task.spawn(function()
         }) .. "}")
     end
 
+	function NotifyLoadMessage(Force)
+		Library:Notify({
+	      Title ="Load successful.", 
+		  Description =	"Loading finished in ".. string.format("%.2f", tick() - Loadtime) .." seconds.", 
+		  Duration = 10 / 3, 
+		  Force = Force
+		})
+	end
+
     local MenuProperties = Tabs.Config:AddLeftGroupbox("Menu", "settings")
     MenuProperties:AddButton("Unload", function()
         Library:Unload()
@@ -6600,6 +6615,6 @@ task.spawn(function()
 
     ErrorMessageOut:Disconnect()
     LHXLoadFinish = true
-    Library:Notify("Load successful.", "Loading finished in ".. string.format("%.2f", tick() - Loadtime) .." seconds.", 10 / 3, true)
+    NotifyLoadMessage(true)
     print("[LOLHAX] Load successful.", "Loading finished in ".. string.format("%.2f", tick() - Loadtime) .." seconds.")
 end)
