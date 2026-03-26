@@ -559,12 +559,21 @@ task.spawn(function()
     for _,Player in pairs(game.Players:GetPlayers()) do
         if Value == Player.Name and not plr == LocalPlayer.Name then
             table.insert(friends, Player.Name)
-            Library:Notify("Whitelistfromspamtools", "Whitelisted!")
+            Library:Notify({
+				Title = "Whitelistfromspamtools",
+				Description = "Whitelisted!"
+			})
         elseif Value == LocalPlayer.Name then
-            Library:Notify("Whitelistfromspamtools", "failed you tried whitelisting localplayer")
+            Library:Notify({
+			 Title = "Whitelistfromspamtools", 
+			 Description = "failed you tried whitelisting localplayer"
+			})
         else
             print("sdf")
-            Library:Notify("Whitelistfromspamtools", "Player Not exist!")
+            Library:Notify({
+			  Title = "Whitelistfromspamtools", 
+			  Description = "Player Not exist!"
+			})
         end
     end
 end) end, })
@@ -3898,7 +3907,11 @@ end),
                         end)
 
                         if Toggles.GN_AnchorCode.Value then
-                            Library:Notify("Anchor code solved.", "The code for Anchor "..NextAnchor.Sign.TextLabel.Text.." is '".. Solved .."'.", 10)
+                            Library:Notify({
+								Title = "Anchor code solved.",
+								Description = "The code for Anchor "..NextAnchor.Sign.TextLabel.Text.." is '".. Solved .."'.",
+								Duration = 10
+							})
                         end
 
                         local Highlight, TextLabel = Esp(NextAnchor, NextAnchor.AnchorBase, "Anchor "..NextAnchor.Sign.TextLabel.Text, Color3.new(0.5, 0.25, 1), nil, nil, "Anchors", "Interactable")
@@ -3958,7 +3971,10 @@ end),
 
                 if v.Name == "Screech" then
                     if Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["Screech"] then
-                        Library:Notify("Entity 'Screech' has spawned!", "Look around and look at it quickly!")
+                        Library:Notify({
+							Title = "Entity 'Screech' has spawned!", 
+							Description = "Look around and look at it quickly!"
+						})
                     end
                 elseif v.Name == "LiveSanity" then
                     task.delay(0.2, function()
@@ -5880,7 +5896,11 @@ for _, v in Rooms:GetDescendants() do
                         end)
 
                         if Toggles.GN_AnchorCode.Value then
-                            Library:Notify("Anchor code solved.", "The code for Anchor "..NextAnchor.Sign.TextLabel.Text.." is '".. Solved .."'.", 10)
+                            Library:Notify({
+								Title = "Anchor code solved.",
+								Description = "The code for Anchor "..NextAnchor.Sign.TextLabel.Text.." is '".. Solved .."'.", 
+								Duration = 10
+							})
                         end
 
                         local Highlight, TextLabel = Esp(NextAnchor, NextAnchor.AnchorBase, "( ".. Solved .." ) Anchor "..NextAnchor.Sign.TextLabel.Text, Color3.new(0.5, 0.25, 1), nil, nil, "Anchors", "Interactable")
