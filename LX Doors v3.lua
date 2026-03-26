@@ -6413,7 +6413,7 @@ task.spawn(function()
                         Library:Notify({
 							Title = "Padlock code found!", 
 							Description = "The code is... '".. Code .."', this is also printed in console!", 
-							Duration = 10
+							Time = 10
 						})
                         print("[LOLHAX] The padlock code is: ".. Code)
 
@@ -6465,7 +6465,7 @@ task.spawn(function()
 		Library:Notify({
 	      Title ="Load successful.", 
 		  Description =	"Loading finished in ".. string.format("%.2f", tick() - Loadtime) .." seconds.", 
-		  Duration = 10 / 3, 
+		  Time = 10 / 3, 
 		  Force = Force
 		})
 	end
