@@ -3494,7 +3494,10 @@ end),
         repeat task.wait() until v:GetAttribute("RawName")
 
         if v:GetAttribute("RawName") == "Mines_HaltHallway" and Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["Halt"] then
-           Library:Notify("Entity 'Halt' spawns in the next room!", "...")
+           Library:Notify({
+			 Title = "Entity 'Halt' spawns in the next room!",
+			 Description = "..."
+			})
         end
 
         if game.ReplicatedStorage.GameData.Floor.Value == "Hotel" and v.Name == "100" then
@@ -4764,7 +4767,7 @@ Script.Functions.Minecart = {
     DrawNodes = function(...) return true end, --thanks wax, really cool module loading fr fr dawg
 
     debug = function(...)
-        --if Toggles.MinecartTeleportDebug.Value == false then return end
+        if Toggles.DS_Debug.Value == false then return end
         print(...)
         local msg = {}
         for _, v in pairs({ ... }) do
@@ -6404,7 +6407,11 @@ task.spawn(function()
                 if #Code == 5 then
                     if Toggles.GN_PadlockCode.Value then
 
-                        Library:Notify("Padlock code found!", "The code is... '".. Code .."', this is also printed in console!", 10)
+                        Library:Notify({
+							Title = "Padlock code found!", 
+							Description = "The code is... '".. Code .."', this is also printed in console!", 
+							Duration = 10
+						})
                         print("[LOLHAX] The padlock code is: ".. Code)
 
                         PadlockCode_N = Code
