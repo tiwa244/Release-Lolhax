@@ -6621,15 +6621,23 @@ task.spawn(function()
     MenuProperties:AddDivider("Config")
     MenuProperties:AddButton("LX Discord Server", function()
      setclipboard("https://discord.gg/3xqFjM4R")
-     Library:Notify("Copied to clipboard!", "El Pasco!")
-     end)
+     Library:Notify({
+		Title = "Copied to Clipboard!",
+		Time = 10,
+	    Force = true
+	})									
+    end)
     MenuProperties:AddToggle("keybindmenu", { Text = "Show Keybinds", Default = false })
     MenuProperties:AddLabel("if you find a bug, please report them to the bug report server.")
 
     MenuProperties:AddButton("Bug Report Server", function()
      setclipboard("https://discord.gg/9YgVsGBK")
-     Library:Notify("Copied to clipboard!", "I have no idea!" )
-     end)
+     Library:Notify({
+		Title = "Copied to clipboard!",
+		Time = 10,
+		Force = true
+	})
+    end)
 
     Toggles.keybindmenu:OnChanged(function()
         Library.KeybindFrame.Visible = Toggles.keybindmenu.Value
