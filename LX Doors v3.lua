@@ -2333,17 +2333,9 @@ end
     return Highlight, TextLabel
 end
 	
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
-
 local player = Players.LocalPlayer
-local Camera = workspace.CurrentCamera
-local CurrentRooms = workspace:WaitForChild("CurrentRooms")
-
 local ActiveTracers = {}
-
--- GUI
 local ScreenGui = player:WaitForChild("PlayerGui"):FindFirstChild("TracerESP") or Instance.new("ScreenGui")
 ScreenGui.Name = "TracerESP"
 ScreenGui.IgnoreGuiInset = true
@@ -2351,7 +2343,7 @@ ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = player.PlayerGui
 
 -- Create tracer
-local function CreateTracer(highlight)
+function CreateTracer(highlight)
     if not highlight or ActiveTracers[highlight] then return end
 
     local tracer = Instance.new("Path2D")
@@ -2363,7 +2355,7 @@ local function CreateTracer(highlight)
 end
 
 -- Remove tracer
-local function RemoveTracer(highlight)
+function RemoveTracer(highlight)
     local tracer = ActiveTracers[highlight]
     if tracer then
         tracer:Destroy()
@@ -2371,7 +2363,7 @@ local function RemoveTracer(highlight)
     end
 end
 
-local function RemoveAllTracers()
+function RemoveAllTracers()
     for highlight, tracer in pairs(ActiveTracers) do
         if tracer then
             tracer:Destroy()
@@ -2469,15 +2461,7 @@ TracerConnection = RunService.RenderStepped:Connect(function()
     end
 end)
 
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-
-local player = Players.LocalPlayer
-local Camera = workspace.CurrentCamera
-local CurrentRooms = workspace:WaitForChild("CurrentRooms")
-
 local ActiveArrows = {}
-
 -- GUI
 local ScreenGui = player:WaitForChild("PlayerGui"):FindFirstChild("ArrowESP")
 if not ScreenGui then
