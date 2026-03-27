@@ -3423,27 +3423,41 @@ local Connections = {
      return true
 	end
 
-function GrumbleNearby(threshold)
+   function GrumbleNearby(threshold)
     threshold = threshold or 100
+    local closestGrumble = nil
+    local closestDistance = math.huge
 
-    -- direct reference to the Grumble model
-    local grumbleModel = Rooms[50]._NestHandler:FindFirstChild("_QueenGrumbleNest")
-    if grumbleModel and grumbleModel:IsA("Model") then
-        local part = grumbleModel.PrimaryPart or grumbleModel:FindFirstChild("Root")
-        if part then
-            local distance = (LocalPlayer.Character.HumanoidRootPart.Position - part.Position).Magnitude
+    local nest = Rooms[50]._NestHandler._QueenGrumbleNest
+    for _, child in pairs(nest:GetChildren()) do
+        local checkParts = {child}
 
-            if Toggles.DS_Debug.Value then
-                print("Grumble:", grumbleModel, "Distance:", distance)
-            end
+        -- Include one more level of children
+        for _, subChild in pairs(child:GetChildren()) do
+            table.insert(checkParts, subChild)
+        end
 
-            if distance <= threshold then
-                return true, grumbleModel
+        for _, part in pairs(checkParts) do
+            if part:IsA("BasePart") and part.Name:find("Grumble") then
+                local distance = (LocalPlayer.Character.HumanoidRootPart.Position - part.Position).Magnitude
+
+                if Toggles.DS_Debug.Value then
+                    print("Grumble Part:", part, "Distance:", distance)
+                end
+
+                if distance < closestDistance then
+                    closestDistance = distance
+                    closestGrumble = part
+                end
             end
         end
     end
 
-    return false
+    if closestDistance <= threshold then
+        return true, closestGrumble
+    else
+        return false
+    end
 end
 				
 	if Script.IsMines and Script.Bypassed and LocalPlayer:GetAttribute("CurrentRoom") == 51 and GrumbleNearby(100) and AllAnchorsActivated() then
