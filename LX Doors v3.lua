@@ -2332,7 +2332,8 @@ end
 
     return Highlight, TextLabel
 end
-	
+
+--// tracer and arrows?? --\\
 local player = Players.LocalPlayer
 local ActiveTracers = {}
 local ScreenGui = player:WaitForChild("PlayerGui"):FindFirstChild("TracerESP") or Instance.new("ScreenGui")
@@ -2425,7 +2426,6 @@ TracerConnection = RunService.RenderStepped:Connect(function()
             continue
         end
 
-        -- 🔹 NEW: Respect highlight visibility
         if not highlight.Enabled then
             tracer.Visible = false
             continue
@@ -2461,7 +2461,6 @@ TracerConnection = RunService.RenderStepped:Connect(function()
 end)
 
 local ActiveArrows = {}
--- GUI
 local ScreenGui = player:WaitForChild("PlayerGui"):FindFirstChild("ArrowESP")
 if not ScreenGui then
     ScreenGui = Instance.new("ScreenGui")
@@ -2640,6 +2639,7 @@ function RemoveEspSmooth(Parent)
     end
 end
 
+-- // Code \\ --
 function SolveAnchor(Code, Offset)
     local Result = ""
 
