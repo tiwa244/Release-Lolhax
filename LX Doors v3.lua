@@ -6481,7 +6481,12 @@ task.spawn(function()
         ThirdpersonParts:Destroy()
         LXNotifications:Destroy()
         ClonedCollision:Destroy()
+
+		Script.Functions.HideCaptions()
 		lhxnxt_custom_captions:Destroy()
+
+		Toggles.GA_INSTAINTERACT:SetValue(false)
+	    Options.GA_PROMPTREACH_MUTIPLIER:SetValue(1)
 
         game.Lighting.GlobalShadows = true
         game.Lighting.OutdoorAmbient = Color3.new(0,0,0)
