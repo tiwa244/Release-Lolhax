@@ -6629,7 +6629,7 @@ task.spawn(function()
 		if LHXLoadFinish then
 		   Library:Notify({
 			 Title = "[LOLHAX]",
-			 Description = "Notification Side Changed to: " .. tostring(value)
+			 Description = "Notification Side Changed to: " .. tostring(value),
 			 Time = 5
 		})
 		end
