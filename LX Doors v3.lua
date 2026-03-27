@@ -1599,6 +1599,258 @@ function GrumbleNearby(threshold)
 
     return false
 end
+
+--// tracer and arrows?? --\\
+local player = Players.LocalPlayer
+local ActiveTracers = {}
+local ScreenGui = player:WaitForChild("PlayerGui"):FindFirstChild("TracerESP") or Instance.new("ScreenGui")
+ScreenGui.Name = "TracerESP"
+ScreenGui.IgnoreGuiInset = true
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = player.PlayerGui
+
+-- Create tracer
+function CreateTracer(highlight)
+    if not highlight or ActiveTracers[highlight] then return end
+
+    local tracer = Instance.new("Path2D")
+    tracer.Thickness = 2
+    tracer.Visible = false
+    tracer.Parent = ScreenGui
+
+    ActiveTracers[highlight] = tracer
+end
+
+-- Remove tracer
+function RemoveTracer(highlight)
+    local tracer = ActiveTracers[highlight]
+    if tracer then
+        tracer:Destroy()
+        ActiveTracers[highlight] = nil
+    end
+end
+
+function RemoveAllTracers()
+    for highlight, tracer in pairs(ActiveTracers) do
+        if tracer then
+            tracer:Destroy()
+        end
+        ActiveTracers[highlight] = nil
+    end
+
+    table.clear(ActiveTracers)
+end
+
+-- Initial scan (ONLY ONCE)
+for _, v in ipairs(workspace:GetDescendants()) do
+    if v.Name == "_LOLHAXHL" then
+        CreateTracer(v)
+    end
+end
+
+-- Auto detect new highlights
+workspace.DescendantAdded:Connect(function(v)
+    if v.Name == "_LOLHAXHL" then
+        CreateTracer(v)
+    end
+end)
+
+-- Auto cleanup when removed
+workspace.DescendantRemoving:Connect(function(v)
+    if ActiveTracers[v] then
+        RemoveTracer(v)
+    end
+end)
+
+-- ONE render loop
+TracerConnection = RunService.RenderStepped:Connect(function()
+    if not Toggles.ESPI_M_Tracers.Value then
+        for _, tracer in pairs(ActiveTracers) do
+            tracer.Visible = false
+        end
+        return
+    end
+
+    local viewportSize = Camera.ViewportSize
+    local fromSetting = Options.ESPI_V_TracerPos.Value
+
+    local origin
+    if fromSetting == "Mouse" then
+        local mousePos = UserInputService:GetMouseLocation()
+        origin = Vector2.new(mousePos.X, mousePos.Y)
+    elseif fromSetting == "Top" then
+        origin = Vector2.new(viewportSize.X / 2, 0)
+    elseif fromSetting == "Center" then
+        origin = Vector2.new(viewportSize.X / 2, viewportSize.Y / 2)
+    else
+        origin = Vector2.new(viewportSize.X / 2, viewportSize.Y)
+    end
+
+    for highlight, tracer in pairs(ActiveTracers) do
+        -- Remove if no longer valid
+        if not highlight:IsDescendantOf(workspace) then
+            RemoveTracer(highlight)
+            continue
+        end
+
+        if not highlight.Enabled then
+            tracer.Visible = false
+            continue
+        end
+
+        local target = highlight.Adornee or highlight.Parent
+        if not target then
+            tracer.Visible = false
+            continue
+        end
+
+        local pos = target:IsA("Model") and target:GetPivot().Position or target.Position
+        local screenPos, onScreen = Camera:WorldToViewportPoint(pos)
+
+        if onScreen then
+            tracer.Visible = true
+
+            tracer:SetControlPoints({
+                Path2DControlPoint.new(UDim2.fromOffset(origin.X, origin.Y)),
+                Path2DControlPoint.new(UDim2.fromOffset(screenPos.X, screenPos.Y))
+            })
+
+            if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
+                local speed = Options.ESPI_RAINBOW_SPEED.Value
+                tracer.Color3 = Color3.fromHSV((os.clock() % speed) / speed, 0.8, 1)
+            else
+                tracer.Color3 = highlight.FillColor
+            end
+        else
+            tracer.Visible = false
+        end
+    end
+end)
+
+local ActiveArrows = {}
+local ScreenGui = player:WaitForChild("PlayerGui"):FindFirstChild("ArrowESP")
+if not ScreenGui then
+    ScreenGui = Instance.new("ScreenGui")
+    ScreenGui.Name = "ArrowESP"
+    ScreenGui.IgnoreGuiInset = true
+    ScreenGui.ResetOnSpawn = false
+    ScreenGui.Parent = player.PlayerGui
+end
+
+-- Create arrow (NO LOOP)
+local function CreateArrow(highlight)
+    if not highlight or ActiveArrows[highlight] then return end
+
+    local arrow = Instance.new("ImageLabel")
+    arrow.Name = "OffscreenArrow"
+    arrow.Size = UDim2.fromOffset(48, 48)
+    arrow.AnchorPoint = Vector2.new(0.5, 0.5)
+    arrow.BackgroundTransparency = 1
+    arrow.Image = "rbxassetid://16368985219"
+    arrow.Visible = false
+    arrow.ZIndex = 10
+    arrow.Parent = ScreenGui
+
+    ActiveArrows[highlight] = arrow
+end
+
+local function RemoveArrow(highlight)
+    local arrow = ActiveArrows[highlight]
+    if arrow then
+        arrow:Destroy()
+        ActiveArrows[highlight] = nil
+    end
+end
+
+local function RemoveAllArrows()
+    for highlight, arrow in pairs(ActiveArrows) do
+        if arrow then
+            arrow:Destroy()
+        end
+        ActiveArrows[highlight] = nil
+    end
+
+    table.clear(ActiveArrows)
+end
+
+-- Initial scan (once)
+for _, v in ipairs(workspace:GetDescendants()) do
+    if v.Name == "_LOLHAXHL" then
+        CreateArrow(v)
+    end
+end
+
+-- Auto detect new
+workspace.DescendantAdded:Connect(function(v)
+    if v.Name == "_LOLHAXHL" then
+        CreateArrow(v)
+    end
+end)
+
+workspace.DescendantRemoving:Connect(function(v)
+    if ActiveArrows[v] then
+        RemoveArrow(v)
+    end
+end)
+
+-- ONE render loop for ALL arrows
+ArrowConnection = RunService.RenderStepped:Connect(function()
+    if not Toggles.ESPI_M_Arrows.Value then
+        for _, arrow in pairs(ActiveArrows) do
+            arrow.Visible = false
+        end
+        return
+    end
+
+    local screenSize = Camera.ViewportSize
+    local center = Vector2.new(screenSize.X / 2, screenSize.Y / 2)
+    local offsetValue = Options.ESPI_M_ArrowsOffSet.Value
+    local distance = (offsetValue * 0.001) * screenSize.Y
+
+    for highlight, arrow in pairs(ActiveArrows) do
+        if not highlight:IsDescendantOf(CurrentRooms) then
+            RemoveArrow(highlight)
+            continue
+        end
+
+        local target = highlight.Adornee or highlight.Parent
+        if not target then
+            arrow.Visible = false
+            continue
+        end
+
+        local pos = target:IsA("Model") and target:GetPivot().Position or target.Position
+        local screenPos, onScreen = Camera:WorldToViewportPoint(pos)
+
+        if not onScreen then
+            arrow.Visible = true
+
+            local target2D = Vector2.new(screenPos.X, screenPos.Y)
+            local direction = target2D - center
+
+            local inverted = screenPos.Z <= 0
+            local atan = math.atan2(direction.Y, direction.X)
+
+            arrow.Rotation = math.deg(atan) + 90 + (inverted and 0 or 180)
+
+            local invertMultiplier = inverted and -1 or 1
+
+            arrow.Position = UDim2.fromOffset(
+                center.X + (distance * math.cos(atan) * invertMultiplier),
+                center.Y + (distance * math.sin(atan) * invertMultiplier)
+            )
+
+            if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
+                local speed = Options.ESPI_RAINBOW_SPEED.Value
+                arrow.ImageColor3 = Color3.fromHSV((os.clock() % speed) / speed, 0.8, 1)
+            else
+                arrow.ImageColor3 = highlight.FillColor or Color3.new(1,1,1)
+            end
+        else
+            arrow.Visible = false
+        end
+    end
+end)
 	
 -- this is modified version of the lolhaxv2 get player function!
 
@@ -2332,258 +2584,6 @@ end
 
     return Highlight, TextLabel
 end
-
---// tracer and arrows?? --\\
-local player = Players.LocalPlayer
-local ActiveTracers = {}
-local ScreenGui = player:WaitForChild("PlayerGui"):FindFirstChild("TracerESP") or Instance.new("ScreenGui")
-ScreenGui.Name = "TracerESP"
-ScreenGui.IgnoreGuiInset = true
-ScreenGui.ResetOnSpawn = false
-ScreenGui.Parent = player.PlayerGui
-
--- Create tracer
-function CreateTracer(highlight)
-    if not highlight or ActiveTracers[highlight] then return end
-
-    local tracer = Instance.new("Path2D")
-    tracer.Thickness = 2
-    tracer.Visible = false
-    tracer.Parent = ScreenGui
-
-    ActiveTracers[highlight] = tracer
-end
-
--- Remove tracer
-function RemoveTracer(highlight)
-    local tracer = ActiveTracers[highlight]
-    if tracer then
-        tracer:Destroy()
-        ActiveTracers[highlight] = nil
-    end
-end
-
-function RemoveAllTracers()
-    for highlight, tracer in pairs(ActiveTracers) do
-        if tracer then
-            tracer:Destroy()
-        end
-        ActiveTracers[highlight] = nil
-    end
-
-    table.clear(ActiveTracers)
-end
-
--- Initial scan (ONLY ONCE)
-for _, v in ipairs(workspace:GetDescendants()) do
-    if v.Name == "_LOLHAXHL" then
-        CreateTracer(v)
-    end
-end
-
--- Auto detect new highlights
-workspace.DescendantAdded:Connect(function(v)
-    if v.Name == "_LOLHAXHL" then
-        CreateTracer(v)
-    end
-end)
-
--- Auto cleanup when removed
-workspace.DescendantRemoving:Connect(function(v)
-    if ActiveTracers[v] then
-        RemoveTracer(v)
-    end
-end)
-
--- ONE render loop
-TracerConnection = RunService.RenderStepped:Connect(function()
-    if not Toggles.ESPI_M_Tracers.Value then
-        for _, tracer in pairs(ActiveTracers) do
-            tracer.Visible = false
-        end
-        return
-    end
-
-    local viewportSize = Camera.ViewportSize
-    local fromSetting = Options.ESPI_V_TracerPos.Value
-
-    local origin
-    if fromSetting == "Mouse" then
-        local mousePos = UserInputService:GetMouseLocation()
-        origin = Vector2.new(mousePos.X, mousePos.Y)
-    elseif fromSetting == "Top" then
-        origin = Vector2.new(viewportSize.X / 2, 0)
-    elseif fromSetting == "Center" then
-        origin = Vector2.new(viewportSize.X / 2, viewportSize.Y / 2)
-    else
-        origin = Vector2.new(viewportSize.X / 2, viewportSize.Y)
-    end
-
-    for highlight, tracer in pairs(ActiveTracers) do
-        -- Remove if no longer valid
-        if not highlight:IsDescendantOf(workspace) then
-            RemoveTracer(highlight)
-            continue
-        end
-
-        if not highlight.Enabled then
-            tracer.Visible = false
-            continue
-        end
-
-        local target = highlight.Adornee or highlight.Parent
-        if not target then
-            tracer.Visible = false
-            continue
-        end
-
-        local pos = target:IsA("Model") and target:GetPivot().Position or target.Position
-        local screenPos, onScreen = Camera:WorldToViewportPoint(pos)
-
-        if onScreen then
-            tracer.Visible = true
-
-            tracer:SetControlPoints({
-                Path2DControlPoint.new(UDim2.fromOffset(origin.X, origin.Y)),
-                Path2DControlPoint.new(UDim2.fromOffset(screenPos.X, screenPos.Y))
-            })
-
-            if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
-                local speed = Options.ESPI_RAINBOW_SPEED.Value
-                tracer.Color3 = Color3.fromHSV((os.clock() % speed) / speed, 0.8, 1)
-            else
-                tracer.Color3 = highlight.FillColor
-            end
-        else
-            tracer.Visible = false
-        end
-    end
-end)
-
-local ActiveArrows = {}
-local ScreenGui = player:WaitForChild("PlayerGui"):FindFirstChild("ArrowESP")
-if not ScreenGui then
-    ScreenGui = Instance.new("ScreenGui")
-    ScreenGui.Name = "ArrowESP"
-    ScreenGui.IgnoreGuiInset = true
-    ScreenGui.ResetOnSpawn = false
-    ScreenGui.Parent = player.PlayerGui
-end
-
--- Create arrow (NO LOOP)
-local function CreateArrow(highlight)
-    if not highlight or ActiveArrows[highlight] then return end
-
-    local arrow = Instance.new("ImageLabel")
-    arrow.Name = "OffscreenArrow"
-    arrow.Size = UDim2.fromOffset(48, 48)
-    arrow.AnchorPoint = Vector2.new(0.5, 0.5)
-    arrow.BackgroundTransparency = 1
-    arrow.Image = "rbxassetid://16368985219"
-    arrow.Visible = false
-    arrow.ZIndex = 10
-    arrow.Parent = ScreenGui
-
-    ActiveArrows[highlight] = arrow
-end
-
-local function RemoveArrow(highlight)
-    local arrow = ActiveArrows[highlight]
-    if arrow then
-        arrow:Destroy()
-        ActiveArrows[highlight] = nil
-    end
-end
-
-local function RemoveAllArrows()
-    for highlight, arrow in pairs(ActiveArrows) do
-        if arrow then
-            arrow:Destroy()
-        end
-        ActiveArrows[highlight] = nil
-    end
-
-    table.clear(ActiveArrows)
-end
-
--- Initial scan (once)
-for _, v in ipairs(workspace:GetDescendants()) do
-    if v.Name == "_LOLHAXHL" then
-        CreateArrow(v)
-    end
-end
-
--- Auto detect new
-workspace.DescendantAdded:Connect(function(v)
-    if v.Name == "_LOLHAXHL" then
-        CreateArrow(v)
-    end
-end)
-
-workspace.DescendantRemoving:Connect(function(v)
-    if ActiveArrows[v] then
-        RemoveArrow(v)
-    end
-end)
-
--- ONE render loop for ALL arrows
-ArrowConnection = RunService.RenderStepped:Connect(function()
-    if not Toggles.ESPI_M_Arrows.Value then
-        for _, arrow in pairs(ActiveArrows) do
-            arrow.Visible = false
-        end
-        return
-    end
-
-    local screenSize = Camera.ViewportSize
-    local center = Vector2.new(screenSize.X / 2, screenSize.Y / 2)
-    local offsetValue = Options.ESPI_M_ArrowsOffSet.Value
-    local distance = (offsetValue * 0.001) * screenSize.Y
-
-    for highlight, arrow in pairs(ActiveArrows) do
-        if not highlight:IsDescendantOf(CurrentRooms) then
-            RemoveArrow(highlight)
-            continue
-        end
-
-        local target = highlight.Adornee or highlight.Parent
-        if not target then
-            arrow.Visible = false
-            continue
-        end
-
-        local pos = target:IsA("Model") and target:GetPivot().Position or target.Position
-        local screenPos, onScreen = Camera:WorldToViewportPoint(pos)
-
-        if not onScreen then
-            arrow.Visible = true
-
-            local target2D = Vector2.new(screenPos.X, screenPos.Y)
-            local direction = target2D - center
-
-            local inverted = screenPos.Z <= 0
-            local atan = math.atan2(direction.Y, direction.X)
-
-            arrow.Rotation = math.deg(atan) + 90 + (inverted and 0 or 180)
-
-            local invertMultiplier = inverted and -1 or 1
-
-            arrow.Position = UDim2.fromOffset(
-                center.X + (distance * math.cos(atan) * invertMultiplier),
-                center.Y + (distance * math.sin(atan) * invertMultiplier)
-            )
-
-            if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
-                local speed = Options.ESPI_RAINBOW_SPEED.Value
-                arrow.ImageColor3 = Color3.fromHSV((os.clock() % speed) / speed, 0.8, 1)
-            else
-                arrow.ImageColor3 = highlight.FillColor or Color3.new(1,1,1)
-            end
-        else
-            arrow.Visible = false
-        end
-    end
-end)
 
 function EspUpdate()
     for _, Table in EspTable.Interactables do
