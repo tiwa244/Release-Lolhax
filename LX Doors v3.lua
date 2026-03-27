@@ -672,7 +672,6 @@ local Fly = {
     Speed = 50
 }
 
--- 
 local Controls = require(LocalPlayer.PlayerScripts:WaitForChild("PlayerModule")):GetControls()
 
 Fly.FlyBody.Velocity = Vector3.zero
@@ -680,7 +679,6 @@ Fly.FlyBody.MaxForce = Vector3.one * 9e9
 Fly.FlyGyro.P = 9e4
 Fly.FlyGyro.MaxTorque = Vector3.one * 9e9
 
--- 
 local FlyConnection = RunService.RenderStepped:Connect(function()
     if not Fly.Enabled then return end
     
@@ -699,7 +697,7 @@ local FlyConnection = RunService.RenderStepped:Connect(function()
     if UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) then velocity -= cam.CFrame.UpVector end
 
 if velocity.Magnitude > 0 then
-        -- 
+    
         if root.Anchored then 
             root.Anchored = false 
         end
@@ -709,10 +707,8 @@ if velocity.Magnitude > 0 then
             Fly.FlyGyro.Parent = root
         end
         
-        -- 
         Fly.FlyBody.Velocity = velocity * Fly.Speed
         
-        -- 
         local camLook = cam.CFrame.LookVector
         Fly.FlyGyro.CFrame = CFrame.lookAt(Vector3.zero, Vector3.new(camLook.X, 0, camLook.Z))
     else
@@ -749,7 +745,7 @@ function Fly:Set(val)
         -- nil 
         warn("Infinite yield possible on 'workspace." .. LocalPlayer.Name .. ".HumanoidRootPart'")
     else
-        -- enabling die
+        -- i pobabapy ront know
         if hum then
             hum.PlatformStand = true
             hum:ChangeState(Enum.HumanoidStateType.Physics)
