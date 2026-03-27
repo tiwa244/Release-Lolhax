@@ -3424,7 +3424,7 @@ local Connections = {
 	end
 
 function GrumbleNearby(threshold)
-    threshold = threshold
+    threshold = threshold or 165
     local Grumble = Rooms[50]._NestHandler:FindFirstChild("_QueenGrumbleNest")
     if not Grumble then return false end
 
