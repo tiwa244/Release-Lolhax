@@ -2071,7 +2071,7 @@ function Library:Notify(options, description, duration, force)
 
     -- fallback
     return SafeCall(function()
-        return Notify(options, data.Time)
+        return Notify(data.Title, data.Description, data.Time, data.Force)
     end)
 end
 
