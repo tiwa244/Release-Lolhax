@@ -770,11 +770,6 @@ function Fly:Disable()
     self:Set(false)
 end
 
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-
-local player = Players.LocalPlayer
-
 local noclipEnabled = false
 local savedStates = {}
 local descendantConnection
@@ -801,7 +796,7 @@ local function restoreCollision()
 end
 
 local function enableNoclip()
-    local char = player.Character
+    local char = LocalPlayer.Character
     if not char then return end
 
     noclipEnabled = true
@@ -856,7 +851,7 @@ local function toggleNoclip()
     end
 end
 
-player.CharacterAdded:Connect(function(char)
+LocalPlayer.CharacterAdded:Connect(function(char)
     char:WaitForChild("HumanoidRootPart")
     if noclipEnabled then
         enableNoclip()
@@ -869,24 +864,13 @@ Toggles.GA_Noclip:OnChanged(function()
     toggleNoclip(value)
 end)
 
-local RunService = game:GetService("RunService")
-
---------------------------------------------------
--- i dunno
---------------------------------------------------
 if _G.RainbowConnection then
 	_G.RainbowConnection:Disconnect()
 	_G.RainbowConnection = nil
 end
 
---------------------------------------------------
--- STORAGE
---------------------------------------------------
 local OriginalColors = {}
 
---------------------------------------------------
--- SAVE ORIGINAL COLORS (ONLY ONCE)
---------------------------------------------------
 local function SaveOriginal(instance)
 	if instance:IsA("Highlight") then
 		if not OriginalColors[instance] then
@@ -908,9 +892,6 @@ local function SaveOriginal(instance)
 	end
 end
 
---------------------------------------------------
--- SCAN WORKSPACE + SAVE
---------------------------------------------------
 for _, v in ipairs(workspace:GetDescendants()) do
 	if v:IsA("Highlight") or v:IsA("BillboardGui") then
 		SaveOriginal(v)
@@ -923,7 +904,7 @@ workspace.DescendantAdded:Connect(function(v)
 	end
 end)
 
-local function RestoreOriginal()
+function RestoreOriginal()
 	for instance, data in pairs(OriginalColors) do
 		if instance and instance.Parent then
 			if data.Type == "Highlight" then
@@ -967,7 +948,7 @@ local function StartRainbow()
 end
 
 	-- stip rqinbow
-local function StopRainbow()
+function StopRainbow()
 	if _G.RainbowConnection then
 		_G.RainbowConnection:Disconnect()
 		_G.RainbowConnection = nil
@@ -975,9 +956,7 @@ local function StopRainbow()
 	RestoreOriginal()
 end
 
---------------------------------------------------
--- TOGGLE HANDLER
---------------------------------------------------
+
 Toggles.ESPI_RAINBOW_HIGHLIGHT:OnChanged(function()
 	if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
 		StartRainbow()
