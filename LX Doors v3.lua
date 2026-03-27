@@ -6634,6 +6634,7 @@ task.spawn(function()
 		})
 		end
 	end,
+	})
     MenuProperties:AddDivider("Config")
     MenuProperties:AddButton("LX Discord Server", function()
      setclipboard("https://discord.gg/3xqFjM4R")
