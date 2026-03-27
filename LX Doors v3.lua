@@ -4383,16 +4383,16 @@ local HasteTimerConnection
 
 Toggles.ES_HASTECLOCK:OnChanged(function(value)
     HasteLoopActive = value
-    print("Toggle changed: " .. tostring(value))-- debug 111
-    
+    if Toggles.DS_Debug.Value then
+        print("FloorReplicated found: " .. tostring(FloorRep ~= nil)) -- DEBUG 2
+		print("Toggle changed: " .. tostring(value)) -- debug 111
+	end
+
     if value then
         task.spawn(function()
             local ReplicatedStorage = game:GetService("ReplicatedStorage")  
-            
-            --  floorep
             local FloorRep = ReplicatedStorage:FindFirstChild("FloorReplicated")
-            print("FloorReplicated found: " .. tostring(FloorRep ~= nil)) -- DEBUG 2
-            
+							
             while HasteLoopActive do
                 local TimerObj = FloorRep and FloorRep:FindFirstChild("DigitalTimer")
                 
@@ -4401,24 +4401,22 @@ Toggles.ES_HASTECLOCK:OnChanged(function(value)
                     if val and typeof(val) == "number" then
                         local minutes = math.floor(val / 60)
                         local seconds = math.floor(val % 60)
-                        
                         local minStr = (minutes < 10 and "0" or "") .. tostring(minutes)
                         local secStr = (seconds < 10 and "0" or "") .. tostring(seconds)
                         local text = minStr .. ":" .. secStr
-                        
+
                         pcall(function()
                             Script.Functions.Captions("HASTE: " .. text)
                         end)
                     end
-                else
-                    print("GET OUT") 
                 end
                 task.wait()
             end
-            
-            pcall(function()
-                Script.Functions.HideCaptions()
-            end)
+        end)
+    else
+        -- hide captions immediately when toggle is false
+        pcall(function()
+            Script.Functions.HideCaptions()
         end)
     end
 end)
