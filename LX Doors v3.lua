@@ -6648,7 +6648,7 @@ task.spawn(function()
         if LHXLoadFinish then
             Library:Notify({
                 Title = "[LOLHAX]",
-                Description = "Notification Style Changed to: " .. value,
+                Description = "Notification Style Changed to: " .. tostring(value),
                 Time = 5
             })
         end
@@ -6657,22 +6657,14 @@ task.spawn(function()
     MenuProperties:AddDivider("Config")
     MenuProperties:AddButton("LX Discord Server", function()
      setclipboard("https://discord.gg/3xqFjM4R")
-     Library:Notify({
-		Title = "Copied to clipboard!", 
-		Description = nil, 
-		Time = 10
-	})
+     Library:Notify("Copied to clipboard!", nil, 10)
     end)
     MenuProperties:AddToggle("keybindmenu", { Text = "Show Keybinds", Default = false })
     MenuProperties:AddLabel("if you find a bug, please report them to the bug report server.")
 
     MenuProperties:AddButton("Bug Report Server", function()
      setclipboard("https://discord.gg/9YgVsGBK")
-     Library:Notify({
-		Title = "Copied to clipboard!", 
-		Description = nil, 
-		Time = 10
-	})
+     Library:Notify("Copied to clipboard!", nil, 10)
     end)
 
     Toggles.keybindmenu:OnChanged(function()
