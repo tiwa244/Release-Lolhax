@@ -6632,6 +6632,7 @@ task.spawn(function()
 			 Description = "Notification Side Changed to: " .. tostring(value)
 			 Time = 5
 		})
+		end
 	end,
     MenuProperties:AddDivider("Config")
     MenuProperties:AddButton("LX Discord Server", function()
