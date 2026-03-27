@@ -3424,7 +3424,7 @@ local Connections = {
 	end
 
 function GrumbleNearby(threshold)
-    threshold = threshold or 165
+    threshold = threshold or 170
     local Grumble = Rooms[50]._NestHandler:FindFirstChild("_QueenGrumbleNest")
     if not Grumble then return false end
 
@@ -3442,7 +3442,7 @@ function GrumbleNearby(threshold)
     return false
 end
 				
-	if Script.IsMines and Script.Bypassed and LocalPlayer:GetAttribute("CurrentRoom") == 51 and GrumbleNearby(165) and AllAnchorsActivated() then
+	if Script.IsMines and Script.Bypassed and LocalPlayer:GetAttribute("CurrentRoom") == 51 and GrumbleNearby(170) and AllAnchorsActivated() then
 		Script.Bypassed = false
 		local idk2 = Instance.new("Folder", shared.Script.Workspace or Workspace)
 		idk2.Name = "_internal_lhx_acbypassprogress"
