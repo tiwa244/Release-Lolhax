@@ -2667,7 +2667,6 @@ function RemoveEspSmooth(Parent)
 
 		elseif x.Name == "_LOLHAXHL" and not Toggles.ESPS_FadeAnim.Value then
             x:Destroy()
-		    end
         end
     end
 end
