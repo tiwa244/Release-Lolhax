@@ -1587,6 +1587,39 @@ function Script.Functions.CalculateHideTime(room: number)
 
     return nil
 end
+
+function AllAnchorsActivated()
+       for _, obj in pairs(Rooms[50]._NestHandler:GetChildren()) do
+        if obj.Name == "MinesAnchor" then
+		    if Toggles.DS_Debug.Value then
+			print(obj, obj:GetAttribute("Activated"))
+		    end
+            if not obj:GetAttribute("Activated") then
+                return false
+            end
+         end
+      end
+    return true
+end
+
+function GrumbleNearby(threshold)
+    threshold = threshold or 170
+    local Grumble = Rooms[50]._NestHandler:FindFirstChild("_QueenGrumbleNest")
+    if not Grumble then return false end
+
+    local part = Grumble.PrimaryPart or Grumble:FindFirstChildWhichIsA("BasePart")
+    if part then
+        local distance = (LocalPlayer.Character.HumanoidRootPart.Position - part.Position).Magnitude
+        if Toggles.DS_Debug.Value then
+            print("Grumble:", Grumble, "Distance:", distance)
+        end
+        if distance <= threshold then
+            return true, Grumble
+        end
+    end
+
+    return false
+end
 	
 -- this is modified version of the lolhaxv2 get player function!
 
@@ -3408,39 +3441,6 @@ local Connections = {
 			LinoriaMessage = '"Seek Chase 2" has broken anticheat bypass, please go on a ladder again to fix it.'
 		})
     end
-
-	function AllAnchorsActivated()
-       for _, obj in pairs(Rooms[50]._NestHandler:GetChildren()) do
-        if obj.Name == "MinesAnchor" then
-		    if Toggles.DS_Debug.Value then
-			print(obj, obj:GetAttribute("Activated"))
-		    end
-            if not obj:GetAttribute("Activated") then
-                return false
-            end
-         end
-      end
-     return true
-	end
-
-function GrumbleNearby(threshold)
-    threshold = threshold or 170
-    local Grumble = Rooms[50]._NestHandler:FindFirstChild("_QueenGrumbleNest")
-    if not Grumble then return false end
-
-    local part = Grumble.PrimaryPart or Grumble:FindFirstChildWhichIsA("BasePart")
-    if part then
-        local distance = (LocalPlayer.Character.HumanoidRootPart.Position - part.Position).Magnitude
-        if Toggles.DS_Debug.Value then
-            print("Grumble:", Grumble, "Distance:", distance)
-        end
-        if distance <= threshold then
-            return true, Grumble
-        end
-    end
-
-    return false
-end
 				
 	if Script.IsMines and Script.Bypassed and LocalPlayer:GetAttribute("CurrentRoom") == 51 and GrumbleNearby(170) and AllAnchorsActivated() then
 		Script.Bypassed = false
