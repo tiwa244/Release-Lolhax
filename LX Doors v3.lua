@@ -1092,7 +1092,7 @@ Options.ESPI_C_Style:OnChanged(function(Value)
     IsSwitching = false 
 end)
 local ESPSettings = Tabs.ESP:AddRightGroupbox("ESP Settings")
-ESPSettings:AddDropdown("ESPS_Font", { Values = { "Arial", "SourceSans", "Highway", "Fantasy", "Gotham", "DenkOne", "JosefinSans", "Nunito", "Oswald", "RobotoMono", "Sarpanch", "Ubuntu" }, Default = 9, Multi = false, Text = "Text Font" })
+ESPSettings:AddDropdown("ESPS_Font", { Values = { "Arial", "SourceSans", "Highway", "Fantasy", "Gotham", "DenkOne", "JosefinSans", "Nunito", "Oswald", "RobotoMono", "Roboto", "RobotoCondensed", "Sarpanch", "Ubuntu" }, Default = 9, Multi = false, Text = "Text Font" })
 ESPSettings:AddSlider("ESPS_FontSize", { Text = "Font Size", Default = 20, Min = 10, Max = 32, Rounding = 0, Compact = true })
 ESPSettings:AddDivider("Highlight")
 ESPSettings:AddSlider("ESPS_FillTransparency", { Text = "Fill Transparency", Default = 0.7, Min = 0, Max = 1, Rounding = 2, Compact = true })
