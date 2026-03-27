@@ -6481,6 +6481,7 @@ task.spawn(function()
         ThirdpersonParts:Destroy()
         LXNotifications:Destroy()
         ClonedCollision:Destroy()
+		lhxnxt_custom_captions:Destroy()
 
         game.Lighting.GlobalShadows = true
         game.Lighting.OutdoorAmbient = Color3.new(0,0,0)
@@ -6516,9 +6517,6 @@ task.spawn(function()
     end
         Fly:Disable()
 		disableNoclip()
-		Script.Functions.HideCaptions()
-		lhxnxt_custom_captions:Destroy()
-	    lhxnxt_custom_captions = nil
         RemoveAllTracers()
         RemoveAllArrows()
         getgenv().UsingLOLHAX = false
