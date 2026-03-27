@@ -2284,6 +2284,10 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, Var
             end
 
             -- fill / outline
+		    local removing = Highlight:GetAttribute("_removingespfrfr") or Billboard:GetAttribute("_removingespfrfr")
+		if removing then
+
+		else
             Highlight.FillTransparency =
                 (Toggles[cfg.Fill] and Toggles[cfg.Fill].Value)
                 and Options.ESPS_FillTransparency.Value or 1
@@ -2291,6 +2295,7 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, Var
             Highlight.OutlineTransparency =
                 (Toggles[cfg.Outline] and Toggles[cfg.Outline].Value)
                 and Options.ESPS_OutlineTransparency.Value or 1
+		end
 
             -- distance
             if Toggles[cfg.Distance] and Toggles[cfg.Distance].Value then
@@ -2656,6 +2661,7 @@ end
 function RemoveEspSmooth(Parent)
     for _, x in Parent:GetChildren() do
         if x.Name == "_LOLHAXBG" and Toggles.ESPS_FadeAnim.Value then
+			x:SetAttribute("_removingespfrfr", true)
             game:GetService("TweenService"):Create( x.TextLabel, TweenInfo.new(1), { TextTransparency = 1 } ):Play()
 
             task.delay(Options.ESPS_FadeTime.Value, function()
@@ -2667,6 +2673,7 @@ function RemoveEspSmooth(Parent)
 		end
 				
         if x.Name == "_LOLHAXHL" and Toggles.ESPS_FadeAnim.Value then
+		    x:SetAttribute("_removingespfrfr", true)
             game:GetService("TweenService"):Create( x, TweenInfo.new( Options.ESPS_FadeTime.Value ), { FillTransparency = 1 } ):Play()
             game:GetService("TweenService"):Create( x, TweenInfo.new( Options.ESPS_FadeTime.Value ), { OutlineTransparency = 1 } ):Play()
 
