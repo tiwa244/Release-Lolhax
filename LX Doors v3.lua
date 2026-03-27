@@ -3449,10 +3449,10 @@ end
 
 		Library:Notify({
 			Title = "Anticheat Bypass",
-			Description = '"Grumble Cutscene 2" has broken anticheat bypass, please go on a ladder again to fix it.',
+			Description = '"Grumble End" has broken anticheat bypass, please go on a ladder again to fix it.',
 			Time = idk2,
 
-		    LinoriaMessage = '"Grumble Cutscene 2" has broken anticheat bypass, please go on a ladder again to fix it.'
+		    LinoriaMessage = '"Grumble End" has broken anticheat bypass, please go on a ladder again to fix it.'
 		})
 	end
 					
