@@ -3978,7 +3978,7 @@ end),
                     repeat task.wait() until NextAnchor:GetAttribute("Activated")
 
                     RemoveEspSmooth(NextAnchor)
-                    v.Console.Button.ActivateEventPrompt:GetAttributeChangedSignal("Interactions"):Wait()
+                    NextAnchor:GetAttributeChangedSignal("Activated"):Wait()
 
                     table.clear(Anchors)
                 end
