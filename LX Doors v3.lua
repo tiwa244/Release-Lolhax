@@ -2206,17 +2206,8 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, Var
 
 			enabled = enabled and (Parent:GetAttribute("IsCurrentRoom") ~= false)
 
-		if TextLabel.Destroying then
-
-		else
             TextLabel.Visible = enabled
-	    end
-
-		if Highlight.Destroying then
-
-		else
             Highlight.Enabled = enabled
-		end
 
             if not enabled then continue end
 
