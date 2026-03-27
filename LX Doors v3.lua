@@ -2333,7 +2333,6 @@ end
     return Highlight, TextLabel
 end
 	
-local UserInputService = game:GetService("UserInputService")
 local player = Players.LocalPlayer
 local ActiveTracers = {}
 local ScreenGui = player:WaitForChild("PlayerGui"):FindFirstChild("TracerESP") or Instance.new("ScreenGui")
