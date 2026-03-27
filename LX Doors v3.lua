@@ -6514,6 +6514,7 @@ task.spawn(function()
     end
         Fly:Disable()
 		disableNoclip()
+		Script.Functions.HideCaptions()
         RemoveAllTracers()
         RemoveAllArrows()
         getgenv().UsingLOLHAX = false
