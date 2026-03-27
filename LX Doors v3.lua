@@ -345,6 +345,7 @@ do
     Frame.BorderSizePixel = 2
     Frame.Position = UDim2.new(0.5, 0, 0.8, 0)
     Frame.Size = UDim2.new(0, 200, 0, 75)
+	Frame.Visible = not IsCaptionHidden
     
     Library:AddToRegistry(Frame, {
         BackgroundColor3 = "MainColor",
