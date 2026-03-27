@@ -333,9 +333,10 @@ do
     local UITextSizeConstraint = Instance.new("UITextSizeConstraint", TextLabel)
 
     local CoreGui = game:GetService("CoreGui")
-    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+    local Folder = Instance.new("Folder", game)
+	Folder.Name = LoremIpsumNonsense[math.random(1, #LoremIpsumNonsense)]
     
-    lhxnxt_custom_captions.Parent = ReplicatedStorage
+    lhxnxt_custom_captions.Parent = Folder
     lhxnxt_custom_captions.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
     Frame.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -379,7 +380,7 @@ do
     
     function Script.Functions.HideCaptions()
         IsCaptionHidden = true
-        lhxnxt_custom_captions.Parent = ReplicatedStorage
+        lhxnxt_custom_captions.Parent = Folder
     end
 
     function Script.Functions.Captions(caption)
