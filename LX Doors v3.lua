@@ -665,7 +665,6 @@ local RainbowToggle = ESPInteractables_Main:AddToggle("ESPI_RAINBOW_HIGHLIGHT", 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
-
 local Fly = {
     FlyBody = Instance.new("BodyVelocity"),
     FlyGyro = Instance.new("BodyGyro"),
@@ -770,11 +769,7 @@ function Fly:Disable()
     self:Set(false)
 end
 
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-
 local player = Players.LocalPlayer
-
 local noclipEnabled = false
 local savedStates = {}
 local descendantConnection
@@ -869,24 +864,13 @@ Toggles.GA_Noclip:OnChanged(function()
     toggleNoclip(value)
 end)
 
-local RunService = game:GetService("RunService")
-
---------------------------------------------------
--- i dunno
---------------------------------------------------
 if _G.RainbowConnection then
 	_G.RainbowConnection:Disconnect()
 	_G.RainbowConnection = nil
 end
 
---------------------------------------------------
--- STORAGE
---------------------------------------------------
 local OriginalColors = {}
 
---------------------------------------------------
--- SAVE ORIGINAL COLORS (ONLY ONCE)
---------------------------------------------------
 local function SaveOriginal(instance)
 	if instance:IsA("Highlight") then
 		if not OriginalColors[instance] then
@@ -908,9 +892,6 @@ local function SaveOriginal(instance)
 	end
 end
 
---------------------------------------------------
--- SCAN WORKSPACE + SAVE
---------------------------------------------------
 for _, v in ipairs(workspace:GetDescendants()) do
 	if v:IsA("Highlight") or v:IsA("BillboardGui") then
 		SaveOriginal(v)
@@ -937,7 +918,6 @@ local function RestoreOriginal()
 	end
 end
 
-	-- fix uh ubpaod flprobekm
 RestoreOriginal()
 
 local function StartRainbow()
@@ -975,9 +955,6 @@ local function StopRainbow()
 	RestoreOriginal()
 end
 
---------------------------------------------------
--- TOGGLE HANDLER
---------------------------------------------------
 Toggles.ESPI_RAINBOW_HIGHLIGHT:OnChanged(function()
 	if Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
 		StartRainbow()
@@ -1621,14 +1598,8 @@ function GrumbleNearby(threshold)
     return false
 end
 
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
-
-local player = Players.LocalPlayer
 local Camera = workspace.CurrentCamera
-local CurrentRooms = workspace:WaitForChild("CurrentRooms")
-
+local CurrentRooms = Rooms
 local ActiveTracers = {}
 
 -- GUI
@@ -1756,13 +1727,6 @@ TracerConnection = RunService.RenderStepped:Connect(function()
         end
     end
 end)
-
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-
-local player = Players.LocalPlayer
-local Camera = workspace.CurrentCamera
-local CurrentRooms = workspace:WaitForChild("CurrentRooms")
 
 local ActiveArrows = {}
 
