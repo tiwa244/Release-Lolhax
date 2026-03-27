@@ -3425,21 +3425,17 @@ local Connections = {
 
 function GrumbleNearby(threshold)
     threshold = threshold or 100
+    local Grumble = Rooms[50]._NestHandler:FindFirstChild("_QueenGrumbleNest")
+    if not Grumble then return false end
 
-    -- direct reference to the Grumble model
-    local grumbleModel = Rooms[50]._NestHandler:FindFirstChild("_QueenGrumbleNest")
-    if grumbleModel and grumbleModel:IsA("Model") then
-        local part = grumbleModel.PrimaryPart or grumbleModel:FindFirstChild("Root")
-        if part then
-            local distance = (LocalPlayer.Character.HumanoidRootPart.Position - part.Position).Magnitude
-
-            if Toggles.DS_Debug.Value then
-                print("Grumble:", grumbleModel, "Distance:", distance)
-            end
-
-            if distance <= threshold then
-                return true, grumbleModel
-            end
+    local part = Grumble.PrimaryPart or Grumble:FindFirstChildWhichIsA("BasePart")
+    if part then
+        local distance = (LocalPlayer.Character.HumanoidRootPart.Position - part.Position).Magnitude
+        if Toggles.DS_Debug.Value then
+            print("Grumble:", Grumble, "Distance:", distance)
+        end
+        if distance <= threshold then
+            return true, Grumble
         end
     end
 
