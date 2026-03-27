@@ -6515,8 +6515,9 @@ task.spawn(function()
         Fly:Disable()
 		disableNoclip()
 		Script.Functions.HideCaptions()
-		lhxnt_custom_captions:Destroy()
-	    lhxnt_custom_captions = nil
+		lhxnxt_custom_captions.Frame.Visible = false
+		lhxnxt_custom_captions:Destroy()
+	    lhxnxt_custom_captions = nil
         RemoveAllTracers()
         RemoveAllArrows()
         getgenv().UsingLOLHAX = false
