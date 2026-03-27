@@ -2284,7 +2284,7 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, Var
             end
 
             -- fill / outline
-		    local removing = Highlight:GetAttribute("_removingespfrfr") or Billboard:GetAttribute("_removingespfrfr")
+		    local removing = Highlight:GetAttribute("_removingespfrfr") or BillboardGui:GetAttribute("_removingespfrfr")
 		if removing then
 
 		else
