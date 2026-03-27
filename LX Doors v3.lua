@@ -2657,7 +2657,7 @@ function RemoveEspSmooth(Parent)
             x:Destroy()
 		end
 				
-        elseif x.Name == "_LOLHAXHL" and Toggles.ESPS_FadeAnim.Value then
+        if x.Name == "_LOLHAXHL" and Toggles.ESPS_FadeAnim.Value then
             game:GetService("TweenService"):Create( x, TweenInfo.new( Options.ESPS_FadeTime.Value ), { FillTransparency = 1 } ):Play()
             game:GetService("TweenService"):Create( x, TweenInfo.new( Options.ESPS_FadeTime.Value ), { OutlineTransparency = 1 } ):Play()
 
@@ -2665,7 +2665,7 @@ function RemoveEspSmooth(Parent)
                 x:Destroy()
             end)
 
-		if x.Name == "_LOLHAXHL" and not Toggles.ESPS_FadeAnim.Value then
+		elseif x.Name == "_LOLHAXHL" and not Toggles.ESPS_FadeAnim.Value then
             x:Destroy()
 		    end
         end
