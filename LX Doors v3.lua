@@ -6621,7 +6621,7 @@ task.spawn(function()
      Library:Notify("Copied to clipboard!", nil, 10)
     end)
     MenuProperties:AddToggle("keybindmenu", { Text = "Show Keybinds", Default = false })
-    MenuProperties:AddLabel("if you find a bug, please report them to the bug report server.")
+    MenuProperties:AddLabel("if you find a bug, please report them to the bug report server.", true)
 
     MenuProperties:AddButton("Bug Report Server", function()
      setclipboard("https://discord.gg/9YgVsGBK")
