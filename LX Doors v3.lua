@@ -173,21 +173,6 @@ function SwitchNotify(notifyName)
     end
 end
 
-function SwitchSide(Value: string)
-    -- its not loaded so refhrn snd
-    if not LHXLoadFinish then 
-        print("ignored:", Value)
-        return 
-    end
-
-    if Value ~= config.CurrentSide then
-        config.CurrentSide = Value
-		--Library.ForceCheckbox = Value
-        writefile(filename, HttpService:JSONEncode(config))
-        print("saved ye " .. Value)
-    end
-end
-
 -- Ui Setup vvv
 
 getgenv().UseLib = config
@@ -1874,6 +1859,21 @@ ArrowConnection = RunService.RenderStepped:Connect(function()
     end
 end)
 
+function SwitchSide(Value: string)
+    -- its not loaded so refhrn snd
+    if not LHXLoadFinish then 
+        print("ignored:", Value)
+        return 
+    end
+
+    if Value ~= config.CurrentSide then
+        config.CurrentSide = Value
+		--Library.ForceCheckbox = Value
+        writefile(filename, HttpService:JSONEncode(config))
+        print("saved ye " .. Value)
+    end
+end
+	
 -- this is modified version of the lolhaxv2 get player function!
 
 function HasItem(Item)
@@ -6702,7 +6702,7 @@ task.spawn(function()
     DebugStuff:AddToggle("DS_BSRPC", { Text = "Bloxstrap RPC", Default = true })
     DebugStuff:AddLabel("Floor: " .. game.ReplicatedStorage.GameData.Floor.Value)
     DebugStuff:AddLabel("lolhax version: 3.0.2.8b")
-	DebugStuff:AddLabel("lolhax commit message: finally full support for notify side and wrapped text for this chat???? yo finally broooisisisjssj", true)
+	DebugStuff:AddLabel("lolhax commit message: hehh!", true)
 
     local RPCRoomChange = game.ReplicatedStorage.GameData.LatestRoom:GetPropertyChangedSignal("Value"):Connect(function() updateRPC(Toggles.DS_BSRPC.Value) end)
     table.insert(Connections, RPCRoomChange)
