@@ -6636,10 +6636,11 @@ task.spawn(function()
         Library.KeybindFrame.Visible = Toggles.keybindmenu.Value
     end)
 
-	Toggles.WSpeed:Onchanged(function(value)
+	Toggles.WSpeed:OnChanged(function(value)
 		if value then
 			print("ball: " .. tostring(value))
-			Obsidian:SetNotifySide("Left")
+            print("please speed i need this my mom is kinda homeless i live with my dad i wanna help her out")
+			Obsidian:SetNotifySide(value and "Left" or "Right")
 	   end
 	end)
 
