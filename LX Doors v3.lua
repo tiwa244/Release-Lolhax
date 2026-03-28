@@ -3729,7 +3729,7 @@ end),
 				RemoveEspSmooth(v)
 			else
 				if Toggles.DS_Debug.Value then
-					then print("no esp found and toggle isnt enabled")
+					print("no esp found and toggle isnt enabled")
 				end
 			end
                 table.insert(EspTable.Interactables, {Highlight, TextLabel})
