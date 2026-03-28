@@ -3719,12 +3719,19 @@ end),
                 end)
 
             elseif v.Name == "Ladder" then
-                
-                if not Toggles.EB_TheMinesAnticheatBypass.Value then RemoveEspSmooth(v) return end
-                
-                if Script.Bypassed then RemoveEspSmooth(v) return end
 
+			if Toggles.EB_TheMinesAnticheatBypass.Value and not Script.Bypassed then
                 local Highlight, TextLabel = Esp(v, v, "Ladder", Options.ESPI_C_Ladder_F.Value, Options.ESPI_C_Ladder_O.Value, Options.ESPI_C_Ladder_TC.Value, "Ladder", "Interactable")
+			elseif v:FindFirstChild("_LOLHAXHL") and v:FindFirstChild("_LOLHAXBG") then
+				if Toggles.DS_Debug.Value then
+					print("congrats u found an ladder with esp and the toggle isnt enabled")
+				end
+				RemoveEspSmooth(v)
+			else
+				if Toggles.DS_Debug.Value then
+					then print("no esp found and toggle isnt enabled")
+				end
+			end
                 table.insert(EspTable.Interactables, {Highlight, TextLabel})
 
             elseif v.Name == "WaterPump" then
