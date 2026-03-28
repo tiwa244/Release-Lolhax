@@ -6620,6 +6620,10 @@ task.spawn(function()
      setclipboard("https://discord.gg/3xqFjM4R")
      Library:Notify("Copied to clipboard!", nil, 10)
     end)
+	MenuProperties:AddToggle("WSpeed", {
+		Text = "W Speed",
+	    Default = true
+	})
     MenuProperties:AddToggle("keybindmenu", { Text = "Show Keybinds", Default = false })
     MenuProperties:AddLabel("if you find a bug, please report them to the bug report server.", true)
 
@@ -6631,6 +6635,13 @@ task.spawn(function()
     Toggles.keybindmenu:OnChanged(function()
         Library.KeybindFrame.Visible = Toggles.keybindmenu.Value
     end)
+
+	Toggles.WSpeed:Onchanged(function(value)
+		if value then
+			print("ball: " .. tostring(value))
+			Obsidian:SetNotifySide("Left")
+	   end
+	end)
 
     Library.ToggleKeybind = Options.MenuKeybind
 
