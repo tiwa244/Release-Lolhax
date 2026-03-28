@@ -6679,7 +6679,7 @@ task.spawn(function()
 		end
 	end,
 	})
-    MenuProperties:AddDivider("Config")
+    MenuProperties:AddDivider("Other")
     MenuProperties:AddButton("LX Discord Server", function()
      setclipboard("https://discord.gg/3xqFjM4R")
      Library:Notify("Copied to clipboard!", nil, 10)
