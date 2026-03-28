@@ -1870,7 +1870,7 @@ function SwitchSide(Value: string)
         config.CurrentSide = Value
 		--Library.ForceCheckbox = Value
         writefile(filename, HttpService:JSONEncode(config))
-        print("saved ye " .. Value
+        print("saved ye " .. Value)
     end
 end
 	
@@ -6702,7 +6702,7 @@ task.spawn(function()
     DebugStuff:AddToggle("DS_BSRPC", { Text = "Bloxstrap RPC", Default = true })
     DebugStuff:AddLabel("Floor: " .. game.ReplicatedStorage.GameData.Floor.Value)
     DebugStuff:AddLabel("lolhax version: 3.0.2.8b")
-	DebugStuff:AddLabel("lolhax commit message: march fools")
+	DebugStuff:AddLabel("lolhax commit message: finally full support for notify side and wrapped text for this chat????", true)
 
     local RPCRoomChange = game.ReplicatedStorage.GameData.LatestRoom:GetPropertyChangedSignal("Value"):Connect(function() updateRPC(Toggles.DS_BSRPC.Value) end)
     table.insert(Connections, RPCRoomChange)
