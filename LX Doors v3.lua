@@ -6621,8 +6621,13 @@ task.spawn(function()
 	    Values = { "Right", "Left" },
 		Default = "Left",
 		Callback = function(value)
-		 Library:SetNotifySide(value)
-		 if LHXLoadFinish then
+		if Options.NotifySide == "Default" or Options.NotifySide == "Doors" then return end
+		if Options.NotifySide == "Obsidian" then
+			Obsidian:SetNotifySide(value)
+		elseif Options.NotifySide == "Linoria" then
+			Linoria:SetNotifySide(value)
+		end
+		if LHXLoadFinish then
 		   Library:Notify({
 			 Title = "[LOLHAX]",
 			 Description = "Notification Side Changed to: " .. tostring(value),
