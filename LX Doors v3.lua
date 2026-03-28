@@ -4763,7 +4763,7 @@ Toggles.EB_TheMinesAnticheatBypass:OnChanged(function(value)
                     Reason = "This will only last until the next cutscene!",
                     SoundId = "rbxassetid://4590662766",
 
-                   LinoriaMessage = "Bypassed the anticheat successfully! This will only last until the next cutscene"
+                   LinoriaMessage = "Bypassed the anticheat successfully! This will only last until the next cutscene!"
                 })
                 workspace:FindFirstChild("_internal_lhx_acbypassprogress"):Destroy()
             end)
