@@ -6621,10 +6621,10 @@ task.spawn(function()
 	    Values = { "Right", "Left" },
 		Default = "Left",
 		Callback = function(value)
-		if Options.NotifyStyle == "Default" or Options.NotifyStyle == "Doors" then return end
-		if Options.NotifyStyle == "Obsidian" then
+		if Options.NotifyStyle.Value == "Default" or Options.NotifyStyle.Value == "Doors" then return end
+		if Options.NotifyStyle.Value == "Obsidian" then
 			Obsidian:SetNotifySide(tostring(value))
-		elseif Options.NotifyStyle == "Linoria" then
+		elseif Options.NotifyStyle.Value == "Linoria" then
 			Linoria:SetNotifySide(value)
 		end
 		if LHXLoadFinish then
