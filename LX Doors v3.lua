@@ -6637,7 +6637,7 @@ task.spawn(function()
 		Tooltip = "This wont apply to doors notification style or default btw.",
 	    Values = { "Right", "Left" },
 		Default = nil,
-		AllowNull = true
+		AllowNull = true,
 		Callback = function(value)
 		if Options.NotifyStyle.Value == "Default" or Options.NotifyStyle.Value == "Doors" then return end
 		if Options.NotifyStyle.Value == "Obsidian" then
@@ -6702,7 +6702,7 @@ task.spawn(function()
     DebugStuff:AddToggle("DS_BSRPC", { Text = "Bloxstrap RPC", Default = true })
     DebugStuff:AddLabel("Floor: " .. game.ReplicatedStorage.GameData.Floor.Value)
     DebugStuff:AddLabel("lolhax version: 3.0.2.8b")
-	DebugStuff:AddLabel("lolhax commit message: finally full support for notify side and wrapped text for this chat????", true)
+	DebugStuff:AddLabel("lolhax commit message: finally full support for notify side and wrapped text for this chat???? yo finally broooisisisjssj", true)
 
     local RPCRoomChange = game.ReplicatedStorage.GameData.LatestRoom:GetPropertyChangedSignal("Value"):Connect(function() updateRPC(Toggles.DS_BSRPC.Value) end)
     table.insert(Connections, RPCRoomChange)
