@@ -6615,6 +6615,27 @@ task.spawn(function()
         end
     end,
     })
+	MenuProperties:AddDropdown("NotifySide", {
+		Text = "Notification Side",
+		Tooltip = "This wont apply to doors notification style or default btw.",
+	    Values = { "Right", "Left" },
+		Default = "Left",
+		Callback = function(value)
+		if Options.NotifyStyle == "Default" or Options.NotifyStyle == "Doors" then return end
+		if Options.NotifyStyle == "Obsidian" then
+			Obsidian:SetNotifySide(tostring(value))
+		elseif Options.NotifyStyle == "Linoria" then
+			Linoria:SetNotifySide(value)
+		end
+		if LHXLoadFinish then
+		   Library:Notify({
+			 Title = "[LOLHAX]",
+			 Description = "Notification Side Changed to: " .. tostring(value),
+			 Time = 5
+		})
+		end
+	end,
+	})
     MenuProperties:AddDivider("Config")
     MenuProperties:AddButton("LX Discord Server", function()
      setclipboard("https://discord.gg/3xqFjM4R")
