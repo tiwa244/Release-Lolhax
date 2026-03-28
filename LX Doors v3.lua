@@ -4416,7 +4416,7 @@ Toggles.ES_HASTECLOCK:OnChanged(function(value)
     print("Toggle changed: " .. tostring(value))-- debug 111
     
     if value then
-        task.spawn(function()
+        local HasteTimerConnection = task.spawn(function()
             local ReplicatedStorage = game:GetService("ReplicatedStorage")  
             
             --  floorep
@@ -4453,6 +4453,8 @@ Toggles.ES_HASTECLOCK:OnChanged(function(value)
     end
 end)
 
+table.insert(Connections, HasteTimerConnection)
+				
 function HidingConnect(Closet, HiddenPlayer)
     if not Toggles.VV_TranslucentHidingSpot.Value then return end
 
