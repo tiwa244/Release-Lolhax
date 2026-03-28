@@ -6663,12 +6663,10 @@ task.spawn(function()
 		AllowNull = true,
 		Callback = function(value)
 		if Options.NotifyStyle.Value == "Default" or Options.NotifyStyle.Value == "Doors" then return end
-		if Options.NotifyStyle.Value == "Obsidian" then
+		if Options.NotifyStyle.Value == "Obsidian" or Options.NotifyStyle.Value == "Linoria" then
 			SwitchSide(tostring(value))
+			Linoria:SetNotifySide(tostring(value))											
 			Obsidian:SetNotifySide(tostring(value))
-		elseif Options.NotifyStyle.Value == "Linoria" then
-			SwitchSide(tostring(value))
-			Linoria:SetNotifySide(value)
 		end
 		if LHXLoadFinish then
 		   if value == nil then return end
