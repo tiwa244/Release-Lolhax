@@ -173,6 +173,21 @@ function SwitchNotify(notifyName)
     end
 end
 
+function SwitchSide(Value: string)
+    -- its not loaded so refhrn snd
+    if not LHXLoadFinish then 
+        print("ignored:", Value)
+        return 
+    end
+
+    if Value ~= config.CurrentSide then
+        config.CurrentSide = Value
+		--Library.ForceCheckbox = Value
+        writefile(filename, HttpService:JSONEncode(config))
+        print("saved ye " .. Value)
+    end
+end
+
 -- Ui Setup vvv
 
 getgenv().UseLib = config
@@ -1859,21 +1874,6 @@ ArrowConnection = RunService.RenderStepped:Connect(function()
     end
 end)
 
-function SwitchSide(Value: string)
-    -- its not loaded so refhrn snd
-    if not LHXLoadFinish then 
-        print("ignored:", Value)
-        return 
-    end
-
-    if Value ~= config.CurrentSide then
-        config.CurrentSide = Value
-		--Library.ForceCheckbox = Value
-        writefile(filename, HttpService:JSONEncode(config))
-        print("saved ye " .. Value)
-    end
-end
-	
 -- this is modified version of the lolhaxv2 get player function!
 
 function HasItem(Item)
