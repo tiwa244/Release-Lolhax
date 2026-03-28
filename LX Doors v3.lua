@@ -6671,6 +6671,7 @@ task.spawn(function()
 			Linoria:SetNotifySide(value)
 		end
 		if LHXLoadFinish then
+		   if value == nil then return end
 		   Library:Notify({
 			 Title = "[LOLHAX]",
 			 Description = "Notification Side Changed to: " .. tostring(value),
