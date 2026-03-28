@@ -4423,7 +4423,7 @@ Toggles.ES_HASTECLOCK:OnChanged(function(value)
             local FloorRep = ReplicatedStorage:FindFirstChild("FloorReplicated")
             print("FloorReplicated found: " .. tostring(FloorRep ~= nil)) -- DEBUG 2
             
-            while HasteLoopActive do
+            while HasteLoopActive and not Library.Unloaded do
                 local TimerObj = FloorRep and FloorRep:FindFirstChild("DigitalTimer")
                 
                 if TimerObj then
