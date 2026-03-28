@@ -5851,6 +5851,22 @@ for _, v in Rooms:GetDescendants() do
                     RemoveEspSmooth(v.Main)
                 end)
 
+			elseif v.Name == "Ladder" then
+
+			if Toggles.EB_TheMinesAnticheatBypass.Value and not Script.Bypassed then
+                local Highlight, TextLabel = Esp(v, v, "Ladder", Options.ESPI_C_Ladder_F.Value, Options.ESPI_C_Ladder_O.Value, Options.ESPI_C_Ladder_TC.Value, "Ladder", "Interactable")
+			elseif v:FindFirstChild("_LOLHAXHL") and v:FindFirstChild("_LOLHAXBG") then
+				if Toggles.DS_Debug.Value then
+					print("congrats u found an ladder with esp and the toggle isnt enabled")
+				end
+				RemoveEspSmooth(v)
+			else
+				if Toggles.DS_Debug.Value then
+					print("no esp found and toggle isnt enabled")
+				end
+			end
+                table.insert(EspTable.Interactables, {Highlight, TextLabel})
+
             elseif v.Name == "TimerLever" and not v.ActivateEventPrompt:GetAttribute("Interactions") then
 
                 local Highlight, TextLabel = Esp(v, v.Hitbox, "Timer Lever", Options.ESPI_C_BackroomsLevers_F.Value, Options.ESPI_C_BackroomsLevers_O.Value, Options.ESPI_C_BackroomsLevers_TC.Value, "BackroomsLevers", "Interactable")
