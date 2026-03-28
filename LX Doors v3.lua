@@ -6619,9 +6619,9 @@ task.spawn(function()
 		Text = "Notification Side",
 		Tooltip = "This wont apply to doors notification style or default btw.",
 	    Values = { "Right", "Left" },
-		Default = "Right",
+		Default = "Left",
 		Callback = function(value)
-		if Options.NotifySide == "Default" or Options.NotifySide == "Doors" then return false end
+		if Options.NotifySide == "Default" or Options.NotifySide == "Doors" then return end
 		if Options.NotifySide == "Obsidian" then
 			Library:SetNotifySide(value)
 		elseif Options.NotifySide == "Linoria" then
