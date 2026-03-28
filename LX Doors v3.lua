@@ -85,6 +85,7 @@ local config = {
     Use2Lib = true,
     CurrentLib = "Obsidian",
     CurrentNotify = "Obsidian",
+	CurrentSide = "Right",
     ForceCheckbox = false
 }
 
@@ -1858,6 +1859,21 @@ ArrowConnection = RunService.RenderStepped:Connect(function()
     end
 end)
 
+function SwitchSide(Value: string)
+    -- its not loaded so refhrn snd
+    if not LHXLoadFinish then 
+        print("ignored:", Value)
+        return 
+    end
+
+    if Value ~= config.CurrentSide then
+        config.CurrentSide = Value
+		--Library.ForceCheckbox = Value
+        writefile(filename, HttpService:JSONEncode(config))
+        print("saved ye " .. Value
+    end
+end
+	
 -- this is modified version of the lolhaxv2 get player function!
 
 function HasItem(Item)
@@ -6607,6 +6623,7 @@ task.spawn(function()
         Callback = function(value)
             SwitchNotify(value)
         if LHXLoadFinish then
+		    if value == nil then return end
             Library:Notify({
                 Title = "[LOLHAX]",
                 Description = "Notification Style Changed to: " .. tostring(value),
@@ -6619,12 +6636,15 @@ task.spawn(function()
 		Text = "Notification Side",
 		Tooltip = "This wont apply to doors notification style or default btw.",
 	    Values = { "Right", "Left" },
-		Default = "Left",
+		Default = nil,
+		AllowNull = true
 		Callback = function(value)
 		if Options.NotifyStyle.Value == "Default" or Options.NotifyStyle.Value == "Doors" then return end
 		if Options.NotifyStyle.Value == "Obsidian" then
+			SwitchSide(tostring(value))
 			Obsidian:SetNotifySide(tostring(value))
 		elseif Options.NotifyStyle.Value == "Linoria" then
+			SwitchSide(tostring(value))
 			Linoria:SetNotifySide(value)
 		end
 		if LHXLoadFinish then
@@ -6693,7 +6713,8 @@ task.spawn(function()
 
     Options.UILib:SetValue(config.CurrentLib)
     Options.NotifyStyle:SetValue(config.CurrentNotify)
-    Toggles.ForceCheckbox:SetValue(config.ForceCheckbox)						
+	Options.NotifySide:SetValue(config.CurrentSide)					
+    Toggles.ForceCheckbox:SetValue(config.ForceCheckbox)				
 
     ErrorMessageOut:Disconnect()
     LHXLoadFinish = true
