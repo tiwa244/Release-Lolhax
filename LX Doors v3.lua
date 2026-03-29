@@ -4727,21 +4727,21 @@ Toggles.EB_TheMinesAnticheatBypass:OnChanged(function(value)
     if Library.IsMobile then
             Library:Notify({
                 Title = "Anticheat bypass",
-                Description = "To bypass the anticheat, you must interact with a ladder. \nDo not move while on the ladder.",
+                Description = "To bypass the anticheat, you must interact with a ladder. Ladder ESP has been enabled.\nDo not move while on the ladder.",
                 Reason = "Ladder ESP has been enabled, do not move while on the ladder.",
                 SoundId = "rbxassetid://4590662766",
 
-                LinoriaMessage = "To bypass the anticheat, you must interact with a ladder. \nDo not move while on the ladder.",
+                LinoriaMessage = "To bypass the anticheat, you must interact with a ladder. Ladder ESP has been enabled.\nDo not move while on the ladder.",
                 Time = progressPart
             })
             else
                 Library:Notify({
                     Title = "Anticheat bypass",
-                    Description = "To bypass the anticheat, you must interact with a ladder. \nDo not move while on the ladder.",
-                    Reason = "To bypass the anticheat, you must interact with a ladder. \nDo not move while on the ladder.",
+                    Description = "To bypass the anticheat, you must interact with a ladder. Ladder ESP has been enabled.\nDo not move while on the ladder.",
+                    Reason = "Ladder ESP has been enabled, do not move while on the ladder.",
                     SoundId = "rbxassetid://4590662766",
 
-                    LinoriaMessage = "To bypass the anticheat, you must interact with a ladder. \nDo not move while on the ladder.",
+                    LinoriaMessage = "To bypass the anticheat, you must interact with a ladder. Ladder ESP has been enabled.\nDo not move while on the ladder.",
                     Time = progressPart
                 })
             
@@ -4749,7 +4749,6 @@ Toggles.EB_TheMinesAnticheatBypass:OnChanged(function(value)
             end
 		    for _, v in pairs(workspace.CurrentRooms:GetDescendants()) do
                 if v:IsA("Model") and v.Name == "Ladder" then
-				   if v:FindFirstChild("_LOLHAXHL") or v:FindFirstChild("_LOLHAXBG") then return end
                    local Highlight, TextLabel = Esp(v, v, "Ladder", Options.ESPI_C_Ladder_F.Value, Options.ESPI_C_Ladder_O.Value, Options.ESPI_C_Ladder_TC.Value, "Ladder", "Interactable")
 				   table.insert(EspTable.Interactables.Ladders, {Highlight, TextLabel})
                 end
@@ -4767,7 +4766,6 @@ Toggles.EB_TheMinesAnticheatBypass:OnChanged(function(value)
             if workspace:FindFirstChild("_internal_lhx_acbypassprogress") then workspace:FindFirstChild("_internal_lhx_acbypassprogress"):Destroy() end
         end
     end)
-
 
     if Script.IsMines then
         if LocalPlayer.Character then
@@ -4801,9 +4799,9 @@ Toggles.EB_TheMinesAnticheatBypass:OnChanged(function(value)
                    LinoriaMessage = "Bypassed the anticheat successfully! This will only last until the next cutscene!"
                 })
                 workspace:FindFirstChild("_internal_lhx_acbypassprogress"):Destroy()
-            end)
-	    end
-    end
+           end)
+	   end
+   end
 		
 -- my brain fried vo -- v
 
