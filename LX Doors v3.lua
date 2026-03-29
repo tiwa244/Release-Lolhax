@@ -3722,7 +3722,7 @@ end),
             elseif v.Name == "Ladder" then
 
 			local Highlight, TextLabel					
-			if Toggles.EB_TheMinesAnticheatBypass.Value and not Script.Bypassed then
+			if Toggles.EB_TheMinesAnticheatBypass.Value then
                 Highlight, TextLabel = Esp(v, v, "Ladder", Options.ESPI_C_Ladder_F.Value, Options.ESPI_C_Ladder_O.Value, Options.ESPI_C_Ladder_TC.Value, "Ladder", "Interactable")
 			elseif v:FindFirstChild("_LOLHAXHL") and v:FindFirstChild("_LOLHAXBG") then
 				if Toggles.DS_Debug.Value then
@@ -5875,7 +5875,7 @@ for _, v in Rooms:GetDescendants() do
 			elseif v.Name == "Ladder" then
 
 			local Highlight, TextLabel
-			if Toggles.EB_TheMinesAnticheatBypass.Value and not Script.Bypassed then
+			if Toggles.EB_TheMinesAnticheatBypass.Value then
                 Highlight, TextLabel = Esp(v, v, "Ladder", Options.ESPI_C_Ladder_F.Value, Options.ESPI_C_Ladder_O.Value, Options.ESPI_C_Ladder_TC.Value, "Ladder", "Interactable")
 			elseif v:FindFirstChild("_LOLHAXHL") and v:FindFirstChild("_LOLHAXBG") then
 				if Toggles.DS_Debug.Value then
