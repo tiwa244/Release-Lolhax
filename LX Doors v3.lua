@@ -4748,7 +4748,7 @@ Toggles.EB_TheMinesAnticheatBypass:OnChanged(function(value)
 			for _, v in pairs(EspTable.Interactables.Ladders) do
                local Highlight = v[1]
                local TextLabel = v[2]
-			   local Ladder = v[1].Parent
+			   --local Ladder = v[1].Parent
 
                if Highlight then Highlight:Destroy() end
                if TextLabel then TextLabel:Destroy() end
@@ -4776,7 +4776,7 @@ Toggles.EB_TheMinesAnticheatBypass:OnChanged(function(value)
 				for _, v in pairs(EspTable.Interactables.Ladders) do
                     local Highlight = v[1]
                     local TextLabel = v[2]
-				    local Ladder = v[1].Parent
+				   -- local Ladder = v[1].Parent
 
                      if Highlight then Highlight:Destroy() end
                      if TextLabel then TextLabel:Destroy() end
