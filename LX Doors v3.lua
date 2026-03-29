@@ -2304,7 +2304,7 @@ function Library:Notify(options, description, duration, force)
 
     local function PlaySound(id)
         local sound = Instance.new("Sound")
-        sound.SoundId = id or "rbxassetid://4590662766"
+        sound.SoundId = id or Options.NotifySound.Value == "Old" and "rbxassetid://4590657391" or "rbxassetid://4590662766"
         sound.Volume = (Options and Options.GN_NotificationSound_Volume and Options.GN_NotificationSound_Volume.Value) or 1
         sound.Parent = SoundService
         sound:Play()
@@ -6715,7 +6715,7 @@ task.spawn(function()
     end)
     MenuProperties:AddToggle("keybindmenu", { Text = "Show Keybinds", Default = false })
     MenuProperties:AddLabel("if you find a bug, please report them to the bug report server.", true)
-
+    MenuProperties:AddDropdown("NotifySound", { Text = = "Notification Sound", Values = { "Old", "New" }, Default = "New", Rounding = 0 })
     MenuProperties:AddButton("Bug Report Server", function()
      setclipboard("https://discord.gg/9YgVsGBK")
      Library:Notify("Copied to clipboard!", nil, 10)
