@@ -4765,7 +4765,7 @@ Toggles.EB_TheMinesAnticheatBypass:OnChanged(function(value)
 
                 Script.Bypassed = true
 
-				for _, Highlight, TextLabel in pairs(ESPTable.Interactables.Ladders) do
+				for _, Highlight, TextLabel in pairs(EspTable.Interactables.Ladders) do
                     Highlight, TextLabel:Destroy()
 				end
 
