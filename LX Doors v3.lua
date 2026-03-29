@@ -4745,6 +4745,9 @@ Toggles.EB_TheMinesAnticheatBypass:OnChanged(function(value)
             Script.Bypassed = false
             end
         else
+			for _, Highlight, TextLabel in pairs(EspTable.Interactables.Ladders) do
+                Highlight, TextLabel:Destroy()
+			end
             print("fuck off")
             if workspace:FindFirstChild("_internal_lhx_acbypassprogress") then workspace:FindFirstChild("_internal_lhx_acbypassprogress"):Destroy() end
         end
