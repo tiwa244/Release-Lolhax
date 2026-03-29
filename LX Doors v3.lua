@@ -3734,7 +3734,9 @@ end),
 					print("no esp found and toggle isnt enabled")
 				end
 			end
+			  if Highlight or TextLabel then
                 table.insert(EspTable.Interactables.Ladders, {Highlight, TextLabel})
+			  end
 
             elseif v.Name == "WaterPump" then
 
@@ -5885,8 +5887,10 @@ for _, v in Rooms:GetDescendants() do
 					print("no esp found and toggle isnt enabled")
 				end
 			end
-                table.insert(EspTable.Interactables, {Highlight, TextLabel})
-
+			  if Highlight or TextLabel then
+                table.insert(EspTable.Interactables.Ladders, {Highlight, TextLabel})
+			  end
+        
             elseif v.Name == "TimerLever" and not v.ActivateEventPrompt:GetAttribute("Interactions") then
 
                 local Highlight, TextLabel = Esp(v, v.Hitbox, "Timer Lever", Options.ESPI_C_BackroomsLevers_F.Value, Options.ESPI_C_BackroomsLevers_O.Value, Options.ESPI_C_BackroomsLevers_TC.Value, "BackroomsLevers", "Interactable")
