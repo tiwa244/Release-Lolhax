@@ -1297,7 +1297,8 @@ local EspTable = {
         LibraryBooks = {},
         BreakerPoles = {},
         Anchors = {},
-        MiscPickups = {}
+        MiscPickups = {},
+		Ladders = {}
     },
 
     Entities = {},
@@ -3732,7 +3733,7 @@ end),
 					print("no esp found and toggle isnt enabled")
 				end
 			end
-                table.insert(EspTable.Interactables, {Highlight, TextLabel})
+                table.insert(EspTable.Interactables.Ladders, {Highlight, TextLabel})
 
             elseif v.Name == "WaterPump" then
 
@@ -4763,6 +4764,10 @@ Toggles.EB_TheMinesAnticheatBypass:OnChanged(function(value)
                 LocalPlayer.Character:SetAttribute("Climbing", false)
 
                 Script.Bypassed = true
+
+				for _, Highlight, TextLabel in pairs(ESPTable.Interactables.Ladders) do
+                    Highlight, TextLabel:Destroy()
+				end
 
                 Library:Notify({
                     Title = "Anticheat Bypass",
