@@ -3391,19 +3391,25 @@ local Connections = {
 		})
 	end
 
-	if Script.IsMines and Script.Bypassed and LocalPlayer:GetAttribute("CurrentRoom") == 43 then
-		Script.Bypassed = false
-		local newfr = Instance.new("Folder", game.Workspace)
-		newfr.Name = "_internal_lhx_acbypassprogress"
+	if Script.IsMines and Script.Bypassed and LocalPlayer:GetAttribute("CurrentRoom") == 42 then
+	  local Door = Rooms[LocalPlayer:GetAttribute("CurrentRoom")]:FindFirstChild("Door")
+	     local DoorOpened = Door:GetAttributeChangedSignal("Opened"):Connect(function()
+		    if Door:GetAttribute("Opened") then
+		       Script.Bypassed = false
+		       local newfr = Instance.new("Folder", game.Workspace)
+		       newfr.Name = "_internal_lhx_acbypassprogress"
 
-		Library:Notify({
-			Title = "Anticheat Bypass",
-			Description = '"Seek Chase 1" has broken anticheat bypass, please go on a ladder again to fix it.',
-			Time = newfr,
+		       Library:Notify({
+			     Title = "Anticheat Bypass",
+			     Description = '"Seek Chase 1" has broken anticheat bypass, please go on a ladder again to fix it.',
+			     Time = newfr,
 
-			LinoriaMessage = '"Seek Chase 1" has broken anticheat bypass, please go on a ladder again to fix it.',
-	})
-	end
+			     LinoriaMessage = '"Seek Chase 1" has broken anticheat bypass, please go on a ladder again to fix it.',
+	          })
+	        end
+        end)
+		table.insert(Connections, DoorOpened)
+    end
 
 	if Script.Bypassed and Rooms[LocalPlayer:GetAttribute("CurrentRoom")]:GetAttribute("RawName") == "Sewer_SeekChaseX" then
 		Script.Bypassed = false
