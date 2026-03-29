@@ -4745,8 +4745,13 @@ Toggles.EB_TheMinesAnticheatBypass:OnChanged(function(value)
             Script.Bypassed = false
             end
         else
-			for _, Highlight, TextLabel in pairs(EspTable.Interactables.Ladders) do
-                Highlight, TextLabel:Destroy()
+			for _, v in pairs(EspTable.Interactables.Ladders) do
+               local Highlight = v[1]
+               local TextLabel = v[2]
+			   local Ladder = v[1].Parent
+
+               if Highlight then Highlight:Destroy() end
+               if TextLabel then TextLabel:Destroy() end
 			end
             print("fuck off")
             if workspace:FindFirstChild("_internal_lhx_acbypassprogress") then workspace:FindFirstChild("_internal_lhx_acbypassprogress"):Destroy() end
@@ -4768,8 +4773,13 @@ Toggles.EB_TheMinesAnticheatBypass:OnChanged(function(value)
 
                 Script.Bypassed = true
 
-				for _, Highlight, TextLabel in pairs(EspTable.Interactables.Ladders) do
-                    Highlight, TextLabel:Destroy()
+				for _, v in pairs(EspTable.Interactables.Ladders) do
+                    local Highlight = v[1]
+                    local TextLabel = v[2]
+				    local Ladder = v[1].Parent
+
+                     if Highlight then Highlight:Destroy() end
+                     if TextLabel then TextLabel:Destroy() end
 				end
 
                 Library:Notify({
