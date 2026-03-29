@@ -5634,32 +5634,27 @@ local lastNotifiedRoom
                 end
             end
 
-            -- Movement
-            while Toggles.ES_AutoRooms.Value and not Library.Unloaded do
-                if Script.LatestRoom.Value == 1000 and Toggles.ES_AutoRoomsDebug.Value then
-                    Library:Notify({
-                        Title = "Auto Rooms",
-                        Description = "You have reached A-1000",
-                        Reason = "A-1000 reached by lolhax (msport) autorooms congrats..",
-                        SoundId = "rbxassetid://4590662766"
-                    })
-                    break
-                end
-    if current ~= lastRoom or not isWalking then
-        lastRoom = current
-                
-        task.spawn(function()
-                isWalking = true
+            
+local SpecificVeryVeryRoomEvent = Script.LatestRoom:GetPropertyChangedSignal("Value"):Connect(function()
+     if Toggles.ES_AutoRooms.Value then
+        doAutoRooms()
+     end
+end)
+
+table.insert(Connections, SpecificVeryVeryRoomEvent)
+									
+task.spawn(function()
+    while Toggles.ES_AutoRooms.Value and not Library.Unloaded do
+        task.wait(0.25)
+        if LocalPlayer.Character.Humanoid then
+            local floor = LocalPlayer.Character.Humanoid.FloorMaterial
+            local isStuck = floor == Enum.Material.Air or floor == Enum.Material.Concrete
+            if isStuck then
                 doAutoRooms()
-                isWalking = false -- return end
-              end)
             end
-        task.wait()
-    end
-            -- Unload Auto Rooms
-            moveToCleanup()
         end
-    end)
+    end
+end)
 
 local ReviveHook; ReviveHook = hookfunction(require(game.ReplicatedStorage.ModulesClient.ReviveCutscene), function(...)
     if Toggles.VR_NoReviveCutscene.Value then
