@@ -4747,11 +4747,17 @@ Toggles.EB_TheMinesAnticheatBypass:OnChanged(function(value)
             
             Script.Bypassed = false
             end
+		    for _, v in pairs(workspace.CurrentRooms:GetDescendants()) do
+                if v:IsA("Model") and v.Name == "Ladder" then
+                   local Highlight, TextLabel = Esp(v, v, "Ladder", Options.ESPI_C_Ladder_F.Value, Options.ESPI_C_Ladder_O.Value, Options.ESPI_C_Ladder_TC.Value, "Ladder", "Interactable")
+				   table.insert(EspTable.Interactables.Ladders, {Highlight, TextLabel})
+                end
+			end
         else
 			for _, v in pairs(EspTable.Interactables.Ladders) do
                local Highlight = v[1]
                local TextLabel = v[2]
-			   --local Ladder = v[1].Parent
+			   local Ladder = v[1].Parent
 
                if Highlight then Highlight:Destroy() end
                if TextLabel then TextLabel:Destroy() end
@@ -4779,7 +4785,7 @@ Toggles.EB_TheMinesAnticheatBypass:OnChanged(function(value)
 				for _, v in pairs(EspTable.Interactables.Ladders) do
                     local Highlight = v[1]
                     local TextLabel = v[2]
-				   -- local Ladder = v[1].Parent
+				    local Ladder = v[1].Parent
 
                      if Highlight then Highlight:Destroy() end
                      if TextLabel then TextLabel:Destroy() end
