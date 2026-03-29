@@ -3722,7 +3722,7 @@ end),
             elseif v.Name == "Ladder" then
 
 			local Highlight, TextLabel					
-			if Toggles.EB_TheMinesAnticheatBypass.Value then
+			if Toggles.EB_TheMinesAnticheatBypass.Value and not Script.Bypassed then
                 Highlight, TextLabel = Esp(v, v, "Ladder", Options.ESPI_C_Ladder_F.Value, Options.ESPI_C_Ladder_O.Value, Options.ESPI_C_Ladder_TC.Value, "Ladder", "Interactable")
 			elseif v:FindFirstChild("_LOLHAXHL") and v:FindFirstChild("_LOLHAXBG") then
 				if Toggles.DS_Debug.Value then
@@ -4749,6 +4749,7 @@ Toggles.EB_TheMinesAnticheatBypass:OnChanged(function(value)
             end
 		    for _, v in pairs(workspace.CurrentRooms:GetDescendants()) do
                 if v:IsA("Model") and v.Name == "Ladder" then
+				   if v:FindFirstChild("_LOLHAXHL") or v:FindFirstChild("_LOLHAXBG") then return end
                    local Highlight, TextLabel = Esp(v, v, "Ladder", Options.ESPI_C_Ladder_F.Value, Options.ESPI_C_Ladder_O.Value, Options.ESPI_C_Ladder_TC.Value, "Ladder", "Interactable")
 				   table.insert(EspTable.Interactables.Ladders, {Highlight, TextLabel})
                 end
@@ -5881,7 +5882,7 @@ for _, v in Rooms:GetDescendants() do
 			elseif v.Name == "Ladder" then
 
 			local Highlight, TextLabel
-			if Toggles.EB_TheMinesAnticheatBypass.Value then
+			if Toggles.EB_TheMinesAnticheatBypass.Value and not Script.Bypassed then
                 Highlight, TextLabel = Esp(v, v, "Ladder", Options.ESPI_C_Ladder_F.Value, Options.ESPI_C_Ladder_O.Value, Options.ESPI_C_Ladder_TC.Value, "Ladder", "Interactable")
 			elseif v:FindFirstChild("_LOLHAXHL") and v:FindFirstChild("_LOLHAXBG") then
 				if Toggles.DS_Debug.Value then
