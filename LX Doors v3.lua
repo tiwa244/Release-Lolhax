@@ -4727,21 +4727,21 @@ Toggles.EB_TheMinesAnticheatBypass:OnChanged(function(value)
     if Library.IsMobile then
             Library:Notify({
                 Title = "Anticheat bypass",
-                Description = "To bypass the anticheat, you must interact with a ladder. Ladder ESP has been enabled.\nDo not move while on the ladder.",
+                Description = "To bypass the anticheat, you must interact with a ladder. \nLadder ESP has been enabled. Do not move while on the ladder.",
                 Reason = "Ladder ESP has been enabled, do not move while on the ladder.",
                 SoundId = "rbxassetid://4590662766",
 
-                LinoriaMessage = "To bypass the anticheat, you must interact with a ladder. Ladder ESP has been enabled.\nDo not move while on the ladder.",
+                LinoriaMessage = "To bypass the anticheat, you must interact with a ladder. \nLadder ESP has been enabled. Do not move while on the ladder.",
                 Time = progressPart
             })
             else
                 Library:Notify({
                     Title = "Anticheat bypass",
-                    Description = "To bypass the anticheat, you must interact with a ladder. Ladder ESP has been enabled.\nDo not move while on the ladder.",
+                    Description = "To bypass the anticheat, you must interact with a ladder. \nLadder ESP has been enabled.\nDo not move while on the ladder.",
                     Reason = "Ladder ESP has been enabled, do not move while on the ladder.",
                     SoundId = "rbxassetid://4590662766",
 
-                    LinoriaMessage = "To bypass the anticheat, you must interact with a ladder. Ladder ESP has been enabled.\nDo not move while on the ladder.",
+                    LinoriaMessage = "To bypass the anticheat, you must interact with a ladder. \nLadder ESP has been enabled.\nDo not move while on the ladder.",
                     Time = progressPart
                 })
             
