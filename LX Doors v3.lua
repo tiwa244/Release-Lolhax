@@ -180,7 +180,7 @@ local UIConfig = getgenv().UseLib
 local Repository, Library, Window, Tabs, Icons, ThemeManager, SaveManager, LinoriaNotify, Toggles, Options -- Defined at the top so they don't "vanish"
 
 if UIConfig.CurrentLib == "Linoria" then 
-    Repository = "https://raw.githubusercontent.com/tiwa244/LinoriaLib/main/"
+    Repository = "https://raw.githubusercontent.com/mstudio45/LinoriaLib/main/"
     Library = loadstring(game:HttpGet(Repository .. "Library.lua"))()
     
     ThemeManager = loadstring(game:HttpGet(Repository .. "addons/ThemeManager.lua"))()
