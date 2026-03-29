@@ -5633,8 +5633,8 @@ local lastNotifiedRoom
                    end
                 end
             end
+		end
 
-            
 local SpecificVeryVeryRoomEvent = Script.LatestRoom:GetPropertyChangedSignal("Value"):Connect(function()
      if Toggles.ES_AutoRooms.Value then
         doAutoRooms()
@@ -5655,7 +5655,7 @@ task.spawn(function()
         end
     end
 end)
-
+									
 local ReviveHook; ReviveHook = hookfunction(require(game.ReplicatedStorage.ModulesClient.ReviveCutscene), function(...)
     if Toggles.VR_NoReviveCutscene.Value then
         return
@@ -6755,7 +6755,7 @@ task.spawn(function()
     DebugStuff:AddToggle("DS_BSRPC", { Text = "Bloxstrap RPC", Default = true })
     DebugStuff:AddLabel("Floor: " .. game.ReplicatedStorage.GameData.Floor.Value)
     DebugStuff:AddLabel("lolhax version: 3.0.2.8b")
-	DebugStuff:AddLabel("lolhax commit message: hehh!", true)
+	DebugStuff:AddLabel("lolhax commit message: auto rooms factor??????", true)
 
     local RPCRoomChange = game.ReplicatedStorage.GameData.LatestRoom:GetPropertyChangedSignal("Value"):Connect(function() updateRPC(Toggles.DS_BSRPC.Value) end)
     table.insert(Connections, RPCRoomChange)
