@@ -67,7 +67,7 @@
 -- credits to lolhax developers for creating and developing lolhax still 
 -- lolhax v2 used to be number 1 doors script on the market it fell off
 local Loadtime = tick()
-local Linoria = loadstring(game:HttpGet('https://raw.githubusercontent.com/mstudio45/LinoriaLib/main/Library.lua'))()
+local Linoria = loadstring(game:HttpGet('https://raw.githubusercontent.com/tiwa244/LinoriaLib/main/Library.lua'))()
 local Obsidian = loadstring(game:HttpGet('https://raw.githubusercontent.com/deividcomsono/Obsidian/main/Library.lua'))()
 local HttpService = game:GetService("HttpService")
 local foldername = "lolhax"
