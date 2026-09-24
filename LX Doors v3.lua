@@ -80,22 +80,19 @@ if not isfolder(foldername) then
     makefolder(foldername)
 end
 
-local config = {
+local config = {    
     Use2Lib = true,
     CurrentLib = "Obsidian",
     CurrentNotify = "Obsidian",
 	CurrentSide = "Right",
     NotifySound = "New",
     TotalExecutions = 0,
-    ForceCheckbox = false
+    ForceCheckbox = false,
+    ExtraInfo = false
 }
-
---// ui setupsss \\--
 
 if isfile(filename) then
     local rawData = readfile(filename)
-    print("eh: ", rawData)
-
     local success, content = pcall(function()
         return HttpService:JSONDecode(rawData)
     end)
@@ -104,69 +101,9 @@ if isfile(filename) then
         for k, v in pairs(content) do
             config[k] = v
         end
-        print("saved")
-    else
-        warn("faild to save err: ", content)
     end
-end
-
-if not isfile(filename) then
+else
     writefile(filename, HttpService:JSONEncode(config))
-    print("created missig file lmao at: " .. filename)
-end
-
-function SaveToFile()
-    writefile(filename, HttpService:JSONEncode(config))
-end
-
-function SwitchLib(libName)
-
-    if not LHXLoadFinish then 
-        print("ignored:", libName)
-        return 
-    end
-
-    if libName ~= config.CurrentLib then
-        config.CurrentLib = libName
-        writefile(filename, HttpService:JSONEncode(config))
-        print("saved ye " .. libName)
-    end
-end
-
-function ForceCheckboxSwitch(Value)
-    
-    if not LHXLoadFinish then 
-        print("ignored:", Value)
-        return 
-    end
-
-    if Value ~= config.ForceCheckbox then
-        config.ForceCheckbox = Value
-        writefile(filename, HttpService:JSONEncode(config))
-        print("saved ye " .. tostring(Value))
-    end
-end
-
-function SwitchNotify(notifyName)
-    
-    if not LHXLoadFinish then 
-        print("ignoring: " ..   notifyName ..  " sinc, its a config overwtie")
-        return 
-    end
-
-    if notifyName ~= config.CurrentNotify then
-        config.CurrentNotify = notifyName
-        
-        local success, err = pcall(function()
-            writefile(filename, HttpService:JSONEncode(config))
-        end)
-        
-        if success then
-        else
-            warn("save failed for Notify:", err)
-        end
-    else
-    end
 end
 
 -- Ui Setup vvv
@@ -203,14 +140,14 @@ elseif UIConfig.CurrentLib == "Obsidian" then
     Repository = "https://raw.githubusercontent.com/tiwa244/Obsidian/main/"
     Library = loadstring(game:HttpGet(Repository .. "Library.lua"))()
     
-    Icons = loadstring(game:HttpGet("https://raw.githubusercontent.com/deividcomsono/lucide-roblox-direct/refs/heads/main/source.lua"))()
-    Library:SetIconModule(Icons)
+    --Icons = loadstring(game:HttpGet("https://raw.githubusercontent.com/deividcomsono/lucide-roblox-direct/refs/heads/main/source.lua"))()
+    --Library:SetIconModule(Icons)
     ThemeManager = loadstring(game:HttpGet(Repository .. "addons/ThemeManager.lua"))()
     SaveManager =  loadstring(game:HttpGet(Repository .. "addons/SaveManager.lua"))()
     
     Window = Library:CreateWindow({ 
         Title = "lolhax v3", 
-        Icon = 90305907167101, 
+        --Icon = 90305907167101, 
         Footer = "lolhax v3 | ID: " .. game.Players.LocalPlayer.DisplayName, 
         Center = true, 
         AutoShow = true, 
@@ -284,6 +221,7 @@ Script.FloorReplicated = game.ReplicatedStorage.FloorReplicated
 Script.IsMines = Script.FloorVal.Value == "Mines"
 Script.IsBackdoor = Script.FloorVal.Value == "Backdoor"
 Script.IsRetro = Script.FloorVal.Value == "Retro"
+Script.IsArchives = Script.FloorVal.Value == "Archives"
 Script.IsRooms = Script.FloorVal.Value == "Rooms"
 Script.IsRush = Script.FloorVal.Value == "Fools26"
 Script.IsDaily = Script.FloorVal.Value == "Ripple"
@@ -412,8 +350,6 @@ do
     end
 end
 
-config.TotalExecutions = config.TotalExecutions + 1
-SaveToFile()
 local ErrorMessageOut
 ErrorMessageOut = game:GetService("LogService").MessageOut:Connect(function(Message, Type)
 
@@ -651,28 +587,6 @@ ESPInteractables_Main:AddToggle("ESPI_M_CustomTC", { Text = "Custom Name Color",
 :AddColorPicker("ESPI_Color_TC", { Default = Color3.new(1, 1, 1), Title = "Custom Name Color" })
 ESPInteractables_Main:AddToggle("ESPI_M_CustomColor_Outline", { Text = "Custom Outline Color", Default = false })
 :AddColorPicker("ESPI_Color_Outline", { Default = Color3.new(1, 1, 1), Title = "Custom Outline Color" })
-ESPInteractables_Main:AddDivider("Extra")
-ESPInteractables_Main:AddToggle("ESPI_M_Tracers", { Text = "Tracers", Default = false, Tooltip = "Tracers."})
-ESPInteractables_Main:AddDropdown("ESPI_V_TracerPos", {
-    Text = "Tracer Position",
-    Values = { "Top", "Mouse", "Center", "Bottom" },
-    Default = "Bottom"
-})
-ESPInteractables_Main:AddToggle("ESPI_M_Arrows", { Text = "Arrows", Default = false, Tooltip = "Arrows."})
-ESPInteractables_Main:AddSlider("ESPI_M_ArrowsOffSet", { Text = "Arrow Offset", Default = 300, Min = 100, Max = 500, Rounding = 1,   Tooltip = "Arrow Offset."})
-local RainbowToggle = ESPInteractables_Main:AddToggle("ESPI_RAINBOW_HIGHLIGHT", { 
-    Text = "Rainbow ESP", 
-    Default = false,
-    Tooltip = "Rainbow ESP Colors."
-})
-
-ESPInteractables_Main:AddSlider("ESPI_RAINBOW_SPEED", {
-    Text = "Rainbow Speed",
-    Default = 5,
-    Min = 1,
-    Max = 20,
-    Rounding = 1
-})
 
 -- BRO IM SO SORRY LINORIA MADE ME DO IT THIS WAY PLEASE LORD FORGIVE ME
 local ESPInteractables_Configurate = ESPInteractables:AddTab("Configurate")
@@ -1125,6 +1039,30 @@ task.spawn(function()
     until Library.Unloaded
 end)
 
+function DoorCheck(door)
+    if door.Color ~= Color3.fromRGB(107, 72, 52) then
+        if door.MeshId == "rbxassetid://74992368289921" then
+            return "Hotel"
+        elseif door.MeshId == "rbxassetid://10639621832" then 
+            return "Rooms"
+        elseif door.MeshId == "rbxassetid://9820239197" then
+            return "LibraryDoor"
+        elseif door.MeshId == "rbxassetid://10264663580" then
+            return "Mines"
+        elseif door.MeshId == "rbxassetid://110053975408076" then
+            return "OutDoor"
+        elseif door.MeshId == "rbxassetid://7153047665" then
+            return "GreenHouse"
+        elseif door.MeshId == "rbxassetid://131864261809212" then
+            return "ArchiveDoor"
+        elseif door.MeshId == "rbxassetid://80545394176474" then
+            return "SmallDoor"
+        end
+    else
+        return "RetroDoor"
+    end
+end
+
 Script.Functions.EnforceTypes = function(args, template)
     args = if typeof(args) == "table" then args else {}
 
@@ -1397,147 +1335,10 @@ function InitGeneralFeatures()
     end)
 end
 
-function EspStuff()
-    local RunService = game:GetService("RunService")
-    local UserInputService = game:GetService("UserInputService")
-    local Players = game:GetService("Players")
-    
-    local LocalPlayer = Players.LocalPlayer
-    local Camera = workspace.CurrentCamera
-    local Active = {Tracers = {}, Arrows = {}}
-    local OriginalColors = {}
-
-    local ScreenGui = LocalPlayer.PlayerGui:FindFirstChild("_VALKYRIE_ESP") or Instance.new("ScreenGui")
-    ScreenGui.Name, ScreenGui.IgnoreGuiInset, ScreenGui.ResetOnSpawn = "_VALKYRIE_ESP", true, false
-    ScreenGui.Parent = LocalPlayer.PlayerGui
-
-    local function CreateEsp(Object)
-        if Object:IsA("Highlight") and Object.Name == "_LOLHAXHL" then
-            OriginalColors[Object] = {Type = "Highlight", Outline = Object.OutlineColor, Fill = Object.FillColor}
-            
-            if not Active.Tracers[Object] then
-                local T = Instance.new("Path2D", ScreenGui)
-                T.Thickness, T.Visible = 2, false
-                Active.Tracers[Object] = T
-            end
-            
-            if not Active.Arrows[Object] then
-                local A = Instance.new("ImageLabel", ScreenGui)
-                A.Size, A.AnchorPoint, A.BackgroundTransparency = UDim2.fromOffset(48, 48), Vector2.new(0.5, 0.5), 1
-                A.Image, A.ZIndex, A.Visible = "rbxassetid://16368985219", 10, false
-                Active.Arrows[Object] = A
-            end
-        elseif Object:IsA("BillboardGui") and Object.Name == "_LOLHAXBG" then
-            local L = Object:FindFirstChildOfClass("TextLabel")
-            if L then OriginalColors[L] = {Type = "TextLabel", Text = L.TextColor3} end
-        end
-    end
-
-    local function RemoveEsp(Object)
-        if Active.Tracers[Object] then Active.Tracers[Object]:Destroy(); Active.Tracers[Object] = nil end
-        if Active.Arrows[Object] then Active.Arrows[Object]:Destroy(); Active.Arrows[Object] = nil end
-        OriginalColors[Object] = nil
-    end
-
-    for _, v in ipairs(workspace:GetDescendants()) do CreateEsp(v) end
-    local OnAdded = workspace.DescendantAdded:Connect(CreateEsp)
-    local OnRemoving = workspace.DescendantRemoving:Connect(RemoveEsp)
-
-    local RenderLoop; RenderLoop = RunService.RenderStepped:Connect(function()
-        if Library.Unloaded then
-            OnAdded:Disconnect(); OnRemoving:Disconnect()
-            for Obj in pairs(Active.Tracers) do RemoveEsp(Obj) end
-            return RenderLoop:Disconnect()
-        end
-
-        local IsRainbow = Toggles.ESPI_RAINBOW_HIGHLIGHT.Value
-        local RainbowColor = Color3.fromHSV((os.clock() / math.max(Options.ESPI_RAINBOW_SPEED.Value, 0.1)) % 1, 0.8, 1)
-        
-        local Viewport = Camera.ViewportSize
-        local Center = Viewport / 2
-        local Origin = Options.ESPI_V_TracerPos.Value == "Mouse" and UserInputService:GetMouseLocation() 
-            or Options.ESPI_V_TracerPos.Value == "Top" and Vector2.new(Center.X, 0) 
-            or Options.ESPI_V_TracerPos.Value == "Bottom" and Vector2.new(Center.X, Viewport.Y) 
-            or Center
-            
-        local ArrowDist = (Options.ESPI_M_ArrowsOffSet.Value * 0.001) * Viewport.Y
-
-        for Inst, Data in pairs(OriginalColors) do
-            if Inst and Inst.Parent and IsRainbow then
-                if Data.Type == "Highlight" then Inst.OutlineColor, Inst.FillColor = RainbowColor, RainbowColor
-                else Inst.TextColor3 = RainbowColor end
-            end
-        end
-
-        for HL, Tracer in pairs(Active.Tracers) do
-            local Arrow, Target = Active.Arrows[HL], HL.Adornee or HL.Parent
-            if not HL or not HL.Parent then RemoveEsp(HL) continue end
-
-            local Pos = Target:IsA("Model") and Target:GetPivot().Position or Target.Position
-            local SPos, OnScreen = Camera:WorldToViewportPoint(Pos)
-            local CanDraw = HL.Enabled and Target:IsDescendantOf(workspace)
-            local Col = IsRainbow and RainbowColor or HL.FillColor
-
-            Tracer.Visible = CanDraw and OnScreen and Toggles.ESPI_M_Tracers.Value
-            if Tracer.Visible then
-                Tracer.Color3 = Col
-                Tracer:SetControlPoints({
-                    Path2DControlPoint.new(UDim2.fromOffset(Origin.X, Origin.Y)),
-                    Path2DControlPoint.new(UDim2.fromOffset(SPos.X, SPos.Y))
-                })
-            end
-
-            Arrow.Visible = CanDraw and not OnScreen and Toggles.ESPI_M_Arrows.Value
-            if Arrow.Visible then
-                local Dir = (Vector2.new(SPos.X, SPos.Y) - Center).Unit
-                local Atan = math.atan2(Dir.Y, Dir.X)
-                local Behind = SPos.Z <= 0
-                
-                Arrow.ImageColor3, Arrow.Rotation = Col, math.deg(Atan) + 90 + (Behind and 0 or 180)
-                Arrow.Position = UDim2.fromOffset(
-                    Center.X + (ArrowDist * math.cos(Atan) * (Behind and -1 or 1)),
-                    Center.Y + (ArrowDist * math.sin(Atan) * (Behind and -1 or 1))
-                )
-            end
-        end
-    end)
-
-    Toggles.ESPI_RAINBOW_HIGHLIGHT:OnChanged(function()
-        if not Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
-            for Inst, Data in pairs(OriginalColors) do
-                if Inst and Inst.Parent then
-                    if Data.Type == "Highlight" then Inst.OutlineColor, Inst.FillColor = Data.Outline, Data.Fill
-                    else Inst.TextColor3 = Data.Text end
-                end
-            end
-        end
-    end)
-end
-EspStuff()
 InitGeneralFeatures()
 
-function SwitchSide(Value: string)
-    -- its not loaded so refhrn snd
-    if not LHXLoadFinish then 
-        return 
-    end
-
-    if Value ~= config.CurrentSide then
-        config.CurrentSide = Value
-        writefile(filename, HttpService:JSONEncode(config))
-    end
-end
-
-function ChangeNotifySound(Value: string)
-    -- its not loaded so refhrn snd
-    if not LHXLoadFinish then 
-        return 
-    end
-
-    if Value ~= config.NotifySound then
-        config.NotifySound = Value
-        writefile(filename, HttpService:JSONEncode(config))
-    end
+function SaveToFile()
+    writefile(filename, HttpService:JSONEncode(config))
 end
 
 -- this is modified version of the lolhaxv2 get player function!
@@ -1685,7 +1486,7 @@ function FindLoot(Origin)
                 end
             end
 
-        elseif Loot.Name == "GoldPile" then
+        elseif Loot.Name == "GoldPile" and Loot:FindFirstChild("LootPrompt") then
 
             if (Loot.Hitbox.Position - LocalPlayer.Character.Collision.Position).Magnitude < Loot.LootPrompt.MaxActivationDistance * Options.GA_AutoInteract_Range.Value then
                 fireproximityprompt(Loot.LootPrompt)
@@ -1712,7 +1513,7 @@ function FindLoot(Origin)
                 end
             end
 
-        elseif Loot.Name == "Knockbomb" or Loot.Name == "KnockbackStick" or Loot.Name == "Multitool" or Loot.Name == "GoldGun" or Loot.Name == "BoxingGloves" or Loot.Name == "Bomb" or Loot.Name == "BigBomb" or Loot.Name == "StarJug" or Loot.Name == "Lockpick" or Loot.Name == "StarVial" or Loot.Name == "SkeletonKey" or Loot.Name == "Crucifix" or Loot.Name == "CrucifixWall" or Loot.Name == "Flashlight" or Loot.Name == "Candle" or Loot.Name == "Straplight" or Loot.Name == "Vitamins" or Loot.Name == "Lighter" or Loot.Name == "Shears" or Loot.Name == "BatteryPack" or Loot.Name == "BandagePack" or Loot.Name == "LaserPointer" or Loot.Name == "Bulklight" then
+        elseif Loot.Name == "Knockbomb" or Loot.Name == "KnockbackStick" or Loot.Name == "Multitool" or Loot.Name == "GoldGun" or Loot.Name == "BoxingGloves" or Loot.Name == "Bomb" or Loot.Name == "BigBomb" or Loot.Name == "StarJug" or Loot.Name == "Lockpick" or Loot.Name == "StarVial" or Loot.Name == "SkeletonKey" or Loot.Name == "Crucifix" or Loot.Name == "CrucifixWall" or Loot.Name == "Flashlight" or Loot.Name == "Candle" or Loot.Name == "Straplight" or Loot.Name == "Vitamins" or Loot.Name == "Lighter" or Loot.Name == "Shears" or Loot.Name == "BatteryPack" or Loot.Name == "BandagePack" or Loot.Name == "LaserPointer" or Loot.Name == "Bulklight" and Loot:FindFirstChild("ModulePrompt") then
             local SameTool = HasItem(Loot:GetAttribute("Pickup"))
 
             if table.find(LightSources, Loot.Name) and Options.GA_AutoInteract_Options.Value["Ignore Light Sources"] then
@@ -1960,7 +1761,7 @@ function BreakerThing(Breaker, Bool)
 end
 	
 function Library:Notify(options, description, duration, force)
-    -- normalize
+
     local data = type(options) == "table" and options or {
         Title = options,
         Description = description,
@@ -1972,7 +1773,7 @@ function Library:Notify(options, description, duration, force)
     data.Description = tostring(data.Description or "")
     data.Time = data.Time or 5
 
-    -- style
+
     local style = (getgenv().UseLib and getgenv().UseLib.CurrentNotify) or "Default"
 
     local SoundService = game:GetService("SoundService")
@@ -1994,7 +1795,6 @@ function Library:Notify(options, description, duration, force)
         end
     end
 
-    -- unified payload
     local payload = {
         Title = data.Title,
         Description = data.Description,
@@ -2003,7 +1803,6 @@ function Library:Notify(options, description, duration, force)
         Force = data.Force
     }
 
-    -- routing
     if style == "Linoria" or data.ForceLinoria then
         PlaySound()
 
@@ -2032,7 +1831,6 @@ function Library:Notify(options, description, duration, force)
         end
     end
 
-    -- fallback
     return SafeCall(function()
         return Notify(data.Title, data.Description, data.Time, data.Force)
     end)
@@ -2055,7 +1853,6 @@ function ManifestMspaintFrame(target)
         return targetPart.Parent:FindFirstChild(FRAME_NAME)
     end
 
-    -- create fake container
     local model = Instance.new("Model")
     model.Name = FRAME_NAME
 
@@ -2063,46 +1860,22 @@ function ManifestMspaintFrame(target)
     part.Size = Vector3.new(4.98, 7.75, 0.406)
     part.CFrame = targetPart.CFrame
     part.Transparency = 0.999
-    --[[part.LocalTransparencyModifier = 1--]]
     part.Anchored = false
     part.CanCollide = false
     part.Parent = model
 
-    -- method
     local humanoid = Instance.new("Humanoid")
     humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
     humanoid.HealthDisplayType = Enum.HumanoidHealthDisplayType.AlwaysOff
     humanoid.Parent = model
-
     model.Parent = targetPart.Parent
 
-    -- weld
     local weld = Instance.new("WeldConstraint")
     weld.Part0 = part
     weld.Part1 = targetPart
     weld.Parent = part
 
-   --[[ targetPart.Transparency = 1 ]]--
-
     return part -- adornee
-end
-
-function DoorCheck(target)
-    if target:GetAttribute("LoadModule") == "RetroDoor" then
-        return "RetroDoor"
-    elseif not Script.IsRetro and target.MeshId == "rbxassetid://74992368289921" then
-        return "Hotel"
-    elseif not Script.IsRetro and target.MeshId == "rbxassetid://10639621832" then 
-        return "Rooms"
-    elseif not Script.IsRetro and target.MeshId == "rbxassetid://9820239197" then
-        return "LibraryDoor"
-    elseif not Script.IsRetro and  target.MeshId == "rbxassetid://10264663580" then
-        return "Mines"
-    elseif not Script.IsRetro and target.MeshId == "rbxassetid://110053975408076" then
-        return "OutDoor"
-    elseif not Script.IsRetro and target.MeshId == "rbxassetid://7153047665" then
-        return "GreenHouse"
-    end
 end
 
 function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, VarName, Type)
@@ -2188,23 +1961,22 @@ function Esp(Parent, TextAdornee, Text, Color, OutlineColor, TextLabelColor, Var
 
             if not isCurrentlyVisible then continue end
 
-            if not Toggles.ESPI_RAINBOW_HIGHLIGHT.Value then
-                if Type == "Interactable" then
-                    Highlight.FillColor = Options[cfg.Prefix .. VarName .. "_F"].Value
-                    Highlight.OutlineColor = Toggles.ESPI_M_CustomColor_Outline.Value and Options.ESPI_Color_Outline.Value or Options[cfg.Prefix .. VarName .. "_O"].Value
-                    TextLabel.TextColor3 = Toggles.ESPI_M_CustomTC.Value and Options.ESPI_Color_TC.Value or Options[cfg.Prefix .. VarName .. "_TC"].Value
-                elseif Type == "Player" then
-                    Highlight.FillColor, Highlight.OutlineColor = Options.ESPP_Color_F.Value, Options.ESPP_Color_O.Value
-                    TextLabel.TextColor3 = Options.ESPP_Color_TC.Value
-                elseif Type == "Entity" then
-                    if not Parent:GetAttribute("OverrideColor") then
-                        Highlight.FillColor = Color
-                        Highlight.OutlineColor = OutlineColor or Color
-                        TextLabel.TextColor3 = Toggles.ESPE_CustomTC.Value and Options.ESPE_Color_TC.Value or (TextLabelColor or Color)
-                    else
-                        if Toggles.ESPE_CustomTC.Value then
-                            TextLabel.TextColor3 = Options.ESPE_Color_TC.Value
-                        end
+            -- Color Assignments
+            if Type == "Interactable" then
+                Highlight.FillColor = Options[cfg.Prefix .. VarName .. "_F"].Value
+                Highlight.OutlineColor = Toggles.ESPI_M_CustomColor_Outline.Value and Options.ESPI_Color_Outline.Value or Options[cfg.Prefix .. VarName .. "_O"].Value
+                TextLabel.TextColor3 = Toggles.ESPI_M_CustomTC.Value and Options.ESPI_Color_TC.Value or Options[cfg.Prefix .. VarName .. "_TC"].Value
+            elseif Type == "Player" then
+                Highlight.FillColor, Highlight.OutlineColor = Options.ESPP_Color_F.Value, Options.ESPP_Color_O.Value
+                TextLabel.TextColor3 = Options.ESPP_Color_TC.Value
+            elseif Type == "Entity" then
+                if not Parent:GetAttribute("OverrideColor") then
+                    Highlight.FillColor = Color
+                    Highlight.OutlineColor = OutlineColor or Color
+                    TextLabel.TextColor3 = Toggles.ESPE_CustomTC.Value and Options.ESPE_Color_TC.Value or (TextLabelColor or Color)
+                else
+                    if Toggles.ESPE_CustomTC.Value then
+                        TextLabel.TextColor3 = Options.ESPE_Color_TC.Value
                     end
                 end
             end
@@ -2435,6 +2207,20 @@ local Connections = {
                     end
                 end
             end
+            if workspace:FindFirstChild(LocalPlayer:GetAttribute("CurrentRoom")) then
+                for _, v in workspace:GetChildren(LocalPlayer:GetAttribute("CurrentRoom")) do
+                    if v.Name == "Drones" and v:IsA("Model") then
+                        for _, v in v:GetChildren() do
+                            if v.Name == "Drones" then
+                                if v:FindFirstChild("WalkedInto") then
+                                    local Event = v:FindFirstChild("WalkedInto")
+                                    Event:Destroy()
+                                end
+                            end
+                        end
+                    end
+                end
+            end
         end
 
         if Toggles.GA_MinecartInteract.Value and Options.GA_MinecartInteract_K:GetState() then
@@ -2557,12 +2343,29 @@ local Connections = {
 
                         table.insert(Targets, v.Assets)
                     
-                    elseif v.Name == "Door" and v:FindFirstChild("Lock") then -- God this is so ugly and out of place..
+                    elseif v.Name == "Door" and v:FindFirstChild("Lock") and not Script.IsArchives then -- God this is so ugly and out of place..
                         local Item = (Options.GA_AutoInteract_Options.Value["Use Lockpick ( Doors )"] and HasItem("Lockpick")) or HasItem("Key") or LocalPlayer.Character:FindFirstChild("KeyBackdoor") or HasItem("Multitool") or HasItem("SkeletonKey")
 
                         if Item then
                             if (v.Lock.Position - LocalPlayer.Character.Collision.Position).Magnitude < v.Lock.UnlockPrompt.MaxActivationDistance * Options.GA_AutoInteract_Range.Value then
                                 fireproximityprompt(v.Lock.UnlockPrompt)
+                            end
+                        end
+
+                    elseif v.Name == "Door" and not Script.IsArchives and DoorCheck(v.Door) == "RetroDoor" then
+                        if not v.ActivateEventPrompt:GetAttribute("Interactions") and v:FindFirstChild("Door") then
+                            if (v.Door.Position - LocalPlayer.Character.Collision.Position).Magnitude < v.ActivateEventPrompt.MaxActivationDistance * Options.GA_AutoInteract_Range.Value then
+                                fireproximityprompt(v.ActivateEventPrompt)
+                            end
+                        end
+
+                        if v:FindFirstChild("Lock") then
+                            local Item = LocalPlayer.Character:FindFirstChild("KeyObtain")
+                            if Item then
+                                print("yes")
+                                if (v.Door.Position - LocalPlayer.Character.Collision.Position).Magnitude < v.ActivateEventPrompt.MaxActivationDistance * Options.GA_AutoInteract_Range.Value then
+                                    fireproximityprompt(v.ActivateEventPrompt)
+                                end
                             end
                         end
                         
@@ -2781,6 +2584,25 @@ local Connections = {
                             end
                         end
 
+                    elseif Root.Name == "RetroTable" then
+
+                        FindLoot(Root)
+
+                        for _, v in Root:GetChildren() do
+                            if v.Name == "DrawerContainer" then
+
+                                if v.End.ActivateEventPrompt:GetAttribute("Interactions") then
+
+                                    FindLoot(v)
+                                
+                                else
+                                    if (v.Main.Position - LocalPlayer.Character.Collision.Position).Magnitude < v.End.ActivateEventPrompt.MaxActivationDistance * Options.GA_AutoInteract_Range.Value then
+                                        fireproximityprompt(v.End.ActivateEventPrompt)
+                                    end
+                                end
+                            end
+                        end
+
                     elseif Root.Name == "Rolltop_Desk" then
 
                         FindLoot(Root)
@@ -2872,6 +2694,14 @@ local Connections = {
 
                         FindLoot(Root)
 
+                    elseif Root.Name == "Loot" then
+
+                        for _, v in Root:GetChildren() do
+                            if v.Name == "FloorLootItem" then
+
+                                FindLoot(v)
+                            end
+                        end
                     end
                 end
             end
@@ -3078,7 +2908,7 @@ local Connections = {
         ClonedCollision.CollisionCrouch:Destroy()
     end),
 
-   LocalPlayer:GetAttributeChangedSignal("CurrentRoom"):Connect(function()
+    LocalPlayer:GetAttributeChangedSignal("CurrentRoom"):Connect(function()
 
     Script.CurrentRoom = LocalPlayer:GetAttribute("CurrentRoom")
     LocalPlayer:SetAttribute("NextRoom", Script.CurrentRoom + 1)
@@ -3139,7 +2969,7 @@ local Connections = {
 				
 	if Script.IsMines and Script.Bypassed and Script.CurrentRoom == 51 and GrumbleNearby(190) and AllAnchorsActivated() then
 		Script.Bypassed = false
-		local idk2 = Instance.new("Folder", shared.Script.Workspace or Workspace)
+		local idk2 = Instance.new("Folder", game.Workspace)
 		idk2.Name = "_internal_lhx_acbypassprogress"
 
 		Library:Notify({
@@ -3157,15 +2987,15 @@ local Connections = {
         new.Name = "_internal_lhx_acbypassprogress"
 
 		-- it works yay
-		Library:Notify({
-			Title = "Anticheat Bypass",
-			Description = "Halt has broken anticheat bypass, please go on a ladder again to fix it.",
-			Time = new,
+		    Library:Notify({
+			    Title = "Anticheat Bypass",
+			    Description = "Halt has broken anticheat bypass, please go on a ladder again to fix it.",
+			    Time = new,
 
-			LinoriaMessage = "Halt has broken anticheat bypass, please go on a ladder again to fix it."
-		})
-	end
-end),
+			    LinoriaMessage = "Halt has broken anticheat bypass, please go on a ladder again to fix it."
+		    })
+	    end
+    end),
 
     LocalPlayer.PlayerGui.ChildAdded:Connect(function(v)
         if v.Name == "MainUI" then
@@ -3365,12 +3195,20 @@ end),
                     Adornee = v.Door
                 elseif DoorCheck(v.Door) == "GreenHouse" or DoorCheck(v.Door) == "Rooms" or DoorCheck(v.Door) == "OutDoor" or DoorCheck(v.Door) == "RetroDoor" then
                     Adornee = v.Door
-                elseif DoorCheck(v.Door) == "LibraryDoor" then
+                elseif DoorCheck(v.Door) == "LibraryDoor" and DoorCheck(v.Door) == "ArchiveDoor" then
                     Adornee = v
                 else
                     Adornee = ManifestMspaintFrame(v.Door)
                 end
             
+                if DoorCheck(v.Door) == "ArchiveDoor" then
+                    for _, v in v:GetChildren() do
+                        if v.Name == "Door" and v.Orientation == Vector3.new(0, 90, 0) then
+                            v.Name = "Door2"
+                        end
+                    end
+                end
+
                 if Script.IsMines then 
                     RoomID += 100
                 end
@@ -3421,7 +3259,9 @@ end),
 
                 v.Mandrake:WaitForChild("Root", 9e9)
 
-                local Highlight, TextLabel = Esp(v.Mandrake, v.Mandrake.Root, "Mandrake", Color3.new(0.75, 0, 0), nil, nil, nil, "Entity")
+                v:WaitForChild("Hole", 9e9)
+
+                local Highlight, TextLabel = Esp(v, v.Hole, "Mandrake", Color3.new(0.75, 0, 0), nil, nil, nil, "Entity")
                 table.insert(EspTable.Entities, {Highlight, TextLabel})
             
             elseif v.Name == "LotusPetalPickup" or v.Name == "LotusHolder" then
@@ -3915,7 +3755,7 @@ end),
                 if Toggles.GN_Entities.Value and Options.GN_Entities_Options.Value["Sally"] then
                     Library:Notify({
                         Title = "Entity 'Sally' has spawned!",
-                        Description = "Give her an item quickly!"
+                        Description = "Give her an item immediately!"
                     })
                 end
 
@@ -4312,7 +4152,10 @@ local HiddenSpots = {
     ["Backdoor_Wardrobe"] = "Closet",
     ["Double_Bed"] = "Bed",
     ["Rooms_Locker"] = "Locker",
-    ["Rooms_Locker_Fridge"] = "Locker"
+    ["Rooms_Locker_Fridge"] = "Locker",
+    ["HidingSpot1"] = "HidingSpot1",
+    ["HidingSpot2"] = "HidingSpot2",
+    ["HidingSpot3"] = "HidingSpot3"
 }
 
 local function getRoomNum(obj)
@@ -6066,11 +5909,11 @@ Toggles.MA_SilentGloombat:OnChanged(function()
 end)
 
 task.spawn(function()
-    while task.wait(0.23) and not Library.Unloaded do
+    while task.wait(0.22) and not Library.Unloaded do
         if Toggles.EB_SpeedBypass.Value then
             if ClonedCollision then
                 ClonedCollision.Massless = false
-                task.wait(0.23)
+                task.wait(0.22)
 
                 if LocalPlayer.Character.HumanoidRootPart.Anchored then
                     ClonedCollision.Massless = true
@@ -6262,14 +6105,6 @@ task.spawn(function()
         SeekPathConnection:Disconnect() 
         SeekPathConnection = nil 
     end
-        if ElevatorConnection then 
-        ElevatorConnection:Disconnect() 
-        ElevatorConnection = nil 
-    end
-        if EspStuffConnection then
-        EspStuffConnection:Disconnect()
-        EspStuffConnection = nil
-    end
         if ClosetConnection then
         ClosetConnection:Disconnect()
         ClosetConnection = nil
@@ -6325,14 +6160,13 @@ task.spawn(function()
     MenuProperties:AddToggle("ForceCheckbox", {
 	Text = "Force Checkbox",
 	Default = config.ForceCheckbox,
-	Callback = function(Value)
-		ForceCheckboxSwitch(Value)
-	    if LHXLoadFinish then
-			Library:Notify({
-			  Title = "[LOLHAX]",
-			  Description = "Restart lolhax to apply changes."
-		})
-	   end
+	Callback = function(value)
+       if not LHXLoadFinish then return end
+	   if value ~= config.ForceCheckbox then
+          config.ForceCheckbox = Value
+          Library:Notify({ Title = "[LOLHAX]", Description = "Restart lolhax to apply changes."})
+          SaveToFile()
+        end
 	end,
     })
     MenuProperties:AddDropdown("UILib", {
@@ -6341,17 +6175,14 @@ task.spawn(function()
         Default = nil,
 		AllowNull = true,
         Callback = function(value)
-            if value == nil then return end
-            if tostring(value) == tostring(config.CurrentLib) then return end
-           SwitchLib(value)
-        if LHXLoadFinish then
-           Library:Notify({
-            Title = "[LOLHAX]",
-            Description = "Restart lolhax to apply changes.",
-            Time = 5
-           })
-        end
-    end,
+           if value == nil then return end
+           if not LHXLoadFinish then return end
+           if value ~= config.CurrentLib then
+              config.CurrentLib = value
+              Library:Notify({ Title = "[LOLHAX]", Description = "Restart lolhax to apply changes." })
+           end
+           SaveToFile()
+        end,
     })
     MenuProperties:AddDropdown("NotifyStyle", {
         Text = "Notification Style",
@@ -6359,17 +6190,14 @@ task.spawn(function()
         Default = nil,
 		AllowNull = true,
         Callback = function(value)
-            if value == nil then return end
-            if tostring(value) == tostring(config.CurrentNotify) then return end
-            SwitchNotify(value)
-        if LHXLoadFinish then
-            Library:Notify({
-                Title = "[LOLHAX]",
-                Description = "Notification Style Changed to: " .. tostring(value),
-                Time = 5
-            })
-        end
-    end,
+           if value == nil then return end
+           if not LHXLoadFinish then return end 
+           if value ~= config.CurrentNotify then
+              config.CurrentNotify = value
+              Library:Notify({ Title = "[LOLHAX]", Description = "Notification Style Changed to: " .. value })
+              SaveToFile()
+           end
+       end,
     })
 	MenuProperties:AddDropdown("NotifySide", {
 		Text = "Notification Side",
@@ -6378,20 +6206,17 @@ task.spawn(function()
 		Default = nil,
 		AllowNull = true,
 		Callback = function(value)
-        if value == nil then return end
-        if tostring(value) == tostring(config.CurrentSide) then return end
-		if Options.NotifyStyle.Value == "Default" or Options.NotifyStyle.Value == "Doors" then return end
-		SwitchSide(tostring(value))
-		Obsidian:SetNotifySide(tostring(value))
-		Linoria:SetNotifySide(tostring(value))
-		if LHXLoadFinish then
-		   Library:Notify({
-			  Title = "[LOLHAX]",
-			  Description = "Notification Side Changed to: " .. tostring(value),
-			  Time = 5
-		})
-		end
-	end,
+           if value == nil then return end 
+		   if Options.NotifyStyle.Value == "Default" or Options.NotifyStyle.Value == "Doors" then return end
+		   if not LHXLoadFinish then return end
+           if value ~= config.NotifySide then
+              config.NotifySide = value
+              Library:Notify({ Title = "[LOLHAX]", Description = "Notification Side Changed to: " .. value})
+              SaveToFile()
+           end
+		   Obsidian:SetNotifySide(tostring(value))
+		   Linoria:SetNotifySide(tostring(value))
+	    end,
 	})
     MenuProperties:AddDivider("Other")
     MenuProperties:AddButton("LX Discord Server", function()
@@ -6401,6 +6226,7 @@ task.spawn(function()
     MenuProperties:AddToggle("keybindmenu", { Text = "Show Keybinds", Default = false })
     MenuProperties:AddLabel("if you find a bug, please report them to the bug report server.", true)
     MenuProperties:AddDropdown("NotifySound", { Text = "Notification Sound", Tooltip = "Changes the current notification sound! won't apply to doors notify style or default notify style!", Values = { "New", "Old" }, Rounding = 0, Default = nil, AllowNull = true})
+    MenuProperties:AddToggle("ExtraFeatures", { Text = "Extra Features", Default = config.ExtraFeatures })
     MenuProperties:AddButton("Bug Report Server", function()
      setclipboard("https://discord.gg/9YgVsGBK")
      Library:Notify({ Title = "Copied to clipboard!", Time = 10 })
@@ -6412,7 +6238,11 @@ task.spawn(function()
 
     Library.ToggleKeybind = Options.MenuKeybind
     Options.NotifySound:OnChanged(function(value)
-        ChangeNotifySound(tostring(value))
+        if not LHXLoadFinish then return end
+        if value ~= config.NotifySound then
+           config.NotifySound = value
+           SaveToFile()
+        end
     end)
 
     ThemeManager:SetLibrary(Library)
@@ -6443,7 +6273,7 @@ task.spawn(function()
     DebugStuff:AddToggle("DS_Debug", { Text = "Enable Debug Mode", Default = false, })
     DebugStuff:AddToggle("DS_BSRPC", { Text = "Bloxstrap RPC", Default = true })
     DebugStuff:AddLabel("Floor: " .. game.ReplicatedStorage.GameData.Floor.Value)
-    DebugStuff:AddLabel("lolhax version: 3.0.3.6b")
+    DebugStuff:AddLabel("lolhax version: 3.0.3.7b")
 	DebugStuff:AddLabel("lolhax commit message: is this even needed", true)
 
     local RPCRoomChange = game.ReplicatedStorage.GameData.LatestRoom:GetPropertyChangedSignal("Value"):Connect(function() updateRPC(Toggles.DS_BSRPC.Value) end)
@@ -6453,11 +6283,27 @@ task.spawn(function()
         updateRPC(Toggles.DS_BSRPC.Value)
     end)
 
+    Toggles.ExtraFeatures:OnChanged(function(value)
+        if not LHXLoadFinish then
+           return
+        else
+            if value ~= config.ExtraFeatures then
+               config.ExtraFeatures = value
+               Library:Notify({ Title = "[LOLHAX]", Description = "Restart lolhax to apply changes."})
+            end
+        end
+        SaveToFile()
+    end)
+
     Options.UILib:SetValue(config.CurrentLib)
     Options.NotifyStyle:SetValue(config.CurrentNotify)
 	Options.NotifySide:SetValue(config.CurrentSide)
     Options.NotifySound:SetValue(config.NotifySound)
     Toggles.ForceCheckbox:SetValue(config.ForceCheckbox)
+    Toggles.ExtraFeatures:SetValue(config.ExtraFeatures)
+
+    config.TotalExecutions = config.TotalExecutions + 1
+    SaveToFile()
 
     ErrorMessageOut:Disconnect()
     LHXLoadFinish = true
