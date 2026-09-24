@@ -13,7 +13,7 @@ Free, yeah FREE.
 ## Changelogs ##
 version: 3.0.3.5b  or whatever
 ## Loadstring ##
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Robloxexploiterz/Release-Lolhax/refs/heads/main/LX%20Doors%20v3.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/tiwa244/Release-Lolhax/refs/heads/main/LX%20Doors%20v3.lua"))()
 
 whrereas there are couple of features that were revamped, auto interact is now back, and esp has extra customizations, translucent hiding spots has been revamped and, notify oxygen feature was added customization over the script was added,
 captions has rounded corners now if you use the obisidan library, and new esp were added, player esp is now completely customizable, and u can now enable entities esp or disable them
